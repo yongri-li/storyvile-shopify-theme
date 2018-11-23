@@ -2500,10 +2500,10 @@ theme.Product = (function() {
 
         // Also Show SKU
         $(this.selectors.SKU).html(variant.sku);
-        
+
         // Added by Aisha H (Shopify Theme Support) on Jul 31 2018
         $('#inventoryQuantity').html(variant.inventory_quantity);
-        
+
       } else {
         // The variant doesn't exist, disable submit button.
         // This may be an error or notice that a specific variant is not available.
@@ -3482,3 +3482,29 @@ $(".colIcons").hover(
   function() {
     $(this).hasClass("activeIcons") || ($(".colIcons.activeIcons").removeClass("activeIcons"), $(this).toggleClass("activeIcons"));
 });
+
+
+
+/**
+ * Subscriptions Builder
+ */
+
+var DEBUG = true;
+
+if (DEBUG) {
+
+  function reloadStylesheets() {
+    console.log('[DEBUG] Styles have been reloaded');
+    var queryString = '?' + new Date().getTime();
+    $('link[rel="stylesheet"]').each(function () {
+     if (this.href.indexOf('theme.scss.css') != -1) {
+       this.href = this.href.replace(/\?.*|$/, queryString);
+     }
+    });
+  }
+
+ function setStylesReloader() {
+   setInterval(reloadStylesheets, 2500);
+ }
+
+}
