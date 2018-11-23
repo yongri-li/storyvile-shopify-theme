@@ -1,0 +1,60 @@
+<!-- Section / Block Type: Text -->
+
+{% comment %}
+	ATB-SCHEMA{
+	"name":"Basic Text",
+	"id":"global-text",
+	"price": 0,
+	"banner":"//i.imgur.com/3xH5C0o.png",
+	"icon": "//i.imgur.com/JBPe0Qi.png",
+	"screenshots" : [
+		"//i.imgur.com/OcChZrR.png",
+		"//i.imgur.com/OcChZrR.png",
+		"//i.imgur.com/OcChZrR.png"
+	],
+	"tags": "text,html,univeral,global",
+	"description": "Add any content to any page using a textarea and even add your own html.",
+	"settings":[
+		{ 
+			"id" : "text",
+			"label" : "Text",
+			"info" : "You can add text or html here",
+			"type" : "textarea"
+		},
+		{ 
+			"id" : "text_align",
+			"label" : "Text align",
+			"info" : "Choose the alignment of the text",
+			"default" : "center",
+			"type" : "select",
+			"options": [
+				{
+					"label": "Left",
+					"value": "left"
+				},
+				{
+					"label": "Center",
+					"value": "center"
+				},
+				{
+					"label": "Right",
+					"value": "right"
+				}
+			]
+		}
+	]
+}ATB-SCHEMA
+{% endcomment %}
+
+{% include 'atb-render' field:'text' %}
+{% assign text = val %}
+{% include 'atb-render' field:'text_align' %}
+{% assign text_align = val %}
+
+<div class="shopify-section index-section">
+	<section class="atb--type__text">
+		<div style="text-align: {{ text_align }};">
+				{{ text }}
+		</div>
+	</section>
+</div>

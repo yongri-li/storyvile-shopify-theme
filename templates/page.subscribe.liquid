@@ -1,0 +1,420 @@
+
+<!-- /templates/page.liquid -->
+<header class="section-header text-center">
+<style>
+  
+/*GLOBAL*/
+@import url('https://fonts.googleapis.com/css?family=Archivo+Narrow:400,600,700');
+  
+  #shopify-section-featured-product-8{display: none;}
+  h3{
+  	font-size: 35px;
+    text-align: center !important;
+    margin: 0 !important;
+    line-height: 100%;
+    color: #231f20 !important;
+    font-weight: 900 !important;
+    font-family: "Archivo Narrow",sans-serif !important;
+  }
+  
+  
+  p{
+    text-align: left !important;
+  	margin: 0 !important;
+    letter-spacing: 0.06em;
+    line-height: 150%;
+    display:inline-block !important;
+  }
+  
+  .priceMain{
+    font-size: 55px;
+    font-style: italic;
+    position: relative;
+    margin-left: 30% !important;
+    top: 10px;
+    font-weight: 500;
+    color: #231f20 !important;
+  }
+  
+  .priceMain::after{
+  content: "/week";
+    font-size: 17px;
+    opacity: 0.5;
+  }
+  .site-nav li a, .supports-fontface .icon-fallback-text .icon, .site-nav__link--burger{color: #fff !important;}
+  .burger-icon{background: #fff !important;}
+  .site-header{max-width: 1050px; margin: 0 auto;}
+  .site-header .grid--table>.grid__item{padding-top: 30px;}
+  
+  .site-header__logo img{position: absolute;top:0; display: none;}
+  
+  .extraLogo{
+    position: fixed;
+    left: 15%;
+    top: 0;
+    width: 60px;
+    z-index: 10000000;
+  }
+  
+  .subscribeCheck{
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    top: -12px;
+    right:-12px;
+  	z-index: 100;
+  }
+  .subscribeCheck img{
+  width: 120%;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  
+  .checkoutLink{
+  padding-top: 10px;
+    display: block;
+    width: 50%;
+    margin: 0 auto;
+  }
+
+  .btn{
+    font-size: 22px !important;
+  	letter-spacing: 0.2em;
+    font-weight: 500 !important;
+    display:inline-block !important;
+    padding: 15px 60px !important;
+    
+  }
+
+  .heroImage{
+    height: 700px;
+    width: 100%;
+    padding-top: 0;
+    background-image: url(https://www.storyville.com/wp-content/uploads/2015/05/coffee-reserve.jpg);
+    background-size: cover;
+    background-position: left;
+    background-repeat: no-repeat;
+    margin-top: -220px;
+  }
+  
+  .subscribeBox{
+ 	width: 320px;
+    height: 450px;
+    background: #eae7e1;
+    text-align: center !important;
+    position: absolute;
+    margin: auto;
+    left: 0;right:0;top:0;bottom:0;
+    margin-left: 23%;
+  }
+  
+  p.subText{
+  line-height: 130%;
+    font-size: 14px;
+    padding-bottom: 30px !important;
+    width: 90%;
+    text-align: center !important;
+  }
+  
+  .subscribeBoxTop{
+  position: relative;
+    top: 0;
+    background: #fff;
+    width: 100%;
+    border-bottom: 1px solid #d6a041;
+    padding-top: 10px;
+  }
+  .subscribeBoxTop .priceMain{margin-left: 0 !important;}
+
+  .subscribeBoxBottom{
+    margin-top: 50px;
+    width: 100%;
+  }
+  
+  .subText.limitedValue{
+    padding-bottom: 0 !important; 
+    letter-spacing: 0.15em;}
+  
+  
+  
+  .subscribeContent{
+  width: 70%;
+    margin: 0 auto;
+  }
+  .mainCol{
+  width: 50%;
+    display: inline-block;
+    margin: 0 auto;
+    margin-left: -4px;
+    float: left;
+  }
+  
+  .thirdCol{
+    width: 33.33%;
+    display: inline-block;
+    margin: 0 auto;
+    margin-left: -4px;
+    float: left;
+    padding: 0 3%;
+  }
+  
+  .thirdCol h3{
+  text-align: left !important;
+  }
+  
+  .thirdCol:nth-child(1), .thirdCol:nth-child(2){
+  border-right: 1px solid #d6a041;
+  }
+  
+  .thirdCol:nth-child(1), .thirdCol:nth-child(2), .thirdCol:nth-child(3){
+      padding-left: 5%;
+  }
+  
+  .mainCol .thirdCol{
+  padding: 1% !important;
+    border-right: 0 !important;
+    text-align: center !important;
+  }
+  .mainCol .thirdCol strong{
+    font-size: 12px !important;
+    letter-spacing:0.05em;
+  }
+  
+  .mainCol .thirdCol p{
+  font-size: 12px !important;
+    letter-spacing: 0;
+    font-weight: 400;
+    text-align: center !important;
+    float: none !important;
+  }
+  
+  
+  
+.thirdCol img{
+    text-align: center !important;
+    margin: 0 auto;
+    display: block;
+    width: 40px;
+    height: 40px;
+  }
+  
+  .mainCol h3{
+  color: #b5121b !important;
+  }
+  
+  .mainCol p.subText{
+  letter-spacing: 0.45em !important;
+  }
+  
+  .mainCol p, .mainCol h3, hr.hr--small{text-align: left !important;}
+  
+  .mainCol hr.hr--small{float: left !important;}
+  .topBump{margin-top: 60px;}
+  
+  .freePriority{
+    width: 100%;
+    height: 400px;
+    background: url(https://www.storyville.com/wp-content/uploads/2018/07/HoldingBox-1.jpg);
+    background-position: 18% center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+  
+  
+  .freePriority em{
+	font-size: 35px;
+    font-style: normal !important;
+    display: inline-block;
+    position: relative;
+    bottom: 20px;
+  }
+  
+  .freePriority h3{
+    text-align: left !important;
+  	color: #fff !important;
+    font-size: 68px;
+    letter-spacing:0.01em;
+  }
+  
+  .freePriority p{
+      text-align: left !important;
+  	color: #fff !important;
+    font-size: 40px;
+    letter-spacing: 0.3em;
+  }
+  .freePriority p.subText{
+  font-size: 20px;
+    margin-top: 17px !important;
+  }
+  
+  .freePriority p img{width: 20px; position: relative; top: 3px;}
+  
+    .premiumBeans{
+    width: 100%;
+    height: 500px;
+    background: url(https://www.storyville.com/wp-content/uploads/2018/07/beans.jpg);
+    background-position: left center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+  
+  
+  .subscribeAbout{
+  width: 95%;
+    height: 600px;
+    background:#fff;
+    text-align: center !important;
+    margin: 0 auto;
+  }
+  
+  .subscribeAbout p{text-align: center !important;}
+  
+  .subscribeAbout h3{font-size: 68px !important;}
+  
+  .subscriberCoffeeThirds{
+    width: 100%;
+    background: #eae7e1;
+    display: inline-block;
+    padding: 30px 0;
+    margin-top: -60px;
+  }
+  
+
+  .subscribeMadeIn{
+  height: 700px;
+    width: 100%;
+    background-image: url(https://www.storyville.com/wp-content/uploads/2018/07/seattleMade.jpg);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+  
+  .subscribeMadeIn h3, .subscribeMadeIn p{
+  	text-align: left !important;
+    color: #fff !important;
+    position: relative;
+  }
+
+  .subscribeMadeIn p{font-size: 25px !important;letter-spacing: 0.25em;}
+  .subscribeMadeIn h3{font-size: 68px !important;}
+  
+  .subscribeMadeIn .subscribeContent{padding-top: 700px;}
+  .subscribeMadeIn{margin-bottom: -60px !important;}
+  
+  .location img{
+    position: absolute;
+    left:-65px;
+	width: 50px;
+    bottom: 7px;
+  }
+  
+  .subscribeAbout img{width: 200px; margin-top: 20px;}
+  .reviewContent{margin: 0 auto; width: 90%;}
+  p.reviewText, h3.reviewText{font-size: 22px !important; letter-spacing:0.05em !important;}
+  
+  .location{ margin-top:900px;}
+  
+ .reviewText strong{
+   color: #e18b3d !important;
+ 	font-weight: 100;
+   font-size: 35px;
+padding: 0 20px;
+ }
+  h3.reviewText{color: #e18b3d !important;}
+  
+  .subscribeMadeIn .subscribeContent{
+  pointer-events: none;
+  }
+  
+  
+  @media all and (max-width: 1200px) {
+    .mainCol h3{
+    font-size: 28px !important;
+    }
+    
+  }
+  
+  @media all and (max-width: 1068px) {
+    
+    .subscribeMadeIn{margin-bottom: -20px !important;}
+    
+    .freePriority{
+    height: auto;
+    }
+    
+    .mainCol .thirdCol strong, .mainCol .thirdCol p{
+    font-size: 17px !important;
+    }
+    .mainCol .thirdCol p{display: block !important;}
+    .mainCol,.thirdCol{
+    width: 100%;
+    }
+    
+    .thirdCol{
+    border-right: 0 !important;
+    padding-bottom: 20px;
+    margin: 20px 0;
+    }
+    
+    .thirdCol:nth-child(1), .thirdCol:nth-child(2){
+  		border-bottom: 1px solid #d6a041;
+  	}
+    .topBump{margin-top: 0;}
+    
+    .subscribeBox{
+      	width: 90%;
+    	margin: auto;
+      margin-top: 190px;
+    }
+    
+    .subscribeAbout .subscribeContent{width: 100%;}
+      .extraLogo{
+      	left: 0;
+		margin: 0 auto;
+		top: 0;
+		right:0;
+		width: 40px;
+		z-index: 10000000;}    
+    .site-header__logo img{margin:0 auto;left:0;right:0;}
+    .site-header .grid--table{  width: 90%; margin: 0 auto;}
+    .full-width{ display: block !important;}
+    .one-half{width: 90% !important; padding-left:0 !important; margin: 0 auto !important;}
+    
+    .subscribeMadeIn .subscribeContent{padding-top: 900px;}
+   
+    
+    .subscribeMadeIn h3, .subscribeMadeIn p{text-align: center !important;}
+    
+    .subscribeAbout{height: auto;}
+    
+    .reviewContent{width: 100%;}
+
+    .location img{display:none;}
+    
+    .location {margin-top: 1100px;}
+    
+  }
+  
+  
+  
+</style>
+  
+  <script type="text/javascript">
+     $(window).on('scroll', function() {
+       var yScroll = $(this).scrollTop();
+
+       $('.location').css({
+         'transform': 'translateY(' + (yScroll / - 2) + 'px) translate3d(0, 0, 0)'
+       });
+     });
+  </script>
+  
+</header>
+
+
+	<a href="https://storyvillecoffee.myshopify.com"><img class ="extraLogo" src="//cdn.shopify.com/s/files/1/0090/2135/8137/files/websiteBanner_1c9a297e-980a-4d9d-b491-eb53fbd699cc_200x.png?v=1532118309"></a>
+
+	{% section 'advanced-content-subscribe' %}
+
+	{% section 'featured-product-8'%}

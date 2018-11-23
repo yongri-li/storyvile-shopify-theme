@@ -1,0 +1,60 @@
+{% comment %}
+ATB-SCHEMA{
+	"name":"Basic Spacer",
+	"id":"global-spacer",
+	"price": 0,
+	"banner":"//i.imgur.com/OcChZrR.png",
+	"icon": "//advancedthemebuilder.com/atb/ui/icon_spacer.png",
+	"screenshots" : [
+		"//i.imgur.com/OcChZrR.png",
+		"//i.imgur.com/OcChZrR.png",
+		"//i.imgur.com/OcChZrR.png"
+	],
+	"video" : "//player.vimeo.com/video/180350618",
+	"tags": "spacer,universal,global",
+	"description": "Separate your with a spacer.",
+	"long_description": "Separate your content with a spacer.",
+	"settings":[
+		{ 
+			"id" : "height",
+			"label" : "Height",
+			"info" : "Define space height",
+			"default" : "20px",
+			"options": [
+				{
+					"label": "10px",
+					"value": "5px"
+				},
+				{
+					"label": "20px",
+					"value": "10px"
+				},
+				{
+					"label": "30px",
+					"value": "15px"
+				},
+				{
+					"label": "40px",
+					"value": "20px"
+				},
+				{
+					"label": "50px",
+					"value": "25px"
+				},
+				{
+					"label": "100px",
+					"value": "50px"
+				}
+			],
+			"type" : "select"
+		}
+	]
+}ATB-SCHEMA
+{% endcomment %}
+
+{% include 'atb-render' field:'height' %}
+{% assign height = val %}
+
+<!-- div class="shopify-section index-section" -->
+	<div style="padding:{{height}}; width:100%"></div>
+<!-- /div -->
