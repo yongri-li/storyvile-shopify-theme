@@ -212,7 +212,13 @@ textarea#ContactFormMessage{
 height: 350px;
 }
 
-#hardware .wrapper, #subscribe .wrapper, #locations .wrapper, #coffee .wrapper, #pike-place-market .wrapper, #queen-anne .wrapper, #roasting-studio .wrapper, #downtown-seattle .wrapper{max-width: 100%; padding:0 !important;}
+#hardware, #subscribe, #locations, #coffee, #pike-place-market,
+#queen-anne, #roasting-studio, #downtown-seattle {
+  .wrapper {
+    max-width: 100%;
+    padding:0 !important;
+  }
+}
 
 .product-single__meta{
 height: 400px;
@@ -4757,8 +4763,11 @@ button.mfp-arrow {
     transform: translateY(calc(-50% - 1px));
   }
 
+  cursor: pointer;
+  pointer-events: none;
+
   &.fulfilled {
-    cursor: pointer;
+    pointer-events: all;
   }
 
   &.current {
@@ -4892,6 +4901,8 @@ button.mfp-arrow {
   background-color: #b5121b;
   transition: background-color 0.3s ease;
 
+  cursor: pointer;
+
   &:hover {
     background-color: #e81c27;
   }
@@ -5019,12 +5030,12 @@ button.mfp-arrow {
 }
 
 
-.builder-option__price-current {
+.builder-option__price {
 
 }
 
 
-.builder-option__price-compare-at {
+.builder-option__compare-at-price {
   font-weight: 500;
   text-decoration: line-through;
   color: #aaa;
@@ -5097,16 +5108,22 @@ button.mfp-arrow {
 }
 
 
-.builder-product-offering__price-compare-at {
+.builder-product-offering__starting-compare-at-price {
   color: #aaa;
   text-decoration: line-through;
   font-weight: 500;
 }
 
 
-.builder-product-offering__price-current {
+.builder-product-offering__starting-price {
   color: #db8b44;
   font-weight: 700;
+}
+
+
+.builder-product-offering__price-unit {
+  color: #db8b44;
+  font-size: 18px;
 }
 
 

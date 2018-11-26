@@ -3491,6 +3491,172 @@ $(".colIcons").hover(
 
 var DEBUG = true;
 
+
+$(function () {
+
+  var debug = DEBUG ? console.log.bind(console, '[DEBUG][SubscriptionBuilder]') : _.noop;
+
+  var $builder = $('[data-subscription-builder]');
+
+  var state = {
+    step: 0,
+    product: null
+  };
+
+  /* Contains products: `options.products.{beans|pods|capsules}` */
+  var options = Object.assign({}, $builder.data('subscription-builder'));
+  debug('Options', options);
+
+  var $steps = $builder.find('[data-steps] [data-step]');
+  var $navSteps = $builder.find('[data-nav-steps] [data-step]');
+  var $optionSets = $builder.find('[data-options-set]');
+
+  var $startingPrice = $builder.find('[data-starting-price]');
+  var $startingCompareAtPrice = $builder.find('[data-compare-at-price]');
+  var $priceUnit = $builder.find('[data-price-unit]');
+
+  var $savedPrice = $builder.find('[data-saved-price]');
+  var $packageType = $builder.find('[data-package-type]');
+  var $packagePresentation = $builder.find('[data-package-presentation]');
+  var $packageDescription = $builder.find('[data-package-description]');
+
+
+  function asMoney(value) {
+    return '$' + (value / 100).toFixed(2).replace('.00', '');
+  }
+
+
+
+  var update = theme.debounce(function () {
+
+    debug('Update', state);
+
+    $steps.each(function (i) {
+      var $step = $(this);
+      var $navStep = $($navSteps.get(i));
+
+      $.merge($step, $navStep).toggleClass('fulfilled', i < state.step);
+      $.merge($step, $navStep).toggleClass('current', i == state.step);
+
+    });
+
+
+    var product = options.products[state.product];
+
+    if (product.compare_at_price) {
+      $startingCompareAtPrice.show();
+    } else {
+      $startingCompareAtPrice.hide();
+    }
+    $startingCompareAtPrice.text(asMoney(product.compare_at_price));
+
+    $startingPrice.text(asMoney(product.starting_price));
+    $priceUnit.text(product.price_unit ?  '/ ' + product.price_unit : '');
+
+    $savedPrice.text(product.saved_price ? asMoney(product.saved_price) + ' or': '');
+
+    $packagePresentation.text(product.package_presentation);
+    $packageType.text(product.package_type);
+    $packageDescription.text(product.package_description);
+
+
+  }, 20);
+
+
+  function setState(newState) {
+    Object.assign(state, newState);
+    update();
+  }
+
+
+  function checkout() {
+    debug('Checkout');
+    $builder.submit();
+  }
+
+
+  function selectProduct(product) {
+    debug('Select product', product);
+    setState({ product: product });
+  }
+
+
+  function selectQuantity(quantity) {
+    debug('Select quantity', quantity);
+  }
+
+
+  function selectFrequency(frequency) {
+    debug('Select frequency', frequency);
+  }
+
+
+  function nextStepHandler() {
+    debug('Next step', this);
+    var $step = $(this).closest('[data-step]');
+    if (!$step.is(':last-child')) {
+      setState({ step: $step.index() + 1 });
+    } else {
+      checkout();
+    }
+  }
+
+
+  function navStepClickHandler() {
+    var $navStep = $(this);
+    if ($navStep.is('.fulfilled')) {
+      setState({ step: $navStep.index() });
+    }
+  }
+
+
+  function optionClickHandler($optionSet) {
+    return function () {
+      var $options = $optionSet.find('[data-option]');
+      var $option = $(this);
+
+      var optionSetType = $optionSet.data('options-set-type');
+      var optionValue = $option.data('value') || $option.index();
+
+      $options.removeClass('selected');
+      $option.addClass('selected');
+
+      if (optionSetType == 'product') {
+        selectProduct(optionValue);
+      } else if (optionSetType == 'quantity') {
+        selectQuantity(optionValue);
+      } else if (optionSetType == 'frequency') {
+        selectFrequency(optionValue);
+      } else {
+        debug('Option set has no behavior');
+      }
+    };
+  }
+
+
+  function initialize() {
+
+    $navSteps.click(navStepClickHandler);
+
+    $builder.find('[data-next-step]').click(nextStepHandler);
+
+    $optionSets.each(function () {
+      var $optionSet = $(this);
+      var $options = $optionSet.find('[data-option]')
+      $options.click(optionClickHandler($optionSet));
+    });
+
+    selectProduct(options.defaultProduct);
+  }
+
+
+  initialize();
+
+});
+
+
+
+
 if (DEBUG) {
 
   function reloadStylesheets() {
