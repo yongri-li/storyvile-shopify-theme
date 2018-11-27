@@ -3557,6 +3557,7 @@ $(function () {
 
     debug('Update', state);
 
+
     $steps.each(function (i) {
       var $step = $(this);
       var $navStep = $($navSteps.get(i));
@@ -3567,7 +3568,22 @@ $(function () {
     });
 
 
+
     var product = options.products[state.product];
+
+    $builder.find('[data-option]').removeClass('selected');
+    $builder.find([
+        '[data-options-set-type="product"]   [data-option][data-value="' + state.product + '"]',
+        '[data-options-set-type="quantity"]  [data-option][data-value="' + state.selectedQuantity + '"]',
+        '[data-options-set-type="frequency"] [data-option][data-value="' + state.selectedFrequency + '"]',
+      ].join(','))
+      .addClass('selected')
+    ;
+
+    $builder.find('[data-ships-every]').each(function (i) {
+      var weeks = state.product == 'beans' ? (i+1) : (i+1)*2;
+      $(this).text(weeks > 1 ? weeks + ' weeks' : 'week');
+    });
 
 
     $wantEpilogue.parent().toggle(state.product == 'beans')
@@ -3702,18 +3718,26 @@ $(function () {
     debug('Select product', productId);
     setState({
       product: productId,
-      productOptions: getProductOptions(productId)
+      productOptions: getProductOptions(productId),
+      selectedQuantity: 1, // the second value
+      selectedFrequency: 1 // the second value
     });
   }
 
 
   function selectQuantity(quantity) {
     debug('Select quantity', quantity);
+    setState({
+      selectedQuantity: quantity
+    });
   }
 
 
   function selectFrequency(frequency) {
     debug('Select frequency', frequency);
+    setState({
+      selectedFrequency: frequency
+    });
   }
 
 
@@ -3743,9 +3767,6 @@ $(function () {
 
       var optionSetType = $optionSet.data('options-set-type');
       var optionValue = $option.data('value') || $option.index();
-
-      $options.removeClass('selected');
-      $option.addClass('selected');
 
       if (optionSetType == 'product') {
         selectProduct(optionValue);

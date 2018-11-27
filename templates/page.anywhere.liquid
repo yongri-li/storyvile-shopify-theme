@@ -163,7 +163,7 @@
               </div>
 
 
-              <div class="builder-product-offering__content builder-product-offering__content--desktop">
+              <div class="builder-product-offering__content desktop-only">
 
                 {{ offering_description }}
 
@@ -214,7 +214,7 @@
             <img class="icon" src="{{ 'icon--banner.svg' | asset_url }}" /> <span>If you don't love your coffee, it's on us.</span>
           </p>
 
-          <div class="builder-product-offering__content builder-product-offering__content--mobile">
+          <div class="builder-product-offering__content mobile-only">
 
             {{ offering_description }}
 
@@ -251,7 +251,7 @@
             <div
               class="builder__option builder-option"
               data-option
-              data-value="">
+              data-value="0">
 
               <p class="builder-option__note" data-option-price-each>PRICE / Bag</p>
 
@@ -285,7 +285,7 @@
             <div
               class="builder__option builder-option selected"
               data-option
-              data-value="">
+              data-value="1">
 
               <p class="builder-option__note" data-option-price-each>PRICE / Bag</p>
 
@@ -320,7 +320,7 @@
             <div
               class="builder__option builder-option"
               data-option
-              data-value="">
+              data-value="2">
 
               <p class="builder-option__note" data-option-price-each>PRICE / Bag</p>
 
@@ -396,9 +396,10 @@
             {% assign frequencies = 'fanatic,enthusiast,admirer' | split: ',' %}
 
             {% for frequency in frequencies %}
+
               <div class="builder__option builder-option builder-option--frequency {% if forloop.index == 2 %}selected{% endif %}"
                    data-option
-                   data-value="">
+                   data-value="{{ forloop.index0 }}">
 
                 <div class="builder-option__content">
 
@@ -414,11 +415,7 @@
 
                     <small class="builder-option__subtitle">
                       Ships free every
-                      {% if forloop.first %}
-                      week
-                      {% else %}
-                      {{ forloop.index }} weeks
-                      {% endif %}
+                      <span data-ships-every></span>
                     </small>
 
                   </h2>

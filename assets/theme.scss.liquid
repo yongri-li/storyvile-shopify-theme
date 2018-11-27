@@ -5367,18 +5367,10 @@ button.mfp-arrow {
 .builder-product-offering__content {
   margin-bottom: 30px;
 
-  &.builder-product-offering__content--mobile {
+  @include mobile {
     margin-top: 40px;
+  }
 
-    @include mobile {
-      display: block;
-    }
-  }
-  &.builder-product-offering__content--desktop {
-    @include mobile {
-      display: none;
-    }
-  }
 }
 
 
