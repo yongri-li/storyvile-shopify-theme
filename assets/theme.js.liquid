@@ -3500,7 +3500,9 @@ $(function () {
 
   var state = {
     step: 0,
-    product: null
+    product: null,
+    productOptions: [],
+    wantsEpilogue: false
   };
 
   /* Contains products: `options.products.{beans|pods|capsules}` */
@@ -3520,11 +3522,35 @@ $(function () {
   var $packagePresentation = $builder.find('[data-package-presentation]');
   var $packageDescription = $builder.find('[data-package-description]');
 
+  var $wantEpilogue = $builder.find('[data-option-want-epilogue]');
 
-  function asMoney(value) {
-    return '$' + (value / 100).toFixed(2).replace('.00', '');
+
+  function asPercentage(value) {
+    return (value * 100).toFixed(0) + '%';
   }
 
+
+  function asMoney(value, rounded) {
+    var floatValue = (value / 100);
+    return '$' + ( rounded ? Math.ceil(floatValue).toFixed(0) : floatValue.toFixed(2).replace('.00', '') );
+  }
+
+
+  function sortByPrice(productsOrVariants, direction) {
+    return productsOrVariants.sort(function (a, b) {
+      return direction == 'desc' ? b.price - a.price : a.price - b.price;
+    });
+  }
+
+
+  function mostExpensive(productsOrVariants) {
+    return sortByPrice(productsOrVariants, 'desc')[0];
+  }
+
+
+  function cheapest(productsOrVariants) {
+    return sortByPrice(productsOrVariants)[0];
+  }
 
 
   var update = theme.debounce(function () {
@@ -3543,6 +3569,10 @@ $(function () {
 
     var product = options.products[state.product];
 
+
+    $wantEpilogue.parent().toggle(state.product == 'beans')
+
+
     if (product.compare_at_price) {
       $startingCompareAtPrice.show();
     } else {
@@ -3553,11 +3583,64 @@ $(function () {
     $startingPrice.text(asMoney(product.starting_price));
     $priceUnit.text(product.price_unit ?  '/ ' + product.price_unit : '');
 
-    $savedPrice.text(product.saved_price ? asMoney(product.saved_price) + ' or': '');
+    var sorted = sortByPrice(state.productOptions);
+    if (sorted.length > 1) {
+      var saveAmount = sorted[1].price * sorted[1].saved_percent;
+      $savedPrice.text(asMoney(saveAmount, true) + ' or');
+    } else {
+      $savedPrice.text('');
+    }
+
 
     $packagePresentation.text(product.package_presentation);
     $packageType.text(product.package_type);
     $packageDescription.text(product.package_description);
+
+
+    $quantities = $('[data-options-set][data-options-set-type="quantity"]');
+
+    $quantities.find('[data-option]').each(function (i) {
+      var $option = $(this);
+      var productOption = state.productOptions[i];
+
+      if (productOption) {
+        $option.find('[data-option-price-each]')
+          .text(asMoney(productOption.priceEach) + ' ' + (state.product == 'beans' ? '/ bag' : 'Each'))
+        ;
+
+        $option.find('[data-option-product-type]')
+          .text(productOption.type)
+        ;
+
+        $option.find('[data-option-compare-at-price]')
+          .text(asMoney(productOption.compare_at_price))
+          .toggle(productOption.compare_at_price > 0)
+        ;
+
+        $option.find('[data-option-price]')
+          .text(asMoney(productOption.price))
+        ;
+
+        $option.find('[data-option-save-percentage]')
+          .text('SAVE ' + asPercentage(productOption.saved_percent))
+          .toggle(productOption.saved_percent > 0)
+        ;
+
+        $option.find('[data-option-product-image]')
+          .removeAttr('src')
+          .attr('src', productOption.image)
+        ;
+
+        $option.find('[data-option-product-title]')
+          .text(productOption.title)
+        ;
+
+
+        $option.show();
+      } else {
+        $option.hide();
+      }
+    });
 
 
   }, 20);
@@ -3575,9 +3658,52 @@ $(function () {
   }
 
 
-  function selectProduct(product) {
-    debug('Select product', product);
-    setState({ product: product });
+  function getMainTitleForVariant(variant) {
+    var titleParts = variant.public_title.split(',');
+    var mainTitle = (titleParts[1] || titleParts[0]).trim();
+    return mainTitle;
+  }
+
+
+  function getQuantityForVariant(variant) {
+    var mainTitle = getMainTitleForVariant(variant);
+    var quantity = parseInt(mainTitle.split(' ')[0]);
+    return quantity;
+  }
+
+
+  function getProductOptions(productId) {
+    var product = options.products[productId];
+
+    var variants = _.slice(product.variants,0, 3);
+
+    var cheap = cheapest(variants);
+    var cheapQuantity = getQuantityForVariant(cheap);
+    var cheapPriceEach = (cheap.compare_at_price || cheap.price)/cheapQuantity;
+
+    return variants.map(function (variant) {
+      var mainTitle = getMainTitleForVariant(variant);
+      var quantity = getQuantityForVariant(variant);
+      var priceEach = variant.price/quantity;
+      return {
+        priceEach: priceEach,
+        type: mainTitle,
+        title: quantity + 'x ' + product.title,
+        price: variant.price,
+        quantity: quantity,
+        compare_at_price: variant.compare_at_price,
+        saved_percent: 1 - (priceEach / cheapPriceEach),
+        image: variant.featured_image.src
+      };
+    });
+  }
+
+  function selectProduct(productId) {
+    debug('Select product', productId);
+    setState({
+      product: productId,
+      productOptions: getProductOptions(productId)
+    });
   }
 
 
@@ -3644,6 +3770,12 @@ $(function () {
       var $optionSet = $(this);
       var $options = $optionSet.find('[data-option]')
       $options.click(optionClickHandler($optionSet));
+    });
+
+    $wantEpilogue.on('change', function() {
+      var value = $wantEpilogue.is(':checked');
+      debug('Epilogue checkbox changed:', value);
+      setState({ wantsEpilogue: value });
     });
 
     selectProduct(options.defaultProduct);

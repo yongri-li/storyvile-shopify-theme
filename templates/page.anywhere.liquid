@@ -1,6 +1,6 @@
 {%- assign product_beans_handle    = 'private-reserve-pro-epi' -%}
-{%- assign product_pods_handle     = 'nespresso-pods'          -%}
-{%- assign product_capsules_handle = 'k-cups'                  -%}
+{%- assign product_pods_handle     = 'k-cups' -%}
+{%- assign product_capsules_handle = 'nespresso-pods' -%}
 
 {%- assign product_handles = product_beans_handle | append: ',' | append: product_pods_handle | append: ',' | append: product_capsules_handle | split: ',' -%}
 {%- assign product_builder_ids = 'beans,pods,capsules' | split: ',' %}
@@ -51,7 +51,7 @@
 
       "{{ product_builder_id }}": {
         "description": {{ prod.description | json }},
-        "obj": {{ prod | json }},
+        "title": {{ prod.title | json }},
         "handle": {{ product_handle | json }},
         "available": {{ prod.available | json }},
         "starting_price": {{ prod.price_min | divided_by: contained_products | json }},
@@ -86,15 +86,15 @@
       <ul class="builder__nav-steps" data-nav-steps>
 
         <li class="builder__nav-step current" data-step>
-          <span class="step-number">1</span> <span>Coffee Brew</span>
+          <span class="step-number">1</span> <span class="step-name">Coffee Brew</span>
         </li>
 
         <li class="builder__nav-step" data-step>
-          <span class="step-number">2</span> <span>Quantity</span>
+          <span class="step-number">2</span> <span class="step-name">Quantity</span>
         </li>
 
         <li class="builder__nav-step" data-step>
-          <span class="step-number">3</span> <span>Shipping Frequency</span>
+          <span class="step-number">3</span> <span class="step-name">Shipping Frequency</span>
         </li>
 
       </ul>
@@ -106,10 +106,22 @@
 
   <div class="wrapper">
 
-    <div class="builder__step" data-steps>
+    <div class="builder__steps" data-steps>
 
 
       <div class="builder__step" data-step>
+
+        {% capture offering_description %}
+          <p class="builder-product-offering__features-title">
+            Wake up happy every day
+          </p>
+          <ul class="builder-product-offering__features">
+            <li class="builder-product-offering__feature">Sourced from the top 2% of the world's beans</li>
+            <li class="builder-product-offering__feature" data-package-presentation></li>
+            <li class="builder-product-offering__feature" data-package-description>Our one and only signature blend</li>
+            <li class="builder-product-offering__feature">Roasted and shipped to you same day</li>
+          </ul>
+        {% endcapture %}
 
         <div class="builder__step-header">
           <h2 class="builder__title">A Special Offer Just For You</h2>
@@ -151,17 +163,9 @@
               </div>
 
 
-              <div class="builder-product-offering__content">
+              <div class="builder-product-offering__content builder-product-offering__content--desktop">
 
-                <p class="builder-product-offering__features-title">
-                  Wake up happy every day
-                </p>
-                <ul class="builder-product-offering__features">
-                  <li class="builder-product-offering__feature">Sourced from the top 2% of the world's beans</li>
-                  <li class="builder-product-offering__feature" data-package-presentation></li>
-                  <li class="builder-product-offering__feature" data-package-description>Our one and only signature blend</li>
-                  <li class="builder-product-offering__feature">Roasted and shipped to you same day</li>
-                </ul>
+                {{ offering_description }}
 
               </div>
 
@@ -210,6 +214,12 @@
             <img class="icon" src="{{ 'icon--banner.svg' | asset_url }}" /> <span>If you don't love your coffee, it's on us.</span>
           </p>
 
+          <div class="builder-product-offering__content builder-product-offering__content--mobile">
+
+            {{ offering_description }}
+
+          </div>
+
         </div>
 
       </div>
@@ -238,96 +248,103 @@
                data-options-set data-options-set-type="quantity">
 
 
-            <div class="builder__option builder-option"
-                 data-option
-                 data-value="">
+            <div
+              class="builder__option builder-option"
+              data-option
+              data-value="">
 
-              <p class="builder-option__note">PRICE / Bag</p>
+              <p class="builder-option__note" data-option-price-each>PRICE / Bag</p>
 
               <div class="builder-option__content">
 
-                <h3 class="builder-option__title">Product Type</h3>
+                <h3 class="builder-option__title builder-option__title--top" data-option-product-type>Product Type</h3>
 
 
                 <p class="builder-option__price">
-                  <span class="builder-option__compare-at-price">$00</span>
-                  <span class="builder-option__price">$00</span>
+                  <span class="builder-option__compare-at-price" data-option-compare-at-price>$00</span>
+                  <span class="builder-option__price" data-option-price>$00</span>
                 </p>
 
+                <p class="builder-option__feature mobile-only" data-option-save-percentage style="display: none">Save 0%</p>
 
                 <div class="builder-option__product-image-container">
-                  <p class="builder-option__feature">Save 0%</p>
+                  <p class="builder-option__feature desktop-only" data-option-save-percentage style=":none">Save 0%</p>
                   <img
-                    class="builder-option__product-image"
+                    class="builder-option__product-image" data-option-product-image
                     src="https://via.placeholder.com/850x550"
                   />
                 </div>
 
-                <h2 class="builder-option__title">2x Storyville Product</h2>
+                <h2 class="builder-option__title builder-option__title--bottom" data-option-product-title>2x Storyville Product</h2>
 
               </div>
 
             </div>
 
 
-            <div class="builder__option builder-option selected"
-                 data-option
-                 data-value="">
+            <div
+              class="builder__option builder-option selected"
+              data-option
+              data-value="">
 
-              <p class="builder-option__note">PRICE / Bag</p>
+              <p class="builder-option__note" data-option-price-each>PRICE / Bag</p>
 
               <div class="builder-option__content">
 
-                <h3 class="builder-option__title">Product Type</h3>
+                <h3 class="builder-option__title builder-option__title--top" data-option-product-type>Product Type</h3>
 
 
                 <p class="builder-option__price">
-                  <span class="builder-option__compare-at-price">$00</span>
-                  <span class="builder-option__price">$00</span>
+                  <span class="builder-option__compare-at-price" data-option-compare-at-price>$00</span>
+                  <span class="builder-option__price" data-option-price>$00</span>
                 </p>
 
+                <p class="builder-option__feature mobile-only" data-option-save-percentage style="display: none">Save 0%</p>
 
                 <div class="builder-option__product-image-container">
-                  <p class="builder-option__feature">Save 0%</p>
+                  <p class="builder-option__feature desktop-only" data-option-save-percentage style=":none">Save 0%</p>
                   <img
-                    class="builder-option__product-image"
+                    class="builder-option__product-image" data-option-product-image
                     src="https://via.placeholder.com/850x550"
                   />
                 </div>
 
-                <h2 class="builder-option__title">2x Storyville Product</h2>
+                <h2 class="builder-option__title builder-option__title--bottom" data-option-product-title>2x Storyville Product</h2>
 
               </div>
+
 
             </div>
 
 
-            <div class="builder__option builder-option"
-                 data-option
-                 data-value="">
+            <div
+              class="builder__option builder-option"
+              data-option
+              data-value="">
 
-              <p class="builder-option__note">PRICE / Bag</p>
+              <p class="builder-option__note" data-option-price-each>PRICE / Bag</p>
 
               <div class="builder-option__content">
 
-                <h3 class="builder-option__title">Product Type</h3>
+                <h3 class="builder-option__title builder-option__title--top" data-option-product-type>Product Type</h3>
 
 
                 <p class="builder-option__price">
-                  <span class="builder-option__compare-at-price">$00</span>
-                  <span class="builder-option__price">$00</span>
+                  <span class="builder-option__compare-at-price" data-option-compare-at-price>$00</span>
+                  <span class="builder-option__price" data-option-price>$00</span>
                 </p>
 
+                <p class="builder-option__feature mobile-only" data-option-save-percentage style="display: none">Save 0%</p>
 
                 <div class="builder-option__product-image-container">
-                  <p class="builder-option__feature">Save 0%</p>
+                  <p class="builder-option__feature desktop-only" data-option-save-percentage style=":none">Save 0%</p>
                   <img
-                    class="builder-option__product-image"
+                    class="builder-option__product-image" data-option-product-image
                     src="https://via.placeholder.com/850x550"
                   />
                 </div>
 
-                <h2 class="builder-option__title">2x Storyville Product</h2>
+                <h2 class="builder-option__title builder-option__title--bottom" data-option-product-title>2x Storyville Product</h2>
 
               </div>
 
@@ -340,14 +357,18 @@
 
         <div class="builder__step-footer">
 
+          <p class="builder__note mobile-only">
+            <input type="checkbox" data-option-want-epilogue /> <label>I want Epilogue <strong>(Decaf)</strong></label>
+          </p>
+
           <div class="builder__step-actions">
             <div class="builder__step-action" data-next-step>
               Next Step
             </div>
           </div>
 
-          <p class="builder__note">
-            <input type="checkbox" /> <label>I want Epilogue <strong>(Decaf)</strong></label>
+          <p class="builder__note desktop-only">
+            <input type="checkbox" data-option-want-epilogue /> <label>I want Epilogue <strong>(Decaf)</strong></label>
           </p>
 
         </div>
@@ -388,15 +409,19 @@
                     />
                   </div>
 
-                  <h2 class="builder-option__title builder-option__title--large">{{ frequency }}</h2>
-                  <p class="builder-option__subtitle">
-                    Ships free every
-                    {% if forloop.first %}
+                  <h2 class="builder-option__title builder-option__title--top builder-option__title--large">
+                    {{ frequency }}
+
+                    <small class="builder-option__subtitle">
+                      Ships free every
+                      {% if forloop.first %}
                       week
-                    {% else %}
+                      {% else %}
                       {{ forloop.index }} weeks
-                    {% endif %}
-                  </p>
+                      {% endif %}
+                    </small>
+
+                  </h2>
 
                 </div>
 
