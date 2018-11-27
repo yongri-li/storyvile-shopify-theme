@@ -396,7 +396,7 @@
             {% assign frequencies = 'fanatic,enthusiast,admirer' | split: ',' %}
 
             {% for frequency in frequencies %}
-              <div class="builder__option builder-option {% if forloop.index == 2 %}selected{% endif %}"
+              <div class="builder__option builder-option builder-option--frequency {% if forloop.index == 2 %}selected{% endif %}"
                    data-option
                    data-value="">
 

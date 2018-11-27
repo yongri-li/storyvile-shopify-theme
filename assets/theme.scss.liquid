@@ -4872,23 +4872,17 @@ button.mfp-arrow {
 
 .builder__step {
 
-  @include desktop {
-    position: absolute;
-    top: 0; right: 0; bottom: 0; left: 0;
+  position: absolute;
+  top: 20px; right: 20px; bottom: 20px; left: 20px;
 
-    opacity: 0;
-    transition: 0.3s ease 0s;
-    pointer-events: none;
-  }
-
+  opacity: 0;
+  transition: 0.3s ease 0s;
+  pointer-events: none;
 
   &.current {
     transition: 0.3s ease 0.3s;
     opacity: 1;
     pointer-events: all;
-  }
-
-  &:first-child {
     position: static;
   }
 }
@@ -4968,7 +4962,7 @@ button.mfp-arrow {
   text-align: center;
   color: #666;
 
-  margin: 0;
+  margin: 10px 0;
 
   @include desktop {
     margin: 15px 0;
@@ -5047,12 +5041,19 @@ button.mfp-arrow {
     @include justify-content(center);
   }
 
+  @include mobile {
+    padding-bottom: 20px;
+  }
 }
 
 
 .builder__option {
   @include mobile {
     margin-bottom: 30px;
+
+    &:last-child {
+      margin-bottom: 0px;
+    }
   }
 }
 
@@ -5118,6 +5119,14 @@ button.mfp-arrow {
   }
 
   padding: 15px 30px;
+
+  .builder-option--frequency & {
+    @include mobile {
+      padding: 23px 30px;
+    }
+  }
+
+
   border: 2px solid #d0cbb8;
   text-align: center;
 
