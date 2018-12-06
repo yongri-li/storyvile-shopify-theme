@@ -2,6 +2,10 @@
 {%- assign product_pods_handle     = 'k-cups' -%}
 {%- assign product_capsules_handle = 'nespresso-pods' -%}
 
+{%- assign product_beans = all_products[product_beans_handle] -%}
+{%- assign product_pods = all_products[product_pods_handle] -%}
+{%- assign product_capsules = all_products[product_capsules_handle] -%}
+
 {%- assign product_handles = product_beans_handle | append: ',' | append: product_pods_handle | append: ',' | append: product_capsules_handle | split: ',' -%}
 {%- assign product_builder_ids = 'beans,pods,capsules' | split: ',' %}
 
@@ -175,21 +179,21 @@
                 <div class="builder-product-offering__option selected"
                      data-option
                      data-value="beans">
-                  <img class="builder-product-offering__option-image" src="https://storyville.com/anywhere/images/wholeBeans.png" />
+                  <img class="builder-product-offering__option-image" src="{{ product_beans.featured_image | img_url: '60x' }}" />
                   <span class="builder-product-offering__option-text">Whole Bean</span>
                 </div>
 
                 <div class="builder-product-offering__option"
                      data-option
                      data-value="pods">
-                  <img class="builder-product-offering__option-image" src="https://storyville.com/anywhere/images/wholeBeans.png" />
+                  <img class="builder-product-offering__option-image" src="{{ product_pods.featured_image | img_url: '60x' }}" />
                   <span class="builder-product-offering__option-text">PODS</span>
                 </div>
 
                 <div class="builder-product-offering__option"
                      data-option
                      data-value="capsules">
-                  <img class="builder-product-offering__option-image" src="https://storyville.com/anywhere/images/wholeBeans.png" />
+                  <img class="builder-product-offering__option-image" src="{{ product_capsules.featured_image | img_url: '60x' }}" />
                   <span class="builder-product-offering__option-text">CAPSULES</span>
                 </div>
 
