@@ -3502,7 +3502,8 @@ $(function () {
     step: 0,
     product: null,
     productOptions: [],
-    wantsEpilogue: false
+    wantsEpilogue: false,
+    cartToken: null
   };
 
   /* Contains products: `options.products.{beans|pods|capsules}` */
@@ -3557,10 +3558,24 @@ $(function () {
   }
 
 
+  function getCheckoutUrl() {
+    if (state.cartToken) {
+      var params = [
+        'cart_token=' + state.cartToken,
+        'myshopify_domain=' + options.shopify_domain
+      ];
+      return 'https://checkout.rechargeapps.com/r/checkout?' + params.join('&');
+    } else {
+      return '/cart';
+    }
+  }
+
+
   var update = theme.debounce(function () {
 
     debug('Update', state);
 
+    $builder.attr('action', getCheckoutUrl());
 
     $steps.each(function (i) {
       var $step = $(this);
@@ -3583,12 +3598,6 @@ $(function () {
       ].join(','))
       .addClass('selected')
     ;
-
-    $builder.find('[data-ships-every]').each(function (i) {
-      var weeks = state.product == 'beans' ? (i+1) : (i+1)*2;
-      $(this).text(weeks > 1 ? weeks + ' weeks' : 'week');
-    });
-
 
     $wantEpilogue.parent().toggle(state.product == 'beans')
 
@@ -3617,7 +3626,7 @@ $(function () {
     $packageDescription.text(product.package_description);
 
 
-    $quantities = $('[data-options-set][data-options-set-type="quantity"]');
+    var $quantities = $('[data-options-set][data-options-set-type="quantity"]');
 
     $quantities.find('[data-option]').each(function (i) {
       var $option = $(this);
@@ -3663,6 +3672,31 @@ $(function () {
     });
 
 
+
+    if (product) {
+      var $frequencies = $('[data-options-set][data-options-set-type="frequency"] [data-option]');
+
+      $frequencies.each(function (i) {
+        var $frequency = $(this);
+        var frequency = product.shipping_interval_frequency[i];
+        var unitType = product.shipping_interval_unit_type;
+        var $image = $frequency.find('[data-frequency-image]');
+
+        var fileVariant = [unitType, frequency].join('-').toLowerCase();
+
+        $image.attr('src', $image.attr('src').replace(/weeks\-[0-9]/, fileVariant))
+      })
+
+      $builder.find('[data-ships-every]').each(function (i) {
+        var frequency = product.shipping_interval_frequency[i];
+        var unitType = product.shipping_interval_unit_type.toLowerCase();
+
+
+        $(this).text(frequency > 1 ? frequency + ' ' + unitType : singular(unitType));
+      });
+    }
+
+
   }, 20);
 
 
@@ -3673,8 +3707,37 @@ $(function () {
 
 
   function checkout() {
-    debug('Checkout');
-    $builder.submit();
+
+    if (typeof state.selectedQuantity == "number") {
+      debug('Checkout');
+
+      var variantIndex = (state.product == 'beans' && state.wantsEpilogue) ? state.selectedQuantity + 3 : state.selectedQuantity;
+      var product = options.products[state.product];
+      var variant = product.variants[variantIndex];
+
+      var cartItem = {
+        id: variant.id,
+        quantity: 1,
+        properties: {
+          'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
+          'shipping_interval_unit_type': product.shipping_interval_unit_type,
+          'subscription_id': product.subscription_id
+        }
+      };
+
+      $.post('/cart/add.json', cartItem)
+        .done(function () {
+          debug('Successfully added items to the cart');
+          $builder.submit();
+        })
+        .fail(function () {
+          console.error('Failed to checkout');
+        });
+
+    } else {
+      debug('Quantity not selected or invalid.');
+
+    }
   }
 
 
@@ -3732,7 +3795,7 @@ $(function () {
   function selectQuantity(quantity) {
     debug('Select quantity', quantity);
     setState({
-      selectedQuantity: quantity
+      selectedQuantity: parseInt(quantity)
     });
   }
 
@@ -3740,7 +3803,7 @@ $(function () {
   function selectFrequency(frequency) {
     debug('Select frequency', frequency);
     setState({
-      selectedFrequency: frequency
+      selectedFrequency: parseInt(frequency)
     });
   }
 
@@ -3786,6 +3849,10 @@ $(function () {
 
 
   function initialize() {
+
+    $.getJSON('/cart.json').done(function (data) {
+      setState({ cartToken : data.token });
+    });
 
     $navSteps.click(navStepClickHandler);
 

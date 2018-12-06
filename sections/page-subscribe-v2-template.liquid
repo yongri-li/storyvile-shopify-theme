@@ -11,8 +11,10 @@
 {%- assign product_handles = product_beans_handle | append: ',' | append: product_pods_handle | append: ',' | append: product_capsules_handle | split: ',' -%}
 {%- assign product_builder_ids = 'beans,pods,capsules' | split: ',' %}
 
+
 {%- capture builder_config -%}
 {
+  "shopify_domain" : {{ shop.permanent_domain | json }},
   "defaultProduct" : "beans",
   "products": {
     {% for product_builder_id in product_builder_ids -%}
@@ -55,6 +57,12 @@
 
       {% endif %}
 
+      {% if prod.metafields.subscriptions.subscription_id %}
+        {% assign subscription_id = prod.metafields.subscriptions.subscription_id %}
+      {% else %}
+        {% assign subscription_id = 133650 %}
+      {% endif %}
+
       "{{ product_builder_id }}": {
         "description": {{ prod.description | json }},
         "title": {{ prod.title | json }},
@@ -68,7 +76,10 @@
         "package_type": {{ package_type | json }},
         "package_description": {{ package_description | json }},
         "package_sizes": [{{ sizes }}],
-        "shipping_description": {{ shipping_description | json }}
+        "shipping_description": {{ shipping_description | json }},
+        "subscription_id": {{ prod.metafields.subscriptions.subscription_id | json }},
+        "shipping_interval_frequency": {{ prod.metafields.subscriptions.shipping_interval_frequency | replace: ' ', '' | split: ',' | json }},
+        "shipping_interval_unit_type": {{ prod.metafields.subscriptions.shipping_interval_unit_type | json }}
 
       }
 
@@ -414,6 +425,7 @@
                   <div class="builder-option__product-image-container">
                     <img
                       class="builder-option__product-image"
+                      data-frequency-image
                       src="{{ 'calendar-frequency--weeks-' | append: forloop.index | append: '.png' | asset_url }}"
                     />
                   </div>
