@@ -1,3 +1,5 @@
+{%- assign collection = collections.subscription-v2-products -%}
+
 {%- assign product_beans_handle    = 'private-reserve-pro-epi' -%}
 {%- assign product_pods_handle     = 'k-cups' -%}
 {%- assign product_capsules_handle = 'nespresso-pods' -%}
@@ -141,8 +143,10 @@
           <div class="builder__product-offering builder-product-offering">
             <div class="builder-product-offering__preview">
               <img
-                class="builder-product-offering__preview-image"
-                src="{{ 'product-image--whole-bean.png' | asset_url }}"
+                class="builder-product-offering__preview-image lazyload"
+                data-sizes="auto"
+                data-src="{{ collection.image | img_url: '1x1' }}"
+                data-srcset="{% include 'bgset' image: collection.image %}"
               />
             </div>
 

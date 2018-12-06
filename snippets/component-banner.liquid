@@ -19,8 +19,10 @@
 <div class="component-banner">
 
   <img
-    class="component-banner__background"
-    src="{{ background_image | img_url: 'grande' }}"
+    class="component-banner__background lazyload"
+    data-src="{{ background_image | img_url: '1x1' }}"
+    data-sizes="auto"
+    data-srcset="{% include 'bgset' image: background_image %}"
   />
 
   <div class="component-banner__text component-banner__text--{{ text_position }} component-banner__text--{{ text_color }}">

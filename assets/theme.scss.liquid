@@ -5037,7 +5037,7 @@ button.mfp-arrow {
 
   @include desktop {
     @include display-flexbox;
-    @include align-items(center);
+    @include align-items(stretch);
     @include justify-content(center);
   }
 
@@ -5077,6 +5077,8 @@ button.mfp-arrow {
 
   @include flex-direction(row);
   @include flex-wrap(wrap);
+
+  height: 100%;
 
   @include desktop {
     @include flex-wrap(nowrap);
@@ -5291,9 +5293,15 @@ button.mfp-arrow {
 
 
 .builder-product-offering__preview {
+
+  @include mobile {
+    text-align: center;
+  }
+
   @include desktop {
     @include flex-basis(38%);
   }
+
 }
 
 
@@ -5307,6 +5315,11 @@ button.mfp-arrow {
 
 .builder-product-offering__header {
   line-height: 150%;
+  @include mobile {
+    @media (min-width: 460px) {
+      text-align: center;
+    }
+  }
 }
 
 .builder-product-offering__title {
@@ -5353,7 +5366,6 @@ button.mfp-arrow {
   font-size: 14px;
   margin-bottom: 15px;
 
-  text-align: center;
 
   @include desktop {
     text-align: left;
@@ -5397,9 +5409,14 @@ button.mfp-arrow {
 
 
 .builder-product-offering__options {
+  margin: 0 -4px;
   @include display-flexbox;
   @include align-items(stretch);
-  margin: 0 -4px;
+
+  @include mobile {
+    @include justify-content(center);
+  }
+
 }
 
 
