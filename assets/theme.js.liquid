@@ -3552,6 +3552,10 @@ $(function () {
     return sortByPrice(productsOrVariants)[0];
   }
 
+  function singular(word) {
+    return word.replace(/[sS]$/g, '');
+  }
+
 
   var update = theme.debounce(function () {
 
@@ -3597,7 +3601,7 @@ $(function () {
     $startingCompareAtPrice.text(asMoney(product.compare_at_price));
 
     $startingPrice.text(asMoney(product.starting_price));
-    $priceUnit.text(product.price_unit ?  '/ ' + product.price_unit : '');
+    $priceUnit.text(product.price_unit ?  '/ ' + singular(product.price_unit) : '');
 
     var sorted = sortByPrice(state.productOptions);
     if (sorted.length > 1) {
@@ -3704,7 +3708,7 @@ $(function () {
       return {
         priceEach: priceEach,
         type: mainTitle,
-        title: quantity + 'x ' + product.title,
+        title: quantity + 'x Storyville ' + product.title,
         price: variant.price,
         quantity: quantity,
         compare_at_price: variant.compare_at_price,
@@ -3823,7 +3827,7 @@ if (DEBUG) {
   }
 
  function setStylesReloader() {
-   setInterval(reloadStylesheets, 2500);
+   setInterval(reloadStylesheets, 3500);
  }
 
 }
