@@ -916,15 +916,22 @@ $color-blankstate-background: rgba($colorTextBody, 0.10);
 {{ base_family | font_face }}
 {{ header_family | font_face }}
 
+
+
 {%- assign base_family_bold = base_family | font_modify: 'weight', 'bolder' -%}
 {%- assign base_family_italic = base_family | font_modify: 'style', 'italic' -%}
 {%- assign base_family_bold_italic = base_family_bold | font_modify: 'style', 'italic' -%}
 {%- assign accent_family_bold = accent_family | font_modify: 'weight', 'bolder' -%}
 
+{%- assign base_family_medium = base_family | font_modify: 'weight', '600' -%}
+
+
 {{ base_family_bold | font_face }}
 {{ base_family_italic | font_face }}
 {{ base_family_bold_italic | font_face }}
 {{ accent_family_bold | font_face }}
+
+{{ base_family_medium | font_face }}
 
 // Header Font
 $headerFontStack: {{ header_family.family }}, {{ header_family.fallback_families }};
@@ -4730,7 +4737,15 @@ button.mfp-arrow {
  */
 
 
+$builder-title-font: $accentFontStack;
+$builder-title-weight: 600;
+$builder-body-text-color: #333;
+
 .builder {
+
+  h1,h2,h3,h4,h5,h6 {
+    font-family: $builder-title-font;
+  }
 }
 
 
@@ -4755,7 +4770,7 @@ button.mfp-arrow {
   padding: 15px 15px 15px 35px;
   margin: 0;
 
-  font-weight: 700;
+  font-weight: 500;
   font-size: 15px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -4829,6 +4844,7 @@ button.mfp-arrow {
 
   &.current, &.fulfilled {
 
+    font-weight: 700;
     color: #bd0f16;
 
     .step-number {
@@ -4917,9 +4933,12 @@ button.mfp-arrow {
   margin: 0 0 10px;
 
   font-size: 12px;
+  color: $builder-body-text-color;
+
+  letter-spacing: 1px;
 
   @include desktop {
-    font-size: 17px;
+    font-size: 16px;
   }
 
   text-align: center;
@@ -4929,7 +4948,7 @@ button.mfp-arrow {
   em {
     text-transform: uppercase;
     font-style: normal;
-    font-weight: 700;
+    font-weight: $builder-title-weight;
     color: #db8b44;
   }
 
@@ -4939,7 +4958,7 @@ button.mfp-arrow {
 
   strong {
     text-transform: uppercase;
-    font-weight: bold;
+    font-weight: $builder-title-weight;
   }
 
   p {
@@ -5185,7 +5204,7 @@ button.mfp-arrow {
 
 .builder-option__title {
   font-size: 17px;
-  font-weight: 700;
+  font-weight: $builder-title-weight;
   line-height: 1.42;
 
   margin: 0;
@@ -5220,7 +5239,7 @@ button.mfp-arrow {
 
 .builder-option__price {
   font-size: 30px;
-  font-weight: 700;
+  font-weight: $builder-title-weight;
 
   margin: 0;
 }
@@ -5242,7 +5261,7 @@ button.mfp-arrow {
   margin: 0;
   color: #db8b44;
   text-transform: uppercase;
-  font-weight: 700;
+  font-weight: $builder-title-weight;
   text-align: center;
   width: 100%;
 
@@ -5327,6 +5346,7 @@ button.mfp-arrow {
   font-weight: 400;
 
   font-size: 28px;
+
   @include desktop {
     font-size: 35px;
   }
@@ -5341,13 +5361,13 @@ button.mfp-arrow {
 .builder-product-offering__starting-compare-at-price {
   color: #aaa;
   text-decoration: line-through;
-  font-weight: 500;
+  font-weight: $builder-title-weight - 100;
 }
 
 
 .builder-product-offering__starting-price {
   color: #db8b44;
-  font-weight: 700;
+  font-weight: $builder-title-weight;
 }
 
 
@@ -5359,7 +5379,7 @@ button.mfp-arrow {
 
 .builder-product-offering__subtitle {
   text-transform: uppercase;
-  font-weight: 700;
+  font-weight: $builder-title-weight;
   color: #db8b44 !important;
   line-height: 150%;
 
@@ -5378,6 +5398,7 @@ button.mfp-arrow {
 .builder-product-offering__content {
   margin-bottom: 30px;
 
+
   @include mobile {
     margin-top: 40px;
   }
@@ -5388,8 +5409,9 @@ button.mfp-arrow {
 .builder-product-offering__features-title {
   margin: 0;
   font-size: 17px;
-  font-weight: bold;
+  font-weight: $builder-title-weight;
   line-height: 180%;
+  color: $builder-body-text-color;
 }
 
 
@@ -5399,6 +5421,7 @@ button.mfp-arrow {
   line-height: 180%;
   font-weight: normal;
   padding-left: 18px;
+  color: $builder-body-text-color;
 }
 
 
@@ -5429,7 +5452,7 @@ button.mfp-arrow {
 
   max-width: 124px;
   text-align: center;
-  padding: 8px 10px;
+  padding: 8px 14px;
   margin: 0px 4px;
   position: relative;
   opacity: 0.35;
@@ -5489,7 +5512,7 @@ button.mfp-arrow {
   font-weight: 600;
 
   @include desktop {
-    font-size: 17px;
+    font-size: 15px;
     font-weight: bold;
   }
 }
@@ -5502,7 +5525,8 @@ button.mfp-arrow {
  */
 
 
-$component-banner-font: 'Lato', sans-serif;
+$component-banner-font: $accentFontStack;
+$component-banner-bold-weight: 600;
 
 .component-banner {
   position: relative;
@@ -5570,7 +5594,7 @@ $component-banner-font: 'Lato', sans-serif;
 
 .component-banner__title {
   font-size: 40px;
-  font-weight: 700;
+  font-weight: $component-banner-bold-weight;
   margin: 0px;
   font-family: $component-banner-font;
   line-height: 1.1;
@@ -5615,7 +5639,7 @@ $component-banner-font: 'Lato', sans-serif;
  * Reviews component
  */
 
-$component-review-font: 'Lato', sans-serif;
+$component-review-font: $accentFontStack;
 
 .component-review {
 
