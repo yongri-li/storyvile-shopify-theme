@@ -5476,3 +5476,190 @@ button.mfp-arrow {
     font-weight: bold;
   }
 }
+
+
+
+
+/**
+ * Banner Component
+ */
+
+
+$component-banner-font: 'Lato', sans-serif;
+
+.component-banner {
+  position: relative;
+
+  @include desktop {
+    height: 708px;
+  }
+}
+
+
+.component-banner__background {
+  width: 100%;
+  border: 0;
+  line-height: 0;
+
+  height: (202/360) * 100vw;
+
+  @include desktop {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+
+    height: 100%;
+
+    object-position: bottom left;
+    object-fit: cover;
+  }
+}
+
+
+.component-banner__text {
+
+  padding: 0 5%;
+  @include mobile {
+    margin: 25px 5% 35px 5%;
+  }
+
+  @include desktop {
+    position: relative;
+    z-index: 1;
+
+    @include display-flexbox;
+    @include align-items(left);
+    @include justify-content(center);
+    @include flex-direction(column);
+
+    padding-left: 10%;
+    width: 50%;
+    height: 100%;
+  }
+
+}
+
+
+.component-banner__text--left {
+}
+
+
+.component-banner__text--right {
+  @include desktop {
+    width: 40%;
+    margin-left: 60%;
+  }
+}
+
+
+.component-banner__title {
+  font-size: 40px;
+  font-weight: 700;
+  margin: 0px;
+  font-family: $component-banner-font;
+  line-height: 1.1;
+
+  @include mobile {
+    color: #000 !important;
+  }
+
+  @include desktop {
+    color: #fff !important;
+
+    .component-banner__text--dark & {
+      color: #000 !important;
+    }
+  }
+
+}
+
+
+.component-banner__description {
+  font-size: 17px;
+  line-height: 185%;
+  letter-spacing: 0.03em;
+  font-family: $component-banner-font;
+
+  @include mobile {
+    color: #000;
+  }
+
+  @include desktop {
+    color: #fff;
+
+    .component-banner__text--dark & {
+      color: #000;
+    }
+  }
+}
+
+
+
+/**
+ * Reviews component
+ */
+
+$component-review-font: 'Lato', sans-serif;
+
+.component-review {
+
+  @include mobile {
+    padding: 0 5%;
+    margin: 60px 5%;
+  }
+
+  @include desktop {
+    margin: 50px 0;
+  }
+}
+
+
+.component-review__content {
+
+  font-family: $component-review-font;
+
+  @include desktop {
+    width: 40%;
+    text-align: center;
+    margin: 0 auto;
+  }
+}
+
+
+.component-review__stars {
+  width: 150px;
+  margin: 0 auto;
+
+  svg polygon {
+    fill: #CCC;
+  }
+
+  @for $i from 1 through 5 {
+    &.component-review__stars--score-#{$i} {
+      @for $star-index from 1 through $i {
+        svg polygon:nth-child(#{$star-index}) {
+          fill: #E18B3D;
+        }
+      }
+    }
+  }
+}
+
+
+.component-review__quote,
+.component-review__author {
+  font-size: 25px;
+  line-height: 185%;
+  letter-spacing: 0.03em;
+}
+
+
+.component-review__quote {
+  & > :first-child {
+    margin-top: 0px;
+  }
+}
+
+
+.component-review__author {
+
+}

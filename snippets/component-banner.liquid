@@ -1,0 +1,36 @@
+{% comment %}
+  @param title
+  @param description
+  @param text_position
+  @param background_image
+  @param use_dark_text
+{% endcomment %}
+
+{% if use_dark_text %}
+  {% assign text_color = 'dark' %}
+{% else %}
+  {% assign text_color = 'light' %}
+{% endif %}
+
+{% unless text_position %}
+  {% assign text_position = 'left' %}
+{% endunless %}
+
+<div class="component-banner">
+
+  <img
+    class="component-banner__background"
+    src="{{ background_image | img_url: 'grande' }}"
+  />
+
+  <div class="component-banner__text component-banner__text--{{ text_position }} component-banner__text--{{ text_color }}">
+
+    <h2 class="component-banner__title">{{ title }}</h2>
+
+    <div class="component-banner__description">
+      {{ description }}
+    </div>
+
+  </div>
+
+</div>

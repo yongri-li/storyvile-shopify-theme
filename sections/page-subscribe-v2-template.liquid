@@ -142,7 +142,7 @@
             <div class="builder-product-offering__preview">
               <img
                 class="builder-product-offering__preview-image"
-                src="https://storyville.com/anywhere/images/productImage_wholeBean.png"
+                src="{{ 'product-image--whole-bean.png' | asset_url }}"
               />
             </div>
 
@@ -463,3 +463,9 @@
 
 
 </form>
+
+{% schema %}
+  {
+    "name": "Subscription Steps"
+  }
+{% endschema %}
