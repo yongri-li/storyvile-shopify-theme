@@ -3558,8 +3558,10 @@ $(function () {
   }
 
 
-  function getCheckoutUrl() {
-    if (state.cartToken) {
+  function getCheckoutUrl(cart) {
+    var token = cart ? cart.token : state.cartToken;
+
+    if (token) {
       var params = [
         'cart_token=' + state.cartToken,
         'myshopify_domain=' + options.shopify_domain
@@ -3570,9 +3572,7 @@ $(function () {
     }
   }
 
-
-  var update = theme.debounce(function () {
-
+  function forceUpdate() {
     debug('Update', state);
 
     $builder.attr('action', getCheckoutUrl());
@@ -3695,9 +3695,9 @@ $(function () {
         $(this).text(frequency > 1 ? frequency + ' ' + unitType : singular(unitType));
       });
     }
+  }
 
-
-  }, 20);
+  var update = theme.debounce(forceUpdate, 20);
 
 
   function setState(newState) {
@@ -3728,7 +3728,13 @@ $(function () {
       $.post('/cart/add.json', cartItem)
         .done(function () {
           debug('Successfully added items to the cart');
-          $builder.submit();
+
+          $.get('/cart.json').done(function (cart) {
+            debug('Obtained new cart token');
+            setState({ cartToken: cart.token });
+            forceUpdate();
+            $builder.submit();
+          })
         })
         .fail(function () {
           console.error('Failed to checkout');
