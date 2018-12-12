@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
 <!--[if IE 7]><html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
 <!--[if IE 8]><html class="no-js lt-ie9" lang="en"> <![endif]-->
 <!--[if IE 9 ]><html class="ie9 no-js"> <![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
 
 
@@ -135,13 +135,22 @@
     {% endif %}
 
     <main class="main-content" role="main">
-      {% unless template.name == "index" or template == "collection.image" or template == "page.subscribe-v2" %}
+
+      {% if template.name == "index" or template == "collection.image" or template == "page.subscribe-v2" %}
+        {% assign wrap_content = false %}
+      {% else %}
+        {% assign wrap_content = true %}
+      {% endif %}
+
+      {% if wrap_content %}
         <div class="wrapper">
-      {% endunless %}
-        {{ content_for_layout }}
-      {% unless template.name == "index" or template == "collection.image" %}
+          {{ content_for_layout }}
         </div>
-      {% endunless %}
+        
+      {% else %}
+        {{ content_for_layout }}
+
+      {% endif %}
     </main>
 
     <hr class="hr--large">

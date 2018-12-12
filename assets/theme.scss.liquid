@@ -81,12 +81,12 @@ text-align: center;
   position: relative;
 }
 
-.site-nav__item:nth-child(5){
+.site-nav__item:nth-child(6){
 background: #b52226 !important;
   margin-right: 20px;
 }
 
-.site-nav__item:nth-child(5) a{
+.site-nav__item:nth-child(6) a{
   color: #fff !important;
 	padding: 7px 10px;
 }
@@ -212,21 +212,14 @@ textarea#ContactFormMessage{
 height: 350px;
 }
 
-#hardware, #subscribe, #locations, #coffee, #pike-place-market,
-#queen-anne, #roasting-studio, #downtown-seattle {
-  .wrapper {
-    max-width: 100%;
-    padding:0 !important;
-  }
-}
+#hardware .wrapper, #subscribe .wrapper, #locations .wrapper, #coffee .wrapper, #pike-place-market .wrapper, #queen-anne .wrapper, #roasting-studio .wrapper, #downtown-seattle .wrapper, #storyville-gifts .wrapper{max-width: 100%; padding:0 !important;}
 
 .product-single__meta{
-height: 400px;
 position: relative;
 }
 
 #AddToCartForm--product-template{
-position: absolute;
+position: relative;
 }
 
 
@@ -256,6 +249,12 @@ margin-top: 0px !important;
 }
 
 /*PRODUCT PAGES*/
+
+.radio-wrapper{
+text-align: left !important;
+}
+
+.single-option-radio{padding:0 !important;margin-left:0px !important;}
 
 .product-single__description{
   margin-top: 80px;
@@ -313,6 +312,23 @@ background:#010101;
 background-color: #9e1018 !important;
 }
 
+
+.template-product#storyville-holiday-gift-sets .single-option-radio__label{
+margin-top: 20px;
+  text-align: left !important;
+  font-weight: 600;
+}
+
+
+.template-product#storyville-holiday-gift-sets .single-option-radio{
+text-align: left !important;
+  padding-left:0 !important;
+  margin-left: 0 !important;
+  font-size: 0.86em;
+}
+
+
+.template-product#storyville-holiday-gift-sets .single-option-radio label{background: #fff !important;}
 
 .freedomSales{margin-top: 30px;}
 .freedomCol{
@@ -395,7 +411,7 @@ display:inline-block;
   fill: red;
 }
 
-#ProductPrice, #ComparePrice-OLD{font-weight:400 !important;}
+#ComparePrice{font-weight:100 !important;opacity:0.25;}
 
 
 
@@ -484,7 +500,102 @@ width: 35px;
 
 @media only screen and (max-width: 768px){
   .accountManageSub, .accountLogout{width: 90%; text-align: left; margin:0 auto;}
+
 }
+
+
+
+#in-shop-gift-card .slick-track{width:2250px !important;}
+
+.product-single__thumbnails{
+display: none !important;
+}
+
+/*============= GIFT SHIPPER ================*/
+
+
+
+#your-shopping-cart .section-header{margin-bottom:0 !important;}
+
+.gs__field textarea{
+  height: 90px;
+    border: 0 !important;
+  margin-top: 4px;
+    background: #f5f4f4 !important;
+}
+#gs__toggle-box{background:#fff !important;text-align:center;width: 100%;margin-bottom: 20px;}
+#gs__toggle-box input{height:16px !important;float:none !important;}
+#gs__toggle-box label{float:none !important;}
+
+
+.gs__add-shipping-address{
+  color: #b5121b !important;
+	text-transform: uppercase;
+  text-decoration: underline;
+  letter-spacing: 0.05em;
+}
+
+.gs__helper-content{
+    text-align: left;
+    margin-bottom: 20px;
+    font-weight: 500;
+    text-transform: uppercase;
+  color: #b5121b !important;
+  margin-left: 33px;
+}
+
+.gs__row input{
+    border: 0 !important;
+    background: #f5f4f4 !important;
+    font-style: normal;
+}
+
+
+.gs__helper-content::before{
+content:"";
+  display: inline-block;
+  position: absolute;
+  left:0;
+  top: -4px;
+  width: 30px;
+  height: 30px;
+  background-image: url(https://cdn.shopify.com/s/files/1/0090/2135/8137/files/giftIcon.png?14815204633280743779);
+  background-size: 100%;
+}
+
+#gsAppContainer{margin: 0 !important;}
+
+
+.material-icons{display: none !important;}
+
+#gsCrumbs li{
+  float: none !important;
+    width: 32% !important;
+    display: inline-block !important;
+    text-align: center !important;
+}
+
+
+
+.gs__shadow-box tr, .gs__group-wrapper table tr:nth-of-type(2) td:first-of-type{display: block !important;
+height: auto !important;
+z-index: 2;}
+
+
+.multipleAddressesBtn{
+text-decoration: underline;
+    text-shadow: 10px 5px 20px #000;
+    color: #fff !important;
+    font-size: 15px;
+    text-align: center;
+    width: 100%;
+    display: block;
+    position: relative;
+    padding: 10px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
 /*============================================================================
   Prefix mixin for generating vendor prefixes.
   Based on https://github.com/thoughtbot/bourbon/blob/master/app/assets/stylesheets/addons/_prefixer.scss
@@ -714,7 +825,6 @@ $max: max-width;
   }
 }
 
-
 /*============================================================================
   Flexbox prefix mixins from Bourbon
     https://github.com/thoughtbot/bourbon/blob/master/app/assets/stylesheets/css3/_flex-box.scss
@@ -916,15 +1026,12 @@ $color-blankstate-background: rgba($colorTextBody, 0.10);
 {{ base_family | font_face }}
 {{ header_family | font_face }}
 
-
-
 {%- assign base_family_bold = base_family | font_modify: 'weight', 'bolder' -%}
 {%- assign base_family_italic = base_family | font_modify: 'style', 'italic' -%}
 {%- assign base_family_bold_italic = base_family_bold | font_modify: 'style', 'italic' -%}
 {%- assign accent_family_bold = accent_family | font_modify: 'weight', 'bolder' -%}
 
 {%- assign base_family_medium = base_family | font_modify: 'weight', '600' -%}
-
 
 {{ base_family_bold | font_face }}
 {{ base_family_italic | font_face }}
