@@ -3489,6 +3489,12 @@ $(".colIcons").hover(
  * Subscriptions Builder
  */
 
+
+function getQueryStringAsObject() {
+  var search = location.search.substring(1);
+  return JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+}
+
 var DEBUG = true;
 
 
@@ -3498,16 +3504,30 @@ $(function () {
 
   var $builder = $('[data-subscription-builder]');
 
+  var query = getQueryStringAsObject();
+
+  var validProducts = ['beans', 'pods', 'capsules'];
+
   var state = {
     step: 0,
+
+    /* A string, can be: beans, pods or capsules */
     product: null,
+
     productOptions: [],
+
     wantsEpilogue: false,
+
     cartToken: null
   };
 
   /* Contains products: `options.products.{beans|pods|capsules}` */
   var options = Object.assign({}, $builder.data('subscription-builder'));
+
+  if (query.default_product && validProducts.indexOf(query.default_product) >= 0) {
+    options.defaultProduct = query.default_product;
+  }
+
   debug('Options', options);
 
   var $steps = $builder.find('[data-steps] [data-step]');
