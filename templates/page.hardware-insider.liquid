@@ -1,0 +1,341 @@
+<!-- /templates/page.full-width.liquid -->
+<header class="section-header text-center">
+<meta name="robots" content="noindex">
+<style>
+  
+/*GLOBAL*/
+@import url('https://fonts.googleapis.com/css?family=Archivo+Narrow:400,600,700');
+  
+  h3{
+  	font-size: 55px;
+    letter-spacing: 0.1em;
+    text-align: left !important;
+    margin: 0 !important;
+    line-height: 100%;
+    color: #bc2e21 !important;
+    font-weight: 900 !important;
+    font-family: "Archivo Narrow",sans-serif !important;
+  }
+  p{
+    text-align: left !important;
+  	margin: 0 !important;
+    letter-spacing: 0.06em;
+    line-height: 150%;
+    display:inline-block !important;
+  }
+  .site-nav li a, .supports-fontface .icon-fallback-text .icon, .site-nav__link--burger{color: #fff !important;}
+  .burger-icon{background: #fff !important;}
+  .site-header{max-width: 1050px; margin: 0 auto;}
+  
+  
+  .site-header{padding: 0 30px !important;}
+  
+  .main-content{padding-bottom: 0 !important; padding-top: 40px !important;}
+  
+  .custom-content{
+    position: relative;
+    height: 700px;
+    padding-top: 90px;
+ 	overflow: hidden;
+  }
+  .one-half{width: 50% !important;text-align: left !important;}
+  .one-half.leftCol{padding-left: 15%;}
+  .one-half.rightCol{padding-right: 15%;}
+  hr{float: left;}
+  
+  .btn{
+    font-size: 16px !important;
+  	letter-spacing: 0.2em;
+    font-weight: 400 !important;
+    display:inline-block !important;
+    padding: 10px 20px !important;
+  }
+  
+  .priceMain{
+    font-size: 55px;
+    font-style: italic;
+    position: relative;
+    margin-left: 30% !important;
+    top: 10px;
+    opacity: 0.75;
+  }
+  .priceMain::after{
+    content: "$";
+    position: absolute;
+    left: -20px;
+    top: -15px;
+    font-size: 30px;
+    opacity: 0.5; 
+  }
+  
+  #shopify-section-footer .one-half{    
+    width: 100% !important;
+    text-align: center !important;
+    margin: 0 auto !important;}
+  
+  .leftCol a, .rightCol a{
+    color: #d6a041 !important;
+  	border-bottom: 1px solid #d6a041 !important;
+  }
+/*SECTIONS*/  
+  .topItalics{
+    font-size: 20px;
+    font-weight: 400 !important;
+    letter-spacing: 0.3em;
+  }
+  
+  .leftSection{}
+  
+  .hardwareImage{
+  	width: 200px;
+    position: absolute;
+    margin: 0 auto;
+    left:0;top:170px;bottom:0;right:0;
+  }
+  
+/*PER PRODUCT*/
+  .freedomOne, .freedomOne p{
+  text-align: center !important;
+  }
+  
+  .freedomOne{width: 75%; margin: 0 auto; margin-top: 610px;}
+  .heroImage .custom-content{ background: #000; height: 800px !important;}
+  
+  .waterKettleContent .custom-content{
+    background: #fff;
+/*    border-bottom: 20px solid #bc2e21;*/
+  }
+  
+  .burrGrinderContent .custom-content{
+    background: #130c08;
+  }
+  
+  
+  .coffeePressContent .custom-content{
+
+  }
+  
+  
+  .essentialsContent .custom-content{
+    background: #e0dede;
+  }
+  
+  .essentialsContent.mugs .custom-content{
+    background: #fff;
+  }
+  
+  .freedomiContent .custom-content{
+  background: url(https://www.storyville.com/wp-content/uploads/2015/05/hardware-hero-bg.jpg);
+    background-size: 70%;
+    background-position: top right;
+    background-repeat: no-repeat;
+    background-color: #000;
+    height: 900px !important;
+  }
+  .freedomiContent .one-half{width: 80% !important; margin-top: 260px;}
+  
+  .productImage.waterKettle{
+    position: absolute;
+    bottom: 0;
+    right: 2%;
+    width: 600px;
+  }
+  
+ .productImage.burrGrinder{
+    position: absolute;
+    bottom: 0;
+    left: 12%;
+    width: 500px;
+  }
+  
+  .productImage.coffeePress{
+    position: absolute;
+    bottom: 0;
+    right: 1%;
+    width: 620px;
+  }
+  
+   .productImage.essentials{
+    position: absolute;
+    bottom: -15%;
+    left: 9%;
+    width: 500px;
+  }
+  
+  .mugs .productImage.essentials{
+    position: absolute;
+    bottom: 10%;
+    left: 12%;
+    width: 500px;
+  }
+  
+  .accessory .productImage.essentials{
+    position: absolute;
+    bottom: -30%;
+    left: 12%;
+    width: 500px;
+  }
+  .essentialsContent.accessory .one-half:nth-child(2){
+  float: left;
+  }
+  
+  .productImage.accessoryImage{
+    position: absolute;
+    right: 2%;
+    width: 500px;
+  }
+  .heroImage .custom-content{
+    margin-top: -220px;
+  	padding-top: 0;
+    background-image: url(https://www.storyville.com/wp-content/uploads/2015/05/hardware-hero-bg.jpg);
+    background-size: 100%;
+    background-position: center 100px;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+  
+  .site-header .grid--table>.grid__item{padding-top: 25px !important;}
+  
+  
+  .essentialsContent .rightCol{margin-left: 25px;}
+  
+  
+
+  p.dark, h3.dark{ color: #fff !important;}
+  
+  .burrGrinderContent .one-half:nth-child(3), .essentialsContent .one-half:nth-child(2){float: right;}
+  
+  .full-width{ 
+    display: none !important;
+  	width: 100%;
+    text-align: center;
+  }
+  
+      .freedomiContent .priceMain{margin-left: 10% !important} 
+  
+  .product-single__form--no-variants{
+    margin-top: 0 !important;
+  	display: inline-block;
+  }
+  .featuredProductGone{display: none !important;}
+  .priceMobile{display:none !important; margin-bottom: 15px !important;clear:both;}
+  
+  @media all and (max-width: 1200px) {
+    p{font-size:14px;}
+    .priceMain{margin-left: 35px !important;}
+    .productImage.waterKettle{right: -7%}
+    .productImage.burrGrinder{left: 5%;}
+    .productImage.essentials{left: 2%;}
+    .mugs .productImage.essentials{left: 4%;}
+
+  }
+  
+  @media all and (max-width: 1118px) {
+      .priceMain{display:none !important;}
+  .priceMobile{display:block !important;}
+    
+    .site-header .grid--table{  width: 90%; margin: 0 auto;}
+    .full-width{ display: block !important;}
+    .one-half{width: 90% !important; padding-left:0 !important; margin: 0 auto !important;}
+
+    .custom-content{ height: 100% !important;}
+    .productImage{display:none !important;}
+    
+    .essentialsContent .one-half:nth-child(2){float: none !important;margin-top:-120px !important;}
+    
+    .mugs.essentialsContent .one-half:nth-child(2), .accessory.essentialsContent .one-half:nth-child(2){margin-top:-40px !important;}
+    
+    .essentialsContent .one-half{float: none !important;margin-top:0px !important;}
+    .burrGrinderContent .one-half:nth-child(3), .essentialsContent .one-half:nth-child(2){float: none !important;}
+    
+    .coffeePressContent .full-width, .waterKettleContent .full-width{width: 75% !important;margin: 0 auto !important; padding-bottom: 25px;}
+    .accessory .full-width{
+      	width: 45% !important;
+		margin: 0 auto !important;
+		transform: rotate(-20deg);
+		margin-top: -40px !important; 
+    }
+    
+    .hardwareImage{top: 170px;}
+    
+    .heroImage .custom-content{    background-position: center 200px !important;height: 600px !important;}
+  
+    .freedomiContent .custom-content{
+        background: #000 !important;
+      	height: auto !important;}
+    .freedomiContent .one-half{width: 90% !important;}
+    
+
+  }
+  
+  
+  
+</style>
+  
+  <script type="text/javascript">
+  jQuery.post('/cart/add.js',$('form[action="/cart/add"]').serialize());
+  </script>  
+ 
+
+</header>
+
+
+
+	<div class="rte heroImage">
+	{% section 'advanced-content-22' %}
+	</div>
+    <div class="rte waterKettleContent">
+      {% section 'advanced-content-23'%}
+    </div>
+
+    <div class="rte burrGrinderContent">
+      {% section 'advanced-content-24'%}
+    </div>
+
+    <div class="rte coffeePressContent">
+      {% section 'advanced-content-25'%}
+    </div>
+
+    <div class="rte essentialsContent">
+      {% section 'advanced-content-26'%}
+    </div>
+
+    <div class="rte freedomiContent">
+      {% section 'advanced-content-27'%}
+    </div>
+
+    <div class="rte essentialsContent mugs">
+      {% section 'advanced-content-28'%}
+    </div>
+
+    <div class="rte essentialsContent accessory">
+      {% section 'advanced-content-29'%}
+    </div>
+
+	<div class="rte featuredProductGone">
+      {% section 'featured-product'%}
+    </div>
+
+	<div class="rte featuredProductGone">
+      {% section 'featured-products-2'%}
+    </div>
+
+	<div class="rte featuredProductGone">
+      {% section 'featured-product-3'%}
+    </div>
+
+	<div class="rte featuredProductGone">
+      {% section 'featured-product-4'%}
+    </div>
+
+	<div class="rte featuredProductGone">
+      {% section 'featured-product-11'%}
+    </div>
+
+	<div class="rte featuredProductGone">
+      {% section 'featured-product-6'%}
+    </div>
+
+	<div class="rte featuredProductGone">
+      {% section 'featured-product-7'%}
+    </div>

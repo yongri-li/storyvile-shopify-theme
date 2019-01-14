@@ -32,6 +32,13 @@
 
 /*===== CSS EDITS BY JOSH ====*/
 
+
+.hero__title{padding:0 20%;}
+
+
+@media all and (max-width: 568px) {
+.hero__title{padding:0 10%;}
+}
 .site-nav--has-dropdown:hover>a, .site-nav--has-dropdown>a.nav-focus, .site-nav--has-dropdown.nav-hover>a{
 background-color: rgba(0,0,0,0) !important;
 }
@@ -41,7 +48,6 @@ background-color: rgba(0,0,0,0) !important;
 .site-nav--has-dropdown:hover>a:before, .site-nav--has-dropdown>a.nav-focus:before, .site-nav--has-dropdown.nav-hover>a:before{
  display:none !important; 
 }
-
 
 
 .feature-row h2.h3{
@@ -81,12 +87,12 @@ text-align: center;
   position: relative;
 }
 
-.site-nav__item:nth-child(5){
+.site-nav__item:nth-child(6){
 background: #b52226 !important;
   margin-right: 20px;
 }
 
-.site-nav__item:nth-child(5) a{
+.site-nav__item:nth-child(6) a{
   color: #fff !important;
 	padding: 7px 10px;
 }
@@ -212,15 +218,14 @@ textarea#ContactFormMessage{
 height: 350px;
 }
 
-#hardware .wrapper, #subscribe .wrapper, #locations .wrapper, #coffee .wrapper, #pike-place-market .wrapper, #queen-anne .wrapper, #roasting-studio .wrapper, #downtown-seattle .wrapper{max-width: 100%; padding:0 !important;}
+#hardware .wrapper, #insider-hardware .wrapper, #subscribe .wrapper, #locations .wrapper, #coffee .wrapper, #pike-place-market .wrapper, #queen-anne .wrapper, #roasting-studio .wrapper, #downtown-seattle .wrapper, #storyville-gifts .wrapper, #insider-gifts .wrapper{max-width: 100%; padding:0 !important;}
 
 .product-single__meta{
-height: 400px;
 position: relative;
 }
 
 #AddToCartForm--product-template{
-position: absolute;
+position: relative;
 }
 
 
@@ -234,7 +239,6 @@ margin-top: 0px !important;
     margin: 0 auto;
 }
   
-
   .site-footer .grid__item.one-third{width: 100% !important;}
 .product-single__meta{height: auto;}
   #AddToCartForm--product-template{position: relative;}
@@ -251,6 +255,12 @@ margin-top: 0px !important;
 
 /*PRODUCT PAGES*/
 
+.radio-wrapper{
+text-align: left !important;
+}
+
+.single-option-radio{padding:0 !important;margin-left:0px !important;}
+
 .product-single__description{
   margin-top: 80px;
     text-align: left;
@@ -262,7 +272,9 @@ margin-top: 0px !important;
 }
 
 
-
+.site-nav__dropdown{
+text-shadow:0px 4px 7px #000;
+}
 
 .template-product h1{line-height: 100%;}
 .template-product h1, .template-product h2{
@@ -294,6 +306,9 @@ background-color: inherit !important;
   display: none !important;
 }
 
+
+
+
 .template-product#storyville-freedom-i-coffee-system, .template-product#storyville-freedom-i-coffee-system h1, .template-product#storyville-freedom-i-coffee-system .product-single__price, .template-product#storyville-freedom-i-coffee-system .site-nav__link{
 background:#010101;
   color: #fff !important;
@@ -307,6 +322,42 @@ background:#010101;
 background-color: #9e1018 !important;
 }
 
+
+
+.template-product#storyville-freedom-i-coffee-system-insiders, .template-product#storyville-freedom-i-coffee-system-insiders h1, .template-product#storyville-freedom-i-coffee-system-insiders .product-single__price, .template-product#storyville-freedom-i-coffee-system-insiders .site-nav__link{
+background:#010101;
+  color: #fff !important;
+}.template-product#storyville-freedom-i-coffee-system-insiders .site-nav__dropdown a,.template-product#storyville-freedom-i-coffee-system-insiders .text-center a{color: #fff;}
+.template-product#storyville-freedom-i-coffee-system-insiders .burger-icon{background: #fff;}
+.btn--secondary-accent:hover{
+  background: #b5121b !important;
+  color: #fff !important;
+}
+.template-product#storyville-freedom-i-coffee-system-insiders .btn:hover{
+background-color: #9e1018 !important;
+}
+
+
+
+
+
+
+.template-product#storyville-holiday-gift-sets .single-option-radio__label{
+margin-top: 20px;
+  text-align: left !important;
+  font-weight: 600;
+}
+
+
+.template-product#storyville-holiday-gift-sets .single-option-radio{
+text-align: left !important;
+  padding-left:0 !important;
+  margin-left: 0 !important;
+  font-size: 0.86em;
+}
+
+
+.template-product#storyville-holiday-gift-sets .single-option-radio label{background: #fff !important;}
 
 .freedomSales{margin-top: 30px;}
 .freedomCol{
@@ -389,8 +440,7 @@ display:inline-block;
   fill: red;
 }
 
-#ProductPrice, #ComparePrice-OLD{font-weight:400 !important;}
-
+#ComparePrice{font-weight:100 !important;opacity:0.25;}
 
 
 /* ACCOUNT PAGE */
@@ -478,7 +528,104 @@ width: 35px;
 
 @media only screen and (max-width: 768px){
   .accountManageSub, .accountLogout{width: 90%; text-align: left; margin:0 auto;} 
+  
 }
+
+
+
+#in-shop-gift-card .slick-track{width:2250px !important;}
+
+.product-single__thumbnails{
+display: none !important;
+}
+
+/*============= GIFT SHIPPER ================*/
+
+
+
+#your-shopping-cart .section-header{margin-bottom:0 !important;}
+
+.gs__field textarea{
+  height: 90px;
+    border: 0 !important;
+  margin-top: 4px;
+    background: #f5f4f4 !important;
+}
+#gs__toggle-box{background:#fff !important;text-align:center;width: 100%;margin-bottom: 20px;}
+#gs__toggle-box input{height:16px !important;float:none !important;}
+#gs__toggle-box label{float:none !important;}
+
+
+.gs__add-shipping-address{
+  color: #b5121b !important;
+	text-transform: uppercase;
+  text-decoration: underline;
+  letter-spacing: 0.05em;
+}
+
+.gs__helper-content{
+    text-align: left;
+    margin-bottom: 20px;
+    font-weight: 500;
+    text-transform: uppercase;
+  color: #b5121b !important;
+  margin-left: 33px;
+}
+
+.gs__row input{
+    border: 0 !important;
+    background: #f5f4f4 !important;
+    font-style: normal;
+}
+
+
+.gs__helper-content::before{
+content:"";
+  display: inline-block;
+  position: absolute;
+  left:0;
+  top: -4px;
+  width: 30px;
+  height: 30px;
+  background-image: url(https://cdn.shopify.com/s/files/1/0090/2135/8137/files/giftIcon.png?14815204633280743779);
+  background-size: 100%;
+}
+
+#gsAppContainer{margin: 0 !important;}
+
+
+.material-icons{display: none !important;}
+
+#gsCrumbs li{
+  float: none !important;
+    width: 32% !important;
+    display: inline-block !important;
+    text-align: center !important;
+}
+
+
+
+.gs__shadow-box tr, .gs__group-wrapper table tr:nth-of-type(2) td:first-of-type{display: block !important;
+height: auto !important;
+z-index: 2;}
+
+
+.multipleAddressesBtn{
+text-decoration: underline;
+    text-shadow: 10px 5px 20px #000;
+    color: #fff !important;
+    font-size: 15px;
+    text-align: center;
+    width: 100%;
+    display: block;
+    position: relative;
+    padding: 10px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+
+
 /*============================================================================
   Prefix mixin for generating vendor prefixes.
   Based on https://github.com/thoughtbot/bourbon/blob/master/app/assets/stylesheets/addons/_prefixer.scss

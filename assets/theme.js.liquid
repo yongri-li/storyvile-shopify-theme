@@ -412,7 +412,7 @@ slate.Variants = (function() {
     this.product = options.product;
     this.singleOptionSelector = options.singleOptionSelector;
     this.originalSelectorId = options.originalSelectorId;
-    this.enableHistoryState = options.enableHistoryState;
+   // FIX UTM PARAMS BEING LOST this.enableHistoryState = options.enableHistoryState;
     this.currentVariant = this._getVariantFromOptions();
 
     $(this.singleOptionSelector, this.$container).on(
@@ -2035,7 +2035,7 @@ theme.Product = (function() {
     this.settings = {
       productPageLoad: false,
       preloadImage: false,
-      enableHistoryState: true,
+      enableHistoryState: false,
       namespace: '.productSection'
     };
 
@@ -2081,7 +2081,7 @@ theme.Product = (function() {
     this.initBreakpoints();
     this.stringOverrides();
     this.initProductVariant();
-    this.initStickyProductMeta();
+   // this.initStickyProductMeta();
     this.productThumbnailSwitch();
 
     if (this.zoomType) {
