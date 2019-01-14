@@ -63,7 +63,14 @@
         {% assign subscription_id = 133650 %}
       {% endif %}
 
+      {% assign sample_image_field = 'image_for_' | append: product_builder_id %}
+      {% assign sample_image = section.settings[sample_image_field] %}
+
       "{{ product_builder_id }}": {
+        "sample_image": {
+          "src": "{{ sample_image | img_url: '1x1' }}",
+          "srcset": "{% include 'bgset' image: sample_image %}"
+        },
         "description": {{ prod.description | json }},
         "title": {{ prod.title | json }},
         "handle": {{ product_handle | json }},
@@ -158,6 +165,7 @@
                 data-sizes="auto"
                 data-src="{{ collection.image | img_url: '1x1' }}"
                 data-srcset="{% include 'bgset' image: collection.image %}"
+                data-preview-image
               />
             </div>
 
@@ -482,6 +490,23 @@
 
 {% schema %}
   {
-    "name": "Subscription Steps"
+    "name": "Subscription Steps",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "image_for_beans",
+        "label": "Sample Image for beans"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_for_pods",
+        "label": "Sample Image for pods"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_for_capsules",
+        "label": "Sample Image for capsules"
+      }
+    ]
   }
 {% endschema %}

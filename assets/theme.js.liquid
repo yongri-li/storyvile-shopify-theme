@@ -3704,6 +3704,34 @@ $(function () {
 
 
     if (product) {
+
+
+      if (product.sample_image) {
+        var $preview = $('[data-preview-image]');
+
+        if ($preview.attr('data-srcset') != product.sample_image.srcset) {
+          $preview.fadeOut(function () {
+
+            $preview.removeAttr('src')
+              .removeAttr('data-src')
+              .removeAttr('srcset')
+              .removeAttr('data-srcset')
+            ;
+
+            $preview.attr({
+              'src': product.sample_image.src,
+              'data-src': product.sample_image.src,
+              'srcset': product.sample_image.srcset,
+              'data-srcset': product.sample_image.srcset
+            });
+
+            $preview.fadeIn();
+
+          });
+        }
+
+      }
+
       var $frequencies = $('[data-options-set][data-options-set-type="frequency"] [data-option]');
 
       $frequencies.each(function (i) {
