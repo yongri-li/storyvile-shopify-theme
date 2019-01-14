@@ -3587,6 +3587,16 @@ $(function () {
     });
 
 
+    $('[data-visible-on-builder-step]').each(function () {
+      var step = $(this).data('visible-on-builder-step');
+      if (step == state.step) {
+        if (!$(this).is(':visible')) {
+          $(this).fadeIn();
+        }
+      } else {
+        $(this).fadeOut();
+      }
+    });
 
     var product = options.products[state.product];
 
