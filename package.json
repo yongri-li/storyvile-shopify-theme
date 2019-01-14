@@ -1,0 +1,12 @@
+{
+  "name": "storyville-shopify-theme",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:riessgroup/storyville-shopify-theme.git",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "develop": "theme open && theme watch",
+    "deploy": "theme deploy"
+  }
+}

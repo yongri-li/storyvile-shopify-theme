@@ -1,0 +1,26 @@
+{% comment %}
+  @param stars
+  @param quote
+  @param author
+{% endcomment %}
+
+<div class="component-review">
+
+  <div class="component-review__content">
+
+    <h2 class="component-review__stars component-review__stars--score-{{ stars }}">
+      {% include 'stars-score.svg' %}
+    </h2>
+
+    <div class="component-review__quote">
+      {{ quote }}
+    </div>
+
+    {% if author != blank %}
+      <p class="component-review__author">
+        – <span>{{ author }}</span>
+      </p>
+    {% endif %}
+  </div>
+
+</div>

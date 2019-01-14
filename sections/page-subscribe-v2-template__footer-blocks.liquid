@@ -1,0 +1,108 @@
+{% if section.blocks.size >= 1 %}
+
+  {% for block in section.blocks %}
+
+    {% case block.type %}
+
+      {% when 'review' %}
+        {%
+          include 'component-review'
+            stars  : block.settings.score,
+            quote  : block.settings.quote,
+            author : block.settings.author
+        %}
+
+      {% when 'feature_banner' %}
+        {%
+          include 'component-banner'
+            title : block.settings.title,
+            description : block.settings.description,
+            text_position : block.settings.text_position,
+            background_image : block.settings.background_image,
+            use_dark_text: block.settings.use_dark_text
+        %}
+
+    {% endcase %}
+
+  {% endfor %}
+
+{% endif %}
+
+
+{% schema %}
+  {
+    "name": "Footer Blocks",
+    "blocks": [
+      {
+        "type": "review",
+        "name": "Review",
+        "settings": [
+          {
+            "type": "range",
+            "id": "score",
+            "min": 1,
+            "max": 5,
+            "step": 1,
+            "label": "Stars",
+            "default": 5
+          },
+          {
+            "type": "richtext",
+            "id": "quote",
+            "label": "Quote"
+          },
+          {
+            "type": "text",
+            "id": "author",
+            "label": "Author"
+          }
+        ]
+      },
+      {
+        "type": "feature_banner",
+        "name": "Feature Banner",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "background_image",
+            "label": "Background Image"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title"
+          },
+          {
+            "type": "richtext",
+            "id": "description",
+            "label": "Description"
+          },
+          {
+            "type": "select",
+            "id": "text_position",
+            "label": "Text Position",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "left",
+            "info": "Text position within the banner"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_dark_text",
+            "label": "Use dark text",
+            "default": false,
+            "info": "For light background images"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

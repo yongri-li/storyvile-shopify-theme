@@ -5,7 +5,14 @@
 <!--[if IE 9 ]><html class="ie9 no-js"> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
- 
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NWDRBC2');</script>
+<!-- End Google Tag Manager -->
 
   <!-- Basic page needs ================================================== -->
   <meta charset="utf-8">
@@ -79,35 +86,42 @@
 
   <!-- Tidio ================================================== -->
   <script>
-  document.tidioIdentify = { 
-     distinct_id: '{{ customer.id }}', 
-     email: '{{ customer.email }}', 
+  document.tidioIdentify = {
+     distinct_id: '{{ customer.id }}',
+     email: '{{ customer.email }}',
      name: '{{ customer.name }}',
      postcode: '{{ customer.default_address }}',
      phone: '{{ customer.customer_address.phone }}'
   };
   </script>
-  
+
   <script src="//code.tidio.co/csuwaftoc3a50vyhwrczsldgghkju8ry.js"></script>
-  
+
   <script>
   tidioChatApi.setVisitorData({
-      email: '{{ customer.email }}', 
+      email: '{{ customer.email }}',
       name: '{{ customer.name }}',
       postcode: '{{ customer.default_address }}',
       phone: '{{ customer.customer_address.phone }}'
    });
   </script>
   
+  <!-- Product hider app Code Start -->
+  {% include 'product_hider_nofollow_noindex_meta_tag_sco_manager' %}
+  <!-- Product hider app app Code End -->
 
-<!-- Product hider app Code Start -->
-{% include 'product_hider_nofollow_noindex_meta_tag_sco_manager' %}
-<!-- Product hider app app Code End --></head>
+</head>
 
 {% comment %}
   Add the page template as a class for easy page or template specific styling.
 {% endcomment %}
 <body id="{{ page_title | handle }}" class="{% if customer %}customer-logged-in {% endif %}template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}">
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NWDRBC2"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
 
   <div id="NavDrawer" class="drawer drawer--left">
     {% section 'drawer-menu' %}
@@ -138,13 +152,22 @@
     {% endif %}
 
     <main class="main-content" role="main">
-      {% unless template.name == "index" or template == "collection.image" %}
+
+      {% if template.name == "index" or template == "collection.image" or template == "page.subscribe-v2" %}
+        {% assign wrap_content = false %}
+      {% else %}
+        {% assign wrap_content = true %}
+      {% endif %}
+
+      {% if wrap_content %}
         <div class="wrapper">
-      {% endunless %}
-        {{ content_for_layout }}
-      {% unless template.name == "index" or template == "collection.image" %}
+          {{ content_for_layout }}
         </div>
-      {% endunless %}
+
+      {% else %}
+        {{ content_for_layout }}
+
+      {% endif %}
     </main>
 
     <hr class="hr--large">
