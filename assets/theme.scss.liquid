@@ -52,7 +52,7 @@ background-color: rgba(0,0,0,0) !important;
 
 .feature-row h2.h3{
 text-transform: none;
-font-weight: 700;
+font-weight: 600;
 letter-spacing: 0.05em;
 text-align: center;
 margin-bottom: 0 !important;
@@ -4895,6 +4895,11 @@ button.mfp-arrow {
 $builder-title-font: $accentFontStack;
 $builder-title-weight: 600;
 $builder-body-text-color: #333;
+$builder-sm-text: 13px;
+$builder-md-text: 17px;
+
+/*"inline-block" or "none !important" to turn on / off discounts*/
+$builder-discount: inline-block;
 
 .builder {
 
@@ -4906,6 +4911,11 @@ $builder-body-text-color: #333;
 
 .builder__nav {
   background-color: #ebe9e4;
+}
+
+
+.builder__nav .wrapper{
+  max-width:720px;
 }
 
 
@@ -4926,7 +4936,7 @@ $builder-body-text-color: #333;
   margin: 0;
 
   font-weight: 500;
-  font-size: 15px;
+  font-size: $builder-sm-text;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 
@@ -4951,6 +4961,8 @@ $builder-body-text-color: #333;
     border-radius: 100%;
 
     font-weight: 500;
+    
+    line-height: 175%;
 
     height: 24px;
     width: 24px;
@@ -4999,7 +5011,7 @@ $builder-body-text-color: #333;
 
   &.current, &.fulfilled {
 
-    font-weight: 700;
+    font-weight: 600;
     color: #bd0f16;
 
     .step-number {
@@ -5038,6 +5050,10 @@ $builder-body-text-color: #333;
   @include desktop {
     margin-bottom: 40px;
   }
+  
+  @include mobile {
+    padding:0;
+  }
 }
 
 
@@ -5072,7 +5088,7 @@ $builder-body-text-color: #333;
 
 
   text-align: center;
-  font-weight: 700;
+  font-weight: 600;
 
   font-size: 32px;
   letter-spacing: 0.03em;
@@ -5093,7 +5109,7 @@ $builder-body-text-color: #333;
   letter-spacing: 1px;
 
   @include desktop {
-    font-size: 16px;
+    font-size: $builder-md-text;
   }
 
   text-align: center;
@@ -5182,6 +5198,10 @@ $builder-body-text-color: #333;
   @include desktop {
     width: 318px;
   }
+  
+  @include mobile {
+    width: 100%; 
+  }
 
   max-width: 100%;
 
@@ -5227,6 +5247,9 @@ $builder-body-text-color: #333;
 
   @include mobile {
     margin-bottom: 30px;
+    
+    margin-left:0;
+    margin-right:0;
 
     &:last-child {
       margin-bottom: 0px;
@@ -5234,7 +5257,7 @@ $builder-body-text-color: #333;
   }
 
   @include desktop {
-    max-width: 221px;
+    /*max-width: 221px;*/
   }
 }
 
@@ -5257,6 +5280,10 @@ $builder-body-text-color: #333;
   @include desktop {
     @include flex-wrap(nowrap);
     @include flex-direction(column);
+    
+    padding-top: 30px;
+    padding-bottom: 30px;
+    
   }
 
   @include mobile {
@@ -5300,6 +5327,7 @@ $builder-body-text-color: #333;
   .builder-option--frequency & {
     @include mobile {
       padding: 23px 30px;
+      text-align: left;
     }
   }
 
@@ -5358,7 +5386,7 @@ $builder-body-text-color: #333;
 
 
 .builder-option__title {
-  font-size: 17px;
+  font-size: $builder-md-text;
   font-weight: $builder-title-weight;
   line-height: 1.42;
 
@@ -5371,7 +5399,6 @@ $builder-body-text-color: #333;
 
   &.builder-option__title--bottom {
     @include mobile {
-      font-size: 13px;
       text-align: left;
     }
   }
@@ -5383,11 +5410,12 @@ $builder-body-text-color: #333;
   font-weight: 500;
   margin: 0;
   line-height: 1.42;
-
-  font-size: 16px;
+  text-transform: none;
+  
+  font-size: $builder-md-text;
 
   @include desktop {
-    font-size: 14px;
+    font-size: $builder-md-text;
   }
 }
 
@@ -5409,6 +5437,8 @@ $builder-body-text-color: #333;
   font-weight: 500;
   text-decoration: line-through;
   color: #aaa;
+  
+  display: $builder-discount;
 }
 
 
@@ -5419,6 +5449,8 @@ $builder-body-text-color: #333;
   font-weight: $builder-title-weight;
   text-align: center;
   width: 100%;
+  
+  display: $builder-discount;
 
   @include desktop {
     top: 0;
@@ -5445,7 +5477,7 @@ $builder-body-text-color: #333;
   width: 100%;
 
   @include desktop {
-    max-width: 150px;
+    max-width: 200px;
   }
 }
 
@@ -5467,9 +5499,11 @@ $builder-body-text-color: #333;
 
 
 .builder-product-offering__preview {
-
+  
   @include mobile {
     text-align: center;
+    width: 70%;
+    margin: 0 auto;
   }
 
   @include desktop {
@@ -5544,7 +5578,7 @@ $builder-body-text-color: #333;
 
   @include desktop {
     text-align: left;
-    font-size: 15px;
+    font-size: $builder-md-text;
     margin-bottom: 25px;
   }
 }
@@ -5563,7 +5597,7 @@ $builder-body-text-color: #333;
 
 .builder-product-offering__features-title {
   margin: 0;
-  font-size: 17px;
+  font-size: $builder-md-text;
   font-weight: $builder-title-weight;
   line-height: 180%;
   color: $builder-body-text-color;
@@ -5572,8 +5606,8 @@ $builder-body-text-color: #333;
 
 .builder-product-offering__features {
   margin: 0; padding: 0;
-  font-size: 17px;
-  line-height: 180%;
+  font-size: $builder-md-text;
+  line-height: 120%;
   font-weight: normal;
   padding-left: 18px;
   color: $builder-body-text-color;
@@ -5646,13 +5680,13 @@ $builder-body-text-color: #333;
 
 .builder-product-offering__option-image {
 
-  max-width: 52px;
+  max-width: 70px;
   width: 60%;
   margin-top: -2px;
   margin-bottom: -2px;
 
   @include desktop {
-    width: 50%;
+    width: 70%;
     margin-top: -6px;
     margin-bottom: -2px;
   }
@@ -5667,7 +5701,7 @@ $builder-body-text-color: #333;
   font-weight: 600;
 
   @include desktop {
-    font-size: 15px;
+    font-size: $builder-md-text;
     font-weight: bold;
   }
 }
@@ -5685,7 +5719,8 @@ $component-banner-bold-weight: 600;
 
 .component-banner {
   position: relative;
-
+  margin: 10px 0;
+  
   @include desktop {
     height: 708px;
   }
@@ -5728,7 +5763,7 @@ $component-banner-bold-weight: 600;
     @include flex-direction(column);
 
     padding-left: 10%;
-    width: 50%;
+    width: 55%;
     height: 100%;
   }
 
@@ -5741,8 +5776,8 @@ $component-banner-bold-weight: 600;
 
 .component-banner__text--right {
   @include desktop {
-    width: 40%;
-    margin-left: 60%;
+    width: 45%;
+    margin-left: 55%;
   }
 }
 
@@ -5770,17 +5805,18 @@ $component-banner-bold-weight: 600;
 
 
 .component-banner__description {
-  font-size: 17px;
-  line-height: 185%;
-  letter-spacing: 0.03em;
+  font-size: $builder-md-text;
+  line-height: 125%;
   font-family: $component-banner-font;
 
   @include mobile {
     color: #000;
+    margin-top:10px;
   }
 
   @include desktop {
     color: #fff;
+    margin-top:20px;
 
     .component-banner__text--dark & {
       color: #000;
@@ -5797,14 +5833,19 @@ $component-banner-bold-weight: 600;
 $component-review-font: $accentFontStack;
 
 .component-review {
-
+  
+  background: #f1efec;
+  padding: 30px 0;
+  
+  
   @include mobile {
-    padding: 0 5%;
-    margin: 60px 5%;
+    padding: 10%;
+    text-align: center;
+    margin: 10px;
   }
 
   @include desktop {
-    margin: 50px 0;
+        margin: 10px 0;
   }
 }
 
@@ -5814,7 +5855,7 @@ $component-review-font: $accentFontStack;
   font-family: $component-review-font;
 
   @include desktop {
-    width: 40%;
+    width: 55%;
     text-align: center;
     margin: 0 auto;
   }
@@ -5843,9 +5884,9 @@ $component-review-font: $accentFontStack;
 
 .component-review__quote,
 .component-review__author {
-  font-size: 25px;
-  line-height: 185%;
-  letter-spacing: 0.03em;
+  font-size: $builder-md-text;
+  line-height: 120%;
+  font-weight: 500;
 }
 
 
@@ -5859,3 +5900,16 @@ $component-review-font: $accentFontStack;
 .component-review__author {
 
 }
+
+
+
+/******** BUILDER RESETS **********/
+
+#anywhere #shopify-section-header, #anywhere #shopify-section-footer{
+display:none !important;
+}
+
+#anywhere .main-content{
+padding-top: 0px !important;
+}
+
