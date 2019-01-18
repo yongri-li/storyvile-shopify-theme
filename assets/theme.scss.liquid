@@ -4961,7 +4961,7 @@ $builder-discount: inline-block;
     border-radius: 100%;
 
     font-weight: 500;
-    
+
     line-height: 175%;
 
     height: 24px;
@@ -5050,7 +5050,7 @@ $builder-discount: inline-block;
   @include desktop {
     margin-bottom: 40px;
   }
-  
+
   @include mobile {
     padding:0;
   }
@@ -5198,9 +5198,9 @@ $builder-discount: inline-block;
   @include desktop {
     width: 318px;
   }
-  
+
   @include mobile {
-    width: 100%; 
+    width: 100%;
   }
 
   max-width: 100%;
@@ -5247,7 +5247,7 @@ $builder-discount: inline-block;
 
   @include mobile {
     margin-bottom: 30px;
-    
+
     margin-left:0;
     margin-right:0;
 
@@ -5280,10 +5280,10 @@ $builder-discount: inline-block;
   @include desktop {
     @include flex-wrap(nowrap);
     @include flex-direction(column);
-    
+
     padding-top: 30px;
     padding-bottom: 30px;
-    
+
   }
 
   @include mobile {
@@ -5411,7 +5411,7 @@ $builder-discount: inline-block;
   margin: 0;
   line-height: 1.42;
   text-transform: none;
-  
+
   font-size: $builder-md-text;
 
   @include desktop {
@@ -5437,7 +5437,7 @@ $builder-discount: inline-block;
   font-weight: 500;
   text-decoration: line-through;
   color: #aaa;
-  
+
   display: $builder-discount;
 }
 
@@ -5449,7 +5449,7 @@ $builder-discount: inline-block;
   font-weight: $builder-title-weight;
   text-align: center;
   width: 100%;
-  
+
   display: $builder-discount;
 
   @include desktop {
@@ -5499,7 +5499,7 @@ $builder-discount: inline-block;
 
 
 .builder-product-offering__preview {
-  
+
   @include mobile {
     text-align: center;
     width: 70%;
@@ -5720,7 +5720,7 @@ $component-banner-bold-weight: 600;
 .component-banner {
   position: relative;
   margin: 10px 0;
-  
+
   @include desktop {
     height: 708px;
   }
@@ -5833,11 +5833,11 @@ $component-banner-bold-weight: 600;
 $component-review-font: $accentFontStack;
 
 .component-review {
-  
+
   background: #f1efec;
   padding: 30px 0;
-  
-  
+
+
   @include mobile {
     padding: 10%;
     text-align: center;
@@ -5905,6 +5905,11 @@ $component-review-font: $accentFontStack;
 
 /******** BUILDER RESETS **********/
 
+#anywhere {
+  // Force scrollbar to show, to avoid horizontal glitch
+  min-height: calc(100vh + 20px);
+}
+
 #anywhere #shopify-section-header, #anywhere #shopify-section-footer{
 display:none !important;
 }
@@ -5912,4 +5917,3 @@ display:none !important;
 #anywhere .main-content{
 padding-top: 0px !important;
 }
-

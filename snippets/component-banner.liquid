@@ -20,6 +20,7 @@
 
   <img
     class="component-banner__background lazyload"
+    src="{{ background_image | img_url: '1x1' }}"
     data-src="{{ background_image | img_url: '1x1' }}"
     data-sizes="auto"
     data-srcset="{% include 'bgset' image: background_image %}"
