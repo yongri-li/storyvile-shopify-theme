@@ -4911,6 +4911,7 @@ $builder-discount: inline-block;
 
 .builder__nav {
   background-color: #ebe9e4;
+  position: relative;
 }
 
 
@@ -4928,6 +4929,26 @@ $builder-discount: inline-block;
 
   min-height: 56px;
 }
+
+
+.builderLogoMark{
+  position: absolute;
+  width: 200px;
+  top: 0;
+  left:5%;
+  bottom:0;
+  margin: auto;
+  
+  @include mobile {
+    position: relative;
+    display:block;
+    margin:auto;
+    left:0;
+    right:0;
+  }
+  
+}
+
 
 
 .builder__nav-step {
