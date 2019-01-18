@@ -38,20 +38,19 @@
         {% assign package_type = 'bags' %}
         {% assign contained_products = 1 %}
 
+        {% assign unit_variant_for_epilogue = prod.metafields.subscriptions.unit-variant--epilogue %}
+        {% assign unit_variant_for_prologue = prod.metafields.subscriptions.unit-variant--prologue %}
+
       {% else %}
         {% assign price_unit = 'cups' %}
         {% assign package_type = product_builder_id %}
+        {% assign unit_variant = prod.metafields.subscriptions.unit-variant %}
 
-        {% assign sizes = '' %}
-        {% for variant in prod.variants %}
-          {% assign size = variant.title | split: ' ' | first %}
-          {% if forloop.first %}
-            {% assign sizes = size %}
-            {% assign contained_products = size | abs %}
-          {% else %}
-            {% assign sizes = sizes | append: ', ' | append: size %}
-          {% endif %}
-        {% endfor %}
+        {% if product_builder_id == 'pods' %}
+          {% assign sizes = '32, 48, 96' %}
+        {% else %}
+          {% assign sizes = '32, 64, 96' %}
+        {% endif %}
 
         {%- assign package_presentation = 'Available in packages of ' | append: sizes %}
 
@@ -79,6 +78,14 @@
         "compare_at_price": {{ prod.compare_at_price_min | divided_by: contained_products | json }},
         "price_unit": {{ price_unit | json }},
         "variants" : {{ prod.variants | json }},
+        "unit_variant": {
+          {% if product_builder_id == 'beans' %}
+            "epilogue": {{ unit_variant_for_epilogue | json }},
+            "prologue": {{ unit_variant_for_prologue | json }}
+          {% else %}
+            "default": {{ unit_variant | json }}
+          {% endif %}
+        },
         "package_presentation": {{ package_presentation | json }},
         "package_type": {{ package_type | json }},
         "package_description": {{ package_description | json }},
@@ -182,7 +189,7 @@
                   </span>
                 </h2>
 
-                <h3 class="builder-product-offering__subtitle">
+                <h3 class="builder-product-offering__subtitle" data-offering-subtitle>
                   Save <span data-saved-price>$6 or</span> more
                   w/ additional <span data-package-type>bags</span>
                 </h3>
