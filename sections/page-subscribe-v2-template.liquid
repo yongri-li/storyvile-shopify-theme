@@ -47,9 +47,9 @@
         {% assign unit_variant = prod.metafields.subscriptions.unit-variant %}
 
         {% if product_builder_id == 'pods' %}
-          {% assign sizes = '32, 48, 96' %}
+          {% assign sizes = '16, 32, 48' %}
         {% else %}
-          {% assign sizes = '32, 64, 96' %}
+          {% assign sizes = '16, 32, 48' %}
         {% endif %}
 
         {%- assign package_presentation = 'Available in packages of ' | append: sizes %}
