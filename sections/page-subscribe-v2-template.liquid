@@ -37,6 +37,7 @@
         {%- assign package_presentation = '8oz resealable pressurized bag' %}
         {% assign package_type = 'bags' %}
         {% assign contained_products = 1 %}
+        {% assign sizes = '1, 2, 3' %}
 
         {% assign unit_variant_for_epilogue = prod.metafields.subscriptions.unit-variant--epilogue %}
         {% assign unit_variant_for_prologue = prod.metafields.subscriptions.unit-variant--prologue %}
@@ -56,14 +57,26 @@
 
       {% endif %}
 
-      {% if prod.metafields.subscriptions.subscription_id %}
-        {% assign subscription_id = prod.metafields.subscriptions.subscription_id %}
-      {% else %}
-        {% assign subscription_id = 133650 %}
-      {% endif %}
+      {%- if prod.metafields.subscriptions.subscription_id -%}
+        {%- assign subscription_id = prod.metafields.subscriptions.subscription_id -%}
+      {%- else -%}
+        {%- assign subscription_id = 133650 -%}
+      {%- endif %}
 
-      {% assign sample_image_field = 'image_for_' | append: product_builder_id %}
-      {% assign sample_image = section.settings[sample_image_field] %}
+      {%- assign sample_image_field = 'image_for_' | append: product_builder_id -%}
+      {%- assign sample_image = section.settings[sample_image_field] -%}
+
+      {%- capture product_images -%}
+        [
+          {%- for image in prod.images -%}
+            {%- unless forloop.first -%},{%- endunless -%}
+            {
+              "src": {{ image.src | json }},
+              "alt": {{ image.alt | json }}
+            }
+          {%- endfor -%}
+        ]
+      {%- endcapture -%}
 
       "{{ product_builder_id }}": {
         "sample_image": {
@@ -86,6 +99,7 @@
             "default": {{ unit_variant | json }}
           {% endif %}
         },
+        "images": {{ product_images }},
         "package_presentation": {{ package_presentation | json }},
         "package_type": {{ package_type | json }},
         "package_description": {{ package_description | json }},

@@ -25,7 +25,7 @@ $(function () {
     step: 0,
 
     /* A string, can be: beans, pods or capsules */
-    product: null,
+    product: validProducts[0],
 
     productOptions: [],
 
@@ -121,6 +121,12 @@ $(function () {
     }
 
     return product.variants.find(function (v) { return v.title == unitVariantTitle; });
+  }
+
+  function quantityWithUnit(quantity, unit) {
+    var singular = unit.replace(/s$/, '');
+    var plural = singular + 's';
+    return quantity + ' ' + (quantity == 1 ? singular : plural);
   }
 
   function forceUpdate() {
@@ -343,43 +349,33 @@ $(function () {
     }
   }
 
-
-  function getMainTitleForVariant(variant) {
-    var titleParts = variant.public_title.split(',');
-    var mainTitle = (titleParts[1] || titleParts[0]).trim();
-    return mainTitle;
+  function getImageForQuantity(images, quantity) {
+    var defaultImage = images.find(function (image) { return image.alt.indexOf('quantity=any') != -1 });
+    var imageForThisQuantity = images.find(function (image) { return image.alt.indexOf('quantity=' + quantity) != -1 });
+    return imageForThisQuantity ? imageForThisQuantity : defaultImage;
   }
-
-
-  function getQuantityForVariant(variant) {
-    var mainTitle = getMainTitleForVariant(variant);
-    var quantity = parseInt(mainTitle.split(' ')[0]);
-    return quantity;
-  }
-
 
   function getProductOptions(productId) {
     var product = options.products[productId];
 
+    var unitVariant = getUnitVariant();
+
     var variants = _.slice(product.variants,0, 3);
 
-    var cheap = cheapest(variants);
-    var cheapQuantity = getQuantityForVariant(cheap);
-    var cheapPriceEach = (cheap.compare_at_price || cheap.price)/cheapQuantity;
+    return product.package_sizes.map(function (size) {
+      var quantity = size;
+      var priceEach = unitVariant.price;
+      var compareAtPriceEach = unitVariant.compare_at_price || priceEach;
 
-    return variants.map(function (variant) {
-      var mainTitle = getMainTitleForVariant(variant);
-      var quantity = getQuantityForVariant(variant);
-      var priceEach = variant.price/quantity;
       return {
         priceEach: priceEach,
-        type: mainTitle,
+        type: quantityWithUnit(quantity, state.product == 'beans' ? 'bags' : state.product),
         title: quantity + ' x Storyville ' + product.title,
-        price: variant.price,
+        price: unitVariant.price * quantity,
         quantity: quantity,
-        compare_at_price: variant.compare_at_price,
-        saved_percent: 1 - (priceEach / cheapPriceEach),
-        image: variant.featured_image.src
+        compare_at_price: priceEach != compareAtPriceEach ? compareAtPriceEach * quantity : null,
+        saved_percent: Math.max(0, 1 - (priceEach / compareAtPriceEach)),
+        image: getImageForQuantity(product.images, quantity).src
       };
     });
   }
