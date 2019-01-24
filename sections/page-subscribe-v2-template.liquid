@@ -35,7 +35,8 @@
       {% if product_builder_id == 'beans' %}
         {% assign price_unit = false %}
         {%- assign package_presentation = '8oz resealable pressurized bag' %}
-        {% assign package_type = 'bags' %}
+        {% assign package_type = 'bag' %}
+	    {% assign money_saved = '$4' %}
         {% assign contained_products = 1 %}
         {% assign sizes = '1, 2, 3' %}
 
@@ -44,7 +45,10 @@
 
       {% else %}
         {% assign price_unit = 'cups' %}
-        {% assign package_type = product_builder_id %}
+
+	    {% assign package_type = 'cup' %}
+	    {% assign money_saved = '$.25' %}
+        
         {% assign unit_variant = prod.metafields.subscriptions.unit-variant %}
 
         {% if product_builder_id == 'pods' %}
@@ -102,6 +106,7 @@
         "images": {{ product_images }},
         "package_presentation": {{ package_presentation | json }},
         "package_type": {{ package_type | json }},
+		"money_saved": {{ money_saved | json }},
         "package_description": {{ package_description | json }},
         "package_sizes": [{{ sizes }}],
         "shipping_description": {{ shipping_description | json }},
@@ -173,7 +178,7 @@
         <div class="builder__step-header">
           <h2 class="builder__title">A Special Offer Just For You</h2>
           <div class="builder__subtitle">
-            <p>
+            <p style="display: none;">
               <strong>FREE PRIORITY SHIPPING</strong>
             </p>
           </div>
@@ -206,8 +211,7 @@
                 </h2>
 
                 <h3 class="builder-product-offering__subtitle" data-offering-subtitle>
-                  Save <span data-saved-price>$6 or</span> more
-                  w/ additional <span data-package-type>bags</span>
+                  Save <span data-money-saved>$4</span> per <span data-package-type>bag</span> • Free Priority Shipping
                 </h3>
 
               </div>
