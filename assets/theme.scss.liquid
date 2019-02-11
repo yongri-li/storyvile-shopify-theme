@@ -848,13 +848,13 @@ $max: max-width;
 }
 
 @mixin desktop {
-  @include at-query($min, 768px) {
+  @include at-query($min, 769px) {
     @content;
   }
 }
 
 @mixin mobile {
-  @include at-query($max, 767px) {
+  @include at-query($max, 768px) {
     @content;
   }
 }
@@ -1802,10 +1802,51 @@ blockquote {
   @include accentFontStack;
 }
 
-.ajaxcart__qty-num[type="text"] {
+.ajaxcart__qty-num[type="text"],
+select.ajaxcart__qty-num {
   @include accentFontStack;
   font-style: normal;
   font-size: em(13px);
+}
+
+select.ajaxcart__qty-num {
+  line-height: 0.8em;
+}
+
+.ajaxcart__qty-num_wrapper--select {
+  position: relative;
+  border: 1px solid #343535;
+  display: inline-block;
+  overflow: hidden;
+  width: 75px;
+
+  select {
+    min-width: calc(100% + 20px);
+    background-color: transparent;
+    color: #fff;
+    position: relative;
+    z-index: 99;
+
+    &, &:focus, &:active {
+      border-color: transparent;
+      outline: none;
+    }
+  }
+
+
+  &:after{
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid white;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 12px;
+    content: "";
+    z-index: 98;
+  }
 }
 
 .ajaxcart__note {
@@ -4901,6 +4942,8 @@ $builder-md-text: 17px;
 /*"inline-block" or "none !important" to turn on / off discounts*/
 $builder-discount: inline-block;
 
+
+
 .builder {
 
   h1,h2,h3,h4,h5,h6 {
@@ -4938,7 +4981,7 @@ $builder-discount: inline-block;
   left:5%;
   bottom:0;
   margin: auto;
-  
+
   @include mobile {
     position: relative;
     display:block;
@@ -4946,7 +4989,7 @@ $builder-discount: inline-block;
     left:0;
     right:0;
   }
-  
+
 }
 
 
@@ -5124,7 +5167,7 @@ $builder-discount: inline-block;
 .builder__subtitle {
   margin: 0 0 10px;
 
-  font-size: 12px;
+  font-size: $builder-md-text;
   color: $builder-body-text-color;
 
   letter-spacing: 0.4px;
@@ -5135,7 +5178,7 @@ $builder-discount: inline-block;
 
   text-align: center;
 
-  line-height: 150%;
+  line-height: 120%;
 
   em {
     text-transform: uppercase;
@@ -5145,7 +5188,7 @@ $builder-discount: inline-block;
   }
 
   small {
-    font-size: 12px;
+    font-size: $builder-sm-text;
   }
 
   strong {
@@ -5155,6 +5198,15 @@ $builder-discount: inline-block;
 
   p {
     margin-bottom: 10px;
+  }
+}
+
+.quantitySubtitle{
+  width: 60%;
+  margin:0 auto;
+  
+  @include mobile{
+  	width: 90%;
   }
 }
 
@@ -5248,7 +5300,7 @@ $builder-discount: inline-block;
 
 
 .builder__options {
-  margin-top: 60px;
+  margin-top: 45px;
 
   @include desktop {
     @include display-flexbox;
@@ -5267,7 +5319,7 @@ $builder-discount: inline-block;
   margin-right: 15px;
 
   @include mobile {
-    margin-bottom: 30px;
+    margin-bottom: 15px;
 
     margin-left:0;
     margin-right:0;
@@ -5446,12 +5498,14 @@ $builder-discount: inline-block;
   font-weight: $builder-title-weight;
 
   margin: 0;
+  
+  @include desktop{
+  margin: -15px 0;
+  }
+  
+  
 }
 
-
-.builder-option__price {
-
-}
 
 
 .builder-option__compare-at-price {
@@ -5463,6 +5517,11 @@ $builder-discount: inline-block;
 }
 
 
+.builder-option__percent-off{
+  font-weight: 500;
+  color: #db8b44;
+}
+
 .builder-option__feature {
   margin: 0;
   color: #db8b44;
@@ -5472,6 +5531,9 @@ $builder-discount: inline-block;
   width: 100%;
 
   display: $builder-discount;
+  
+  line-height: 120%;
+  font-size: $builder-md-text;
 
   @include desktop {
     top: 0;
@@ -5479,6 +5541,32 @@ $builder-discount: inline-block;
     left: 50%;
     transform: translate(-50%, -10%);
   }
+}
+
+.builder-option__percent-price {
+  margin: 0;
+  color: #db8b44;
+  border-bottom: 2px solid #f5f4f0;
+  text-transform: uppercase;
+  font-weight: 800;
+  text-align: center;
+  width: 100%;
+
+  display: $builder-discount;
+  
+  line-height: 120%;
+  font-size: $builder-sm-text;
+  opacity:0;
+  transition:0.33s;
+  padding:7px 0;
+  transform: translateY(-10px);
+  
+  
+}
+
+.selected .builder-option__percent-price{
+  opacity:1;
+  transform: translateY(0px);
 }
 
 
@@ -5545,9 +5633,7 @@ $builder-discount: inline-block;
 .builder-product-offering__header {
   line-height: 150%;
   @include mobile {
-    @media (min-width: 460px) {
       text-align: center;
-    }
   }
 }
 
