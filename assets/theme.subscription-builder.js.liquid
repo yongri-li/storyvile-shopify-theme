@@ -38,8 +38,10 @@ $(function () {
 
   /* Contains products: `options.products.{beans|pods|capsules}` */
   var options = Object.assign({
-    show_starting_compare_at_price: true,
-    show_save_money_line: true,
+    show_starting_compare_at_price: false,
+    show_the_math: false,
+    show_coupon_discount: true,
+    show_save_money_line: false,
     show_product_discounts: false
   }, JSON.parse($builder.attr('data-subscription-builder')));
 
@@ -65,6 +67,9 @@ $(function () {
   var $packageDescription = $builder.find('[data-package-description]');
 
   var $wantEpilogue = $builder.find('[data-option-want-epilogue]');
+  
+  var $percentPrice = $builder.find('[data-option-percent-price]');
+  var discount = 50;
 
 
   function asPercentage(value) {
@@ -164,7 +169,8 @@ $(function () {
 
     var product = options.products[state.product];
     var unitVariant = getUnitVariant();
-
+	
+    
 
     $builder.find('[data-option]').removeClass('selected');
     $builder.find([
@@ -174,22 +180,31 @@ $(function () {
       ].join(','))
       .addClass('selected')
     ;
-    
-    
-    
-    
-   //Testing Pushing Gathering data per-step
+      
+      
+     
+      
+      
+      
+      
+      //Testing Pushing Gathering data per-step
+ 
       if (state.product == 'beans') {
       		dataLayer.push({'Product': 'Whole Bean'});
+			//$builder.find('[data-test-params]').text('Whole Bean');
 	  } else if (state.product == 'pods') {
       		dataLayer.push({'Product': 'Keurig® Pods'});
+  			//$builder.find('[data-test-params]').text('Keurig® Pods');
 	  } else {
       		dataLayer.push({'Product': 'Nespresso® Capsules'});
+  			//$builder.find('[data-test-params]').text('Nespresso® Capsules');
 	  }
-    
-    
-    
-
+      
+      
+      
+      
+      
+      
     $wantEpilogue.parent().toggle(state.product == 'beans')
 
     if (options.show_starting_compare_at_price && product.compare_at_price) {
@@ -198,8 +213,30 @@ $(function () {
     } else {
       $startingCompareAtPrice.hide();
     }
+      
+      
+    if (!options.show_the_math){ 
+      $startingPrice.hide();
+      $priceUnit.hide();
+      $builder.find('[data-option-price-each]').hide();
+    }
+      
+          
+    if (!options.show_coupon_discount){ 
+      $builder.find('[data-percent-off]').hide();
+      $builder.find('[data-option-percent-price]').hide();
+    } else {
+      
+		
+    }
+      
 
-
+    if (!options.show_save_money_line) {
+      $builder.find('[data-money-saved]').hide();
+      $builder.find('[data-package-type]').hide();
+    }
+ 
+      
     $startingPrice.text(asMoney(product.starting_price));
     $priceUnit.text(product.price_unit ?  '/ ' + singular(product.price_unit) : '');
 
@@ -211,15 +248,12 @@ $(function () {
       $savedPrice.text(' ');
     }
 
-    if (!options.show_save_money_line) {
-      $builder.find('[data-offering-subtitle]').hide();
-    }
 
     $packagePresentation.text(product.package_presentation);
-    $packageType.text(product.package_type);
+    $packageType.text('PER ' + product.package_type);
     $packageDescription.text(product.package_description);
 
-    $moneySaved.text(product.money_saved);
+    $moneySaved.text('SAVE ' + product.money_saved);
 
     var $quantities = $('[data-options-set][data-options-set-type="quantity"]');
 
@@ -244,10 +278,16 @@ $(function () {
         $option.find('[data-option-price]')
           .text(asMoney(unitVariant.price * productOption.quantity))
         ;
+        
 
         $option.find('[data-option-save-percentage]')
           .text('SAVE ' + asPercentage(productOption.saved_percent))
           .toggle(options.show_product_discounts && productOption.saved_percent > 0)
+        ;
+        
+        $option.find('[data-option-percent-price]')
+        .text('-' + (asMoney((unitVariant.price * productOption.quantity) * (discount / 100))) + ' OFF YOUR FIRST ORDER')
+          .toggle(options.show_coupon_discount == true)
         ;
 
         $option.find('[data-option-product-image]')
