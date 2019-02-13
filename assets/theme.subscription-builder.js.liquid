@@ -182,28 +182,44 @@ $(function () {
     ;
       
       
-     
-      
-      
-      
-      
       //Testing Pushing Gathering data per-step
  
       if (state.product == 'beans') {
       		dataLayer.push({'Product': 'Whole Bean'});
-			//$builder.find('[data-test-params]').text('Whole Bean');
+      
+            if (state.selectedQuantity == 0) {
+      			  dataLayer.push({'Quantity': '1 Bag'});
+            } else if (state.selectedQuantity == 1) {
+      			  dataLayer.push({'Quantity': '2 Bags'});
+            } else {
+      			  dataLayer.push({'Quantity': '3 Bags'});
+            }
+
 	  } else if (state.product == 'pods') {
       		dataLayer.push({'Product': 'Keurig® Pods'});
-  			//$builder.find('[data-test-params]').text('Keurig® Pods');
+      
+            if (state.selectedQuantity == 0) {
+      			  dataLayer.push({'Quantity': '16 Pods'});
+            } else if (state.selectedQuantity == 1) {
+      			  dataLayer.push({'Quantity': '32 Pods'});
+            } else {
+      			  dataLayer.push({'Quantity': '48 Pods'});
+            }
+
 	  } else {
       		dataLayer.push({'Product': 'Nespresso® Capsules'});
-  			//$builder.find('[data-test-params]').text('Nespresso® Capsules');
+      
+            if (state.selectedQuantity == 0) {
+      			  dataLayer.push({'Quantity': '16 Capsules'});
+            } else if (state.selectedQuantity == 1) {
+      			  dataLayer.push({'Quantity': '32 Capsules'});
+            } else {
+      			  dataLayer.push({'Quantity': '48 Capsules'});
+            }
+
 	  }
       
-      
-      
-      
-      
+
       
     $wantEpilogue.parent().toggle(state.product == 'beans')
 
@@ -257,10 +273,11 @@ $(function () {
 
     var $quantities = $('[data-options-set][data-options-set-type="quantity"]');
 
+  
     $quantities.find('[data-option]').each(function (i) {
       var $option = $(this);
       var productOption = state.productOptions[i];
-
+      
       if (productOption) {
         $option.find('[data-option-price-each]')
           .text(asMoney(unitVariant.price) + ' ' + (state.product == 'beans' ? '/ bag' : 'Each'))
@@ -269,6 +286,7 @@ $(function () {
         $option.find('[data-option-product-type]')
           .text(productOption.type)
         ;
+        
 
         $option.find('[data-option-compare-at-price]')
           .text(asMoney(productOption.compare_at_price))
@@ -286,7 +304,7 @@ $(function () {
         ;
         
         $option.find('[data-option-percent-price]')
-        .text('-' + (asMoney((unitVariant.price * productOption.quantity) * (discount / 100))) + ' OFF YOUR FIRST ORDER')
+        .text('-' + (asMoney((unitVariant.price * productOption.quantity) * (discount / 100))) + ' OFF YOUR FIRST SHIPMENT')
           .toggle(options.show_coupon_discount == true)
         ;
 
@@ -298,6 +316,8 @@ $(function () {
         $option.find('[data-option-product-title]')
           .text(productOption.title)
         ;
+        
+
 
 
         $option.show();
@@ -414,6 +434,7 @@ $(function () {
     var imageForThisQuantity = images.find(function (image) { return image.alt.indexOf('quantity=' + quantity) != -1 });
     return imageForThisQuantity ? imageForThisQuantity : defaultImage;
   }
+
 
   function getProductOptions(productId) {
     var product = options.products[productId];
