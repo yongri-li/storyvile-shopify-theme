@@ -48,7 +48,7 @@
 
 	    {% assign package_type = 'cup' %}
 	    {% assign money_saved = '$.25' %}
-        
+
         {% assign unit_variant = prod.metafields.subscriptions.unit-variant %}
 
         {% if product_builder_id == 'pods' %}
@@ -87,7 +87,7 @@
           "src": "{{ sample_image | img_url: '1x1' }}",
           "srcset": "{% include 'bgset' image: sample_image %}"
         },
-        "description": {{ prod.description | json }},
+        "description": {{ prod.description | strip_html | json }},
         "title": {{ prod.title | json }},
         "handle": {{ product_handle | json }},
         "available": {{ prod.available | json }},
@@ -152,9 +152,9 @@
       </ul>
 
     </div>
-    
+
     <p data-test-params></p>
-    
+
   </div>
 
 
@@ -319,7 +319,7 @@
                 </p>
 
                 <p class="builder-option__feature mobile-only" data-option-save-percentage style="display: none">Save 0%</p>
-                
+
                 <div class="builder-option__product-image-container">
                   <p class="builder-option__feature desktop-only" data-option-save-percentage style=":none">Save 0%</p>
                   <img
@@ -331,9 +331,9 @@
                 <h2 class="builder-option__title builder-option__title--bottom" data-option-product-title>2 x Storyville Product</h2>
 
               </div>
-              
+
 				<p class="builder-option__percent-price" data-option-percent-price>$00 OFF YOUR FIRST SHIPMENT</p>
-              
+
             </div>
 
 
@@ -369,7 +369,7 @@
               </div>
 
 				<p class="builder-option__percent-price" data-option-percent-price>$00 OFF YOUR FIRST SHIPMENT</p>
-              
+
             </div>
 
 
