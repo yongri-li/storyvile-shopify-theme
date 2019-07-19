@@ -298,11 +298,26 @@
             {% capture "form_id" %}AddToCartForm--{{ section.id }}{%- endcapture %}
 
             {% form 'product', product, data-productid: product.id, class:form_classes, id:form_id %} 
-{% if product.available %}{% include 'subscription-product' %}{% endif %} 
-              {% unless product.has_only_default_variant %}
+			
+            {% comment %}
+            	RECHARGE CODE
+            	{% if product.available %}{% include 'subscription-product' %}{% endif %}
+            {% endcomment %}
+            
+            
+              {% if product.title == 'Keurig® Compatible Pods' or product.title == 'Nespresso® Compatible Capsules' or product.title == 'Whole Bean Coffee' %}
+            	<a href="https://storyville.com/anywhere{% if product.title == 'Keurig® Compatible Pods'%}?default_product=pods{% endif %}{% if product.title == "Whole Bean Coffee" %}{% else %}?default_product=capsules{% endif %}" class="btn" style="width: 100%;margin-top: 20px;">
+                  <span class="btn__text">
+						GET STARTED
+                  </span>
+                </a>
+              {% endif %}
+            
+            
+              {% unless product.has_only_default_variant or product.title == 'Keurig® Compatible Pods' or product.title == 'Nespresso® Compatible Capsules' or product.title == 'Whole Bean Coffee' %}
                 {% for option in product.options_with_values %}
                   <div class="radio-wrapper js product-form__item">
-                    <label class="single-option-radio__label{% if option.name == 'Default' or option.name == 'Title' %} hidden-label{% endif %}"
+                    <label class="single-option-radio__label{% if option.name == 'Default' or option.name == 'Title'%} hidden-label{% endif %}"
                       for="ProductSelect-option-{{ forloop.index0 }}">
                       {{ option.name | escape }}
                     </label>
@@ -340,7 +355,8 @@
                 {% endfor %}
               {% endunless %}
 
-              <select name="id" data-productid="{{product.id }}" id="ProductSelect" class="product-single__variants no-js">
+            
+              <select name="id" data-productid="{{product.id}}" id="ProductSelect" class="product-single__variants no-js">
                 {% for variant in product.variants %}
                   {% if variant.available %}
                     <option {% if variant == product.selected_or_first_available_variant %}
@@ -356,6 +372,8 @@
                   {% endif %}
                 {% endfor %}
               </select>
+            
+            
               {% if section.settings.quantity_enabled %}
               <div class="product-single__quantity">
                 <label for="Quantity" class="product-single__quantity-label js-quantity-selector">{{ 'products.product.quantity' | t }}</label>
@@ -363,7 +381,13 @@
               </div>
               {% endif %}
 
-              <div class="product-single__add-to-cart{% if section.settings.add_to_cart_button_size == 'large' %} product-single__add-to-cart--full-width{% endif %}">
+            
+            
+            
+              {% if product.title == 'Keurig® Compatible Pods' or product.title == 'Nespresso® Compatible Capsules' or product.title == 'Whole Bean Coffee' %}
+              
+              {% else %}
+            	<div class="product-single__add-to-cart{% if section.settings.add_to_cart_button_size == 'large' %} product-single__add-to-cart--full-width{% endif %}">
                 <button type="submit" name="add" id="AddToCart--{{ section.id }}" class="btn btn--add-to-cart{% if section.settings.enable_payment_button %} btn--secondary-accent{% endif %}"{% unless current_variant.available %} disabled="disabled"{% endunless %}>
                   <span class="btn__text">
                     {% if current_variant.available %}
@@ -377,6 +401,8 @@
                   {{ form | payment_button }}
                 {% endif %}
               </div>
+            {% endif %}
+            
             {% endform %}
 
           </div>
@@ -400,13 +426,16 @@
         {{ product.description }}
     </div>
   
+      
+    <!--  
     {% if collection %}
       <hr class="hr--clear">
       <div class="text-center">
         <a href="{{ shop.url }}" class="return-link">&larr; BACK</a>
       </div>
     {% endif %}
-      
+	-->
+      <br><br><br>
       
       </div>
     </div>

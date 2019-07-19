@@ -12,7 +12,7 @@
       <div class="ajaxcart__inner ajaxcart__inner--has-fixed-footer">
         {{#items}}
         <div class="ajaxcart__product">
-          <div class="ajaxcart__row" data-line="{{line}}">
+          <div class="ajaxcart__row" data-line="{{line}}" data-product-handle="{{handle}}">
             <div class="grid">
               <div class="grid__item one-quarter">
                 <a href="{{url}}" class="ajaxcart__product-image"><img src="{{img}}" alt="{{name}}"></a>
@@ -34,17 +34,23 @@
 
                 <div class="grid--full display-table">
                   <div class="grid__item display-table-cell one-half">
-                    <div class="ajaxcart__qty">
-                      <button type="button" class="ajaxcart__qty-adjust ajaxcart__qty--minus icon-fallback-text" data-id="{{key}}" data-qty="{{itemMinus}}" data-line="{{line}}" aria-label="{% endraw %}{{ 'cart.general.reduce_quantity' | t }}{% raw %}">
-                        <span class="icon icon-minus" aria-hidden="true"></span>
-                        <span class="fallback-text" aria-hidden="true">&minus;</span>
-                      </button>
-                      <input type="text" name="updates[]" class="ajaxcart__qty-num" value="{{itemQty}}" min="0" data-id="{{key}}" data-line="{{line}}" aria-label="quantity" pattern="[0-9]*">
-                      <button type="button" class="ajaxcart__qty-adjust ajaxcart__qty--plus icon-fallback-text" data-id="{{key}}" data-line="{{line}}" data-qty="{{itemAdd}}" aria-label="{% endraw %}{{ 'cart.general.increase_quantity' | t }}{% raw %}">
-                        <span class="icon icon-plus" aria-hidden="true"></span>
-                        <span class="fallback-text" aria-hidden="true">+</span>
-                      </button>
-                    </div>
+                    {{#if quantityIsDropdownSelector }}
+                      <!-- Dynamically added -->
+                      {{{quantityDropdownSelectorHtml}}}
+
+                    {{else}}
+                      <div class="ajaxcart__qty">
+                        <button type="button" class="ajaxcart__qty-adjust ajaxcart__qty--minus icon-fallback-text" data-id="{{key}}" data-qty="{{itemMinus}}" data-line="{{line}}" aria-label="{% endraw %}{{ 'cart.general.reduce_quantity' | t }}{% raw %}">
+                          <span class="icon icon-minus" aria-hidden="true"></span>
+                          <span class="fallback-text" aria-hidden="true">&minus;</span>
+                        </button>
+                        <input type="text" name="updates[]" class="ajaxcart__qty-num" value="{{itemQty}}" min="0" data-id="{{key}}" data-line="{{line}}" aria-label="quantity" pattern="[0-9]*">
+                        <button type="button" class="ajaxcart__qty-adjust ajaxcart__qty--plus icon-fallback-text" data-id="{{key}}" data-line="{{line}}" data-qty="{{itemAdd}}" aria-label="{% endraw %}{{ 'cart.general.increase_quantity' | t }}{% raw %}">
+                          <span class="icon icon-plus" aria-hidden="true"></span>
+                          <span class="fallback-text" aria-hidden="true">+</span>
+                        </button>
+                      </div>
+                    {{/if}}
                   </div>
                   <div class="grid__item display-table-cell one-half text-right">
                     {{#if discountsApplied}}
@@ -100,11 +106,40 @@
         <button type="submit" class="btn--secondary btn--full cart__checkout" name="checkout">
           {% endraw %}{{ 'cart.general.checkout' | t }}{% raw %} <span class="icon icon-arrow-right" aria-hidden="true"></span>
         </button>
-        <a href="/a/gs/cart/" class="multipleAddressesBtn">Ship to multiplpe addresses ></a>
       </div>
     </form>
   {% endraw %}
   </script>
+
+  {% for subscription_product_index in (1..3) %}
+    {%- capture subscription_product_handle -%}
+      {%- cycle 'private-reserve-pro-epi', 'k-cups', 'nespresso-pods' -%}
+    {%- endcapture -%}
+
+    {%- assign subscription_product = all_products[subscription_product_handle] -%}
+
+    {%- if subscription_product.metafields.subscriptions.quantities -%}
+      <script id="AjaxQty-{{ subscription_product_handle }}" type="text/template">
+        <div class="ajaxcart__qty">
+          {%-
+            include 'cart__subscriptions-quantity-dropdown'
+              ajaxCart: true,
+              product: subscription_product
+          -%}
+        </div>
+      </script>
+      <script id="JsQty-{{ subscription_product_handle }}" type="text/template">
+        <div class="js-qty">
+          {%-
+            include 'cart__subscriptions-quantity-dropdown'
+              ajaxCart: true,
+              product: subscription_product
+          -%}
+        </div>
+      </script>
+    {%- endif -%}
+  {% endfor %}
+
   <script id="AjaxQty" type="text/template">
   {% raw %}
     <div class="ajaxcart__qty">

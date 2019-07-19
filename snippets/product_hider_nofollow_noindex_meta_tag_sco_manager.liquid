@@ -1,131 +1,131 @@
 {% if shop.metafields.appsyl_seo_site.app_status == 1 %}
-                                    	{% if shop.metafields.appsyl_seo_site.miscellaneous_global_status != 0 %}
-                                    		{% if shop.metafields.appsyl_seo_site.miscellaneous_global_status == 1 %}
-                                    			<meta name="robots" content="noindex,nofollow" />
-                                    		{% elsif shop.metafields.appsyl_seo_site.miscellaneous_global_status == 2 %}
-                                    			<meta name="robots" content="noindex,follow" />
-                                    		{% endif %}
-                                    	{% else %}
-                                    		{% if shop.metafields.appsyl_seo_site.all != 0 %}
-                                    			{% if shop.metafields.appsyl_seo_site.all == 3 %}
-                                    				<meta name="robots" content="noindex,nofollow" />
-                                    			{% elsif shop.metafields.appsyl_seo_site.all == 1 %}	
-                                    				<meta name="robots" content="noindex" />
-                                    			{% elsif shop.metafields.appsyl_seo_site.all == 2 %}	
-                                    				<meta name="robots" content="nofollow" />
-                                    			{% endif %}        	
-                                            {% else %}	
-                                    			{% if template contains "search" %}
-                                    				{% if shop.metafields.appsyl_seo_site.pagination == 3 and canonical_url contains "page=" %}
-                                    					<meta name="robots" content="noindex,nofollow" />
-                                    				{% elsif shop.metafields.appsyl_seo_site.pagination == 1 and canonical_url contains "page=" %}
-                                    					<meta name="robots" content="noindex" />
-                                    				{% elsif shop.metafields.appsyl_seo_site.pagination == 2 and canonical_url contains "page=" %}
-                                    					<meta name="robots" content="nofollow" />
-                                    				{% elsif shop.metafields.appsyl_seo_site.search == 3 %}
-                                                        <meta name="robots" content="noindex,nofollow" />
-                                                    {% elsif shop.metafields.appsyl_seo_site.search == 1 %}
-                                                        <meta name="robots" content="noindex" />
-                                    				{% elsif shop.metafields.appsyl_seo_site.search == 2 %}
-                                                        <meta name="robots" content="nofollow" />
-                                    				{% endif %}
-                                    			{% elsif template contains "cart" %}
-                                    				{% if shop.metafields.appsyl_seo_site.cart == 3 %}
-                                    					<meta name="robots" content="noindex,nofollow" />
-                                    				{% elsif shop.metafields.appsyl_seo_site.cart == 1 %}
-                                    					<meta name="robots" content="noindex" />
-                                    				{% elsif shop.metafields.appsyl_seo_site.cart == 2 %}
-                                    					<meta name="robots" content="nofollow" />
-                                    				{% endif %}
-                                    			{% elsif template contains "login" and shop.metafields.appsyl_seo_site.login == 1 %}
-                                              		{% if shop.metafields.appsyl_seo_site.login == 3 %}
-                                    					<meta name="robots" content="noindex,nofollow" />
-                                    				{% elsif shop.metafields.appsyl_seo_site.login == 1 %}
-                                    					<meta name="robots" content="noindex" />
-                                    				{% elsif shop.metafields.appsyl_seo_site.login == 2 %}
-                                    					<meta name="robots" content="nofollow" />
-                                    				{% endif %}
-                                    			{% elsif template contains "blog" %}
-                                                    {% if blog.metafields.appsyl_seo_blog.status == 1 and shop.metafields.appsyl_seo_site.pagination == 3 and canonical_url contains "page=" %}
-                                                    	<meta name="robots" content="noindex,nofollow" />
-                                                    {% elsif blog.metafields.appsyl_seo_blog.status == 2 and shop.metafields.appsyl_seo_site.pagination == 3 and canonical_url contains "page=" %}
-                                                        <meta name="robots" content="noindex,follow" />
-                                                    {% elsif blog.metafields.appsyl_seo_blog.status == 1 and shop.metafields.appsyl_seo_blogs.tags == 1 and current_tags %}
-                                                        <meta name="robots" content="noindex,nofollow" />
-                                                    {% elsif blog.metafields.appsyl_seo_blog.status == 2 and shop.metafields.appsyl_seo_blogs.tags == 1 and current_tags %}
-                                                        <meta name="robots" content="noindex,follow" />
-                                                    {% elsif blog.metafields.appsyl_seo_blog.status == 1 %}
-                                    					<meta name="robots" content="noindex,nofollow" />
-                                                    {% elsif blog.metafields.appsyl_seo_blog.status == 2 %}
-                                                    	<meta name="robots" content="noindex,follow" />
-                                                    {% endif %}
-                                    			{% elsif template contains "collection" %}
-                                    				{% if shop.metafields.appsyl_seo_site.collection_global_status != 0 %}
-                                    					{% if shop.metafields.appsyl_seo_site.collection_global_status == 1 %}
-                                    						<meta name="robots" content="noindex,nofollow" />
-                                    					{% elsif shop.metafields.appsyl_seo_site.collection_global_status == 2 %}
-                                    						<meta name="robots" content="noindex,follow" />
-                                    					{% endif %}
-                                    				{% else %}
-                                    					{% if template contains "list-collections" %}						
-                                    						{% if shop.metafields.appsyl_seo_colection.root == 1 %}
-                                    							<meta name="robots" content="noindex,nofollow" />
-                                    						{% endif %}
-                                    					{% elsif collection.metafields.appsyl_seo_colection.status == 1 and shop.metafields.appsyl_seo_site.pagination == 3 and canonical_url contains "page=" %}
-                                                          	<meta name="robots" content="noindex,nofollow" />
-                                                        {% elsif collection.metafields.appsyl_seo_colection.status == 2 and shop.metafields.appsyl_seo_site.pagination == 3 and canonical_url contains "page=" %}
-                                                            <meta name="robots" content="noindex,follow" />
-                                                        {% elsif collection.metafields.appsyl_seo_colection.status == 1 and shop.metafields.appsyl_seo_colection.tags == 1 and current_tags %}
-                                                            <meta name="robots" content="noindex,nofollow" />
-                                                        {% elsif collection.metafields.appsyl_seo_colection.status == 2 and shop.metafields.appsyl_seo_colection.tags == 1 and current_tags %}
-                                                            <meta name="robots" content="noindex,follow" />
-                                                        {% elsif collection.current_vendor and shop.metafields.appsyl_seo_colection.vendors == 1 %}
-                                                            <meta name="robots" content="noindex,nofollow" />
-                                                        {% elsif collection.current_type and shop.metafields.appsyl_seo_colection.types == 1 %}
-                                                            <meta name="robots" content="noindex,nofollow" />
-                                                        {% elsif collection.handle == "all" and shop.metafields.appsyl_seo_colection.allpage == 1 %}
-                                                            <meta name="robots" content="noindex,nofollow" />
-                                                        {% elsif collection.metafields.appsyl_seo_colection.status == 1 %}
-                                                            <meta name="robots" content="noindex,nofollow" />
-                                                        {% elsif collection.metafields.appsyl_seo_colection.status == 2 %}
-                                                            <meta name="robots" content="noindex,follow" />
-                                                        {% endif %}
-                                    				{% endif %}
-                                    			{% elsif template contains "product" %}	
-                                    				{% if shop.metafields.appsyl_seo_site.product_global_status != 0 %}
-                                    					{% if shop.metafields.appsyl_seo_site.product_global_status == 1 %}
-                                    						<meta name="robots" content="noindex,nofollow" />
-                                    					{% elsif shop.metafields.appsyl_seo_site.product_global_status == 2 %}
-                                    						<meta name="robots" content="noindex,follow" />
-                                    					{% endif %}
-                                    				{% else %}
-                                                      {% if product.metafields.appsyl_seo_product.status == 1 %}
-                                                          <meta name="robots" content="noindex,nofollow" />
-                                                      {% elsif product.metafields.appsyl_seo_product.status == 2 %}						
-                                                          <meta name="robots" content="noindex,follow" />
-                                                      {% endif %}
-                                    				{% endif %}
-                                    			{% elsif template contains "page" %}
-                                    				{% if shop.metafields.appsyl_seo_site.page_global_status != 0 %}
-                                    					{% if shop.metafields.appsyl_seo_site.page_global_status == 1 %}
-                                    						<meta name="robots" content="noindex,nofollow" />
-                                    					{% elsif shop.metafields.appsyl_seo_site.page_global_status == 2 %}
-                                    						<meta name="robots" content="noindex,follow" />
-                                    					{% endif %}
-                                    				{% else %}
-                                                      {% if page.metafields.appsyl_seo_page.status == 1 %}
-                                                          <meta name="robots" content="noindex,nofollow" />
-                                                      {% elsif page.metafields.appsyl_seo_page.status == 2 %}
-                                                          <meta name="robots" content="noindex,follow" />
-                                                      {% endif %}
-                                    				{% endif %}
-                                    			{% elsif template contains "article" %}
-                                                    {% if article.metafields.appsyl_seo_article.status == 1 %}
-                                                    	<meta name="robots" content="noindex,nofollow" />
-                                                    {% elsif article.metafields.appsyl_seo_article.status == 2 %}
-                                                    	<meta name="robots" content="noindex,follow" />
-                                                    {% endif %}
-                                    			{% endif %}
-                                    		{% endif %}
-                                    	{% endif %}
-                                    {% endif %}
+    {% if shop.metafields.appsyl_seo_site.miscellaneous_global_status != blank and shop.metafields.appsyl_seo_site.miscellaneous_global_status != 0 %}
+        {% if shop.metafields.appsyl_seo_site.miscellaneous_global_status == 1 %}
+            <meta name="robots" content="noindex,nofollow" />
+        {% elsif shop.metafields.appsyl_seo_site.miscellaneous_global_status == 2 %}
+            <meta name="robots" content="noindex,follow" />
+        {% endif %}
+    {% else %}
+        {% if shop.metafields.appsyl_seo_site.all != blank and shop.metafields.appsyl_seo_site.all != 0 %}
+            {% if shop.metafields.appsyl_seo_site.all == 3 %}
+                <meta name="robots" content="noindex,nofollow" />
+            {% elsif shop.metafields.appsyl_seo_site.all == 1 %}	
+                <meta name="robots" content="noindex" />
+            {% elsif shop.metafields.appsyl_seo_site.all == 2 %}	
+                <meta name="robots" content="nofollow" />
+            {% endif %}        	
+        {% else %}	
+            {% if template contains "search" %}
+                {% if shop.metafields.appsyl_seo_site.pagination == 3 and canonical_url contains "page=" %}
+                    <meta name="robots" content="noindex,nofollow" />
+                {% elsif shop.metafields.appsyl_seo_site.pagination == 1 and canonical_url contains "page=" %}
+                    <meta name="robots" content="noindex" />
+                {% elsif shop.metafields.appsyl_seo_site.pagination == 2 and canonical_url contains "page=" %}
+                    <meta name="robots" content="nofollow" />
+                {% elsif shop.metafields.appsyl_seo_site.search == 3 %}
+                    <meta name="robots" content="noindex,nofollow" />
+                {% elsif shop.metafields.appsyl_seo_site.search == 1 %}
+                    <meta name="robots" content="noindex" />
+                {% elsif shop.metafields.appsyl_seo_site.search == 2 %}
+                    <meta name="robots" content="nofollow" />
+                {% endif %}
+            {% elsif template contains "cart" %}
+                {% if shop.metafields.appsyl_seo_site.cart == 3 %}
+                    <meta name="robots" content="noindex,nofollow" />
+                {% elsif shop.metafields.appsyl_seo_site.cart == 1 %}
+                    <meta name="robots" content="noindex" />
+                {% elsif shop.metafields.appsyl_seo_site.cart == 2 %}
+                    <meta name="robots" content="nofollow" />
+                {% endif %}
+            {% elsif template contains "login" and shop.metafields.appsyl_seo_site.login == 1 %}
+                {% if shop.metafields.appsyl_seo_site.login == 3 %}
+                    <meta name="robots" content="noindex,nofollow" />
+                {% elsif shop.metafields.appsyl_seo_site.login == 1 %}
+                    <meta name="robots" content="noindex" />
+                {% elsif shop.metafields.appsyl_seo_site.login == 2 %}
+                    <meta name="robots" content="nofollow" />
+                {% endif %}
+            {% elsif template contains "blog" %}
+                {% if blog.metafields.appsyl_seo_blog.status == 1 and shop.metafields.appsyl_seo_site.pagination == 3 and canonical_url contains "page=" %}
+                    <meta name="robots" content="noindex,nofollow" />
+                {% elsif blog.metafields.appsyl_seo_blog.status == 2 and shop.metafields.appsyl_seo_site.pagination == 3 and canonical_url contains "page=" %}
+                    <meta name="robots" content="noindex,follow" />
+                {% elsif blog.metafields.appsyl_seo_blog.status == 1 and shop.metafields.appsyl_seo_blogs.tags == 1 and current_tags %}
+                    <meta name="robots" content="noindex,nofollow" />
+                {% elsif blog.metafields.appsyl_seo_blog.status == 2 and shop.metafields.appsyl_seo_blogs.tags == 1 and current_tags %}
+                    <meta name="robots" content="noindex,follow" />
+                {% elsif blog.metafields.appsyl_seo_blog.status == 1 %}
+                    <meta name="robots" content="noindex,nofollow" />
+                {% elsif blog.metafields.appsyl_seo_blog.status == 2 %}
+                    <meta name="robots" content="noindex,follow" />
+                {% endif %}
+            {% elsif template contains "collection" %}
+                {% if shop.metafields.appsyl_seo_site.collection_global_status != blank and shop.metafields.appsyl_seo_site.collection_global_status != 0 %}
+                    {% if shop.metafields.appsyl_seo_site.collection_global_status == 1 %}
+                        <meta name="robots" content="noindex,nofollow" />
+                    {% elsif shop.metafields.appsyl_seo_site.collection_global_status == 2 %}
+                        <meta name="robots" content="noindex,follow" />
+                    {% endif %}
+                {% else %}
+                    {% if template contains "list-collections" %}						
+                        {% if shop.metafields.appsyl_seo_colection.root == 1 %}
+                            <meta name="robots" content="noindex,nofollow" />
+                        {% endif %}
+                    {% elsif collection.metafields.appsyl_seo_colection.status == 1 and shop.metafields.appsyl_seo_site.pagination == 3 and canonical_url contains "page=" %}
+                        <meta name="robots" content="noindex,nofollow" />
+                    {% elsif collection.metafields.appsyl_seo_colection.status == 2 and shop.metafields.appsyl_seo_site.pagination == 3 and canonical_url contains "page=" %}
+                        <meta name="robots" content="noindex,follow" />
+                    {% elsif collection.metafields.appsyl_seo_colection.status == 1 and shop.metafields.appsyl_seo_colection.tags == 1 and current_tags %}
+                        <meta name="robots" content="noindex,nofollow" />
+                    {% elsif collection.metafields.appsyl_seo_colection.status == 2 and shop.metafields.appsyl_seo_colection.tags == 1 and current_tags %}
+                        <meta name="robots" content="noindex,follow" />
+                    {% elsif collection.current_vendor and shop.metafields.appsyl_seo_colection.vendors == 1 %}
+                        <meta name="robots" content="noindex,nofollow" />
+                    {% elsif collection.current_type and shop.metafields.appsyl_seo_colection.types == 1 %}
+                        <meta name="robots" content="noindex,nofollow" />
+                    {% elsif collection.handle == "all" and shop.metafields.appsyl_seo_colection.allpage == 1 %}
+                        <meta name="robots" content="noindex,nofollow" />
+                    {% elsif collection.metafields.appsyl_seo_colection.status == 1 %}
+                        <meta name="robots" content="noindex,nofollow" />
+                    {% elsif collection.metafields.appsyl_seo_colection.status == 2 %}
+                        <meta name="robots" content="noindex,follow" />
+                    {% endif %}
+                {% endif %}
+            {% elsif template contains "product" %}	
+                {% if shop.metafields.appsyl_seo_site.product_global_status != blank and shop.metafields.appsyl_seo_site.product_global_status != 0 %}
+                    {% if shop.metafields.appsyl_seo_site.product_global_status == 1 %}
+                        <meta name="robots" content="noindex,nofollow" />
+                    {% elsif shop.metafields.appsyl_seo_site.product_global_status == 2 %}
+                        <meta name="robots" content="noindex,follow" />
+                    {% endif %}
+                {% else %}
+                    {% if product.metafields.appsyl_seo_product.status == 1 %}
+                        <meta name="robots" content="noindex,nofollow" />
+                    {% elsif product.metafields.appsyl_seo_product.status == 2 %}						
+                        <meta name="robots" content="noindex,follow" />
+                    {% endif %}
+                {% endif %}
+            {% elsif template contains "page" %}
+                {% if shop.metafields.appsyl_seo_site.page_global_status != blank and shop.metafields.appsyl_seo_site.page_global_status != 0 %}
+                    {% if shop.metafields.appsyl_seo_site.page_global_status == 1 %}
+                        <meta name="robots" content="noindex,nofollow" />
+                    {% elsif shop.metafields.appsyl_seo_site.page_global_status == 2 %}
+                        <meta name="robots" content="noindex,follow" />
+                    {% endif %}
+                {% else %}
+                    {% if page.metafields.appsyl_seo_page.status == 1 %}
+                        <meta name="robots" content="noindex,nofollow" />
+                    {% elsif page.metafields.appsyl_seo_page.status == 2 %}
+                        <meta name="robots" content="noindex,follow" />
+                    {% endif %}
+                {% endif %}
+            {% elsif template contains "article" %}
+                {% if article.metafields.appsyl_seo_article.status == 1 %}
+                    <meta name="robots" content="noindex,nofollow" />
+                {% elsif article.metafields.appsyl_seo_article.status == 2 %}
+                    <meta name="robots" content="noindex,follow" />
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endif %}

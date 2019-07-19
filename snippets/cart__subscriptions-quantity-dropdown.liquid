@@ -1,0 +1,59 @@
+{% comment %}
+  @param product - the product
+  @param default_quantity (optional)
+  @param ajaxCart - if the input is intended for the ajax cart (default is false)
+{% endcomment %}
+
+{% assign default_was_selected = false %}
+
+{%- capture product_quantity_options -%}
+  {%- assign quantities = product.metafields.subscriptions.quantities | newline_to_br | replace: '<br />', ',' | replace: ' ', '' | split: ',' -%}
+
+  {%- for _quantity in quantities -%}
+
+    {%- assign quantity = _quantity | strip_newlines | strip  | abs -%}
+
+    <option value="{{ quantity }}"
+      {%- unless ajaxCart -%}
+        {%- if quantity == default_quantity -%}
+          selected
+          {%- assign default_was_selected = true -%}
+        {%- endif -%}
+      {%- endunless -%}
+    >{{ quantity }}</option>
+
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- if ajaxCart -%}
+<div class="ajaxcart__qty-num_wrapper ajaxcart__qty-num_wrapper--select">
+{%- endif -%}
+<select
+  aria-label="quantity"
+  {%- if ajaxCart -%}
+    class="ajaxcart__qty-num"
+    {% raw %}data-quantity="{{{itemQty}}}" data-id="{{{key}}}" data-line="{{{line}}}"{% endraw %}
+  {%- else -%}
+    id="updates_{{ item.key }}"
+    name="updates[]"
+    class="cart__product-qty"
+    data-id="{{ item.key }}"
+    data-initial-value="{{ default_quantity }}"
+  {%- endif -%}
+>
+
+  {%- unless default_was_selected or ajaxCart -%}
+    {%- if default_quantity -%}
+      <option value="{{ default_quantity }}" selected>{{ default_quantity }}</option>
+      <option value="" disabled>---</option>
+    {%- endif -%}
+  {%- endunless -%}
+
+  <option value="0">Remove</option>
+
+  {{ product_quantity_options }}
+
+</select>
+{%- if ajaxCart -%}
+</div>
+{%- endif -%}

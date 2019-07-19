@@ -19,6 +19,66 @@
     background: transparent;
     border-color: {{ section.settings.slide_text_color }};
   }
+  
+  .heroLeftText .hero__text-content{
+  	text-align: left !important;
+  }
+  
+  .heroLeftText .hero__title{
+  	padding:0 !important;
+    padding-top: 10px !important;
+  	width: 50%;
+    max-width: 500px;
+  }
+  
+  .use_dark_text{
+  	color: #000 !important;
+  }
+  
+  
+  @media screen and (max-width: 590px){
+    .heroLeftText .hero__text-content{
+    	text-align: center !important;
+    }
+    
+    .heroLeftText .hero__title{
+  		width: 90%;
+    	margin:0 auto;
+  	}
+    
+    
+    .hero__subtitle{
+        font-size: 30px !important;
+      	line-height: 100%;
+    }
+
+    .hero__title{
+      font-size: 15px !important;
+    }
+    
+    .hero__slide a.hero__cta{
+      font-size: 15px !important;
+    }
+    
+    .force_light_text{
+      color: #fff !important;
+  	}
+    
+    .rightBgPosition{
+    	object-position: 60% center;
+    }
+    
+    .centerBgPosition{
+    	object-position: center center;
+    }
+
+    .far_rightBgPosition{
+    	object-position: 92% -430px;
+    	height: 190% !important;
+    }
+  }
+  
+  
 </style>
 
 {% if hero_full_height %}
@@ -69,7 +129,10 @@
                   {% endif %}
                 </noscript>
                 {% assign img_url = block.settings.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
-                <img class="hero__image hero__image--{{ block.id }} lazyload fade-in{% unless forloop.first == true %} lazypreload{% endunless %}"
+                <img class="hero__image hero__image--{{ block.id }} lazyload fade-in{% unless forloop.first == true %} lazypreload{% endunless %}
+                            {% if block.settings.background_position == 'center' %} centerBgPosition{% endif %}
+                            {% if block.settings.background_position == 'right' %} rightBgPosition{% endif %}
+                            {% if block.settings.background_position == 'far_right' %} far_rightBgPosition{% endif %}"
                   {% if forloop.first == true %}
                     src="{{ block.settings.image | img_url: '300x' }}"
                   {% endif %}
@@ -89,7 +152,10 @@
                 </noscript>
                 <div class="hero__image">
                   {% assign img_url = block.settings.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
-                  <img class="hero__image lazyload fade-in"
+                  <img class="hero__image lazyload fade-in
+                              {% if block.settings.background_position == 'center' %} centerBgPosition{% endif %}
+                              {% if block.settings.background_position == 'right' %} rightBgPosition{% endif %}
+                              {% if block.settings.background_position == 'far_right' %} far_rightBgPosition{% endif %}"
                     src="{{ block.settings.image | img_url: '300x' }}"
                     data-src="{{ img_url }}"
                     data-widths="[540, 720, 900, 1080, 1296, 1512, 1728, 1944, 2048]"
@@ -115,16 +181,16 @@
                 opacity: {{ block.settings.image_overlay_opacity | divided_by: 100.00 }};
               }
             </style>
-            <div class="hero__text-wrap slideshow__overlay">
+            <div class="hero__text-wrap slideshow__overlay {% if block.settings.text_position == 'left' %}heroLeftText{% else %} heroCenterText{% endif %}">
               <div class="hero__text-align">
                 <div class="hero__text-content">
                   {% unless block.settings.slide_subheading == blank %}
-                    <p class="hero__subtitle">
+                    <p class="hero__subtitle{% if block.settings.use_dark_text %} use_dark_text{% endif %}{% if block.settings.force_light_text %} force_light_text{% endif %}" style="font-size: {{ block.settings.slide_heading_size }}px; margin-top: {{ block.settings.slide_top_spacing }}px;">
                       {{ block.settings.slide_subheading | escape }}
                     </p>
                   {% endunless %}
                   {% unless block.settings.slide_heading == blank %}
-                    <h2 class="h1 hero__title">
+                    <h2 class="h1 hero__title{% if block.settings.use_dark_text %} use_dark_text{% endif %}{% if block.settings.force_light_text %} force_light_text{% endif %}" style="font-size: {{ block.settings.slide_sub_heading_size }}px;">
                       {{ block.settings.slide_heading | escape }}
                     </h2>
                   {% endunless %}
@@ -233,10 +299,30 @@
             "default": "An introductory"
           },
           {
-            "type": "text",
+            "type": "range",
+            "id": "slide_heading_size",
+            "label": "Heading Size",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 60
+          },
+          {
+            "type": "textarea",
             "id": "slide_heading",
             "label": "Heading text",
             "default": "Hero Banner"
+          },
+          {
+            "type": "range",
+            "id": "slide_sub_heading_size",
+            "label": "Sub Heading Size",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 30
           },
           {
             "type": "text",
@@ -248,6 +334,66 @@
             "type": "url",
             "id": "slide_link",
             "label": "Slide link"
+          },
+          {
+            "type": "select",
+            "id": "text_position",
+            "label": "Text Position",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+			  {
+                "value": "center",
+                "label": "Center"
+              }
+            ],
+            "default": "center",
+            "info": "Text position within the slider"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_dark_text",
+            "label": "Dark Text",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "force_light_text",
+            "label": "Light Text (mobile only)",
+            "default": false
+          },
+          {
+            "type": "range",
+            "id": "slide_top_spacing",
+            "label": "Top Spacing",
+            "min": -200,
+            "max": 200,
+            "step": 5,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "select",
+            "id": "background_position",
+            "label": "Background Position",
+            "options": [
+              {
+                "value": "center",
+                "label": "Center Center"
+              },
+			  {
+                "value": "right",
+                "label": "60% Center"
+              },
+			  {
+                "value": "far_right",
+                "label": "0 Center"
+              }
+            ],
+            "default": "center",
+            "info": "Adjust the background position"
           }
         ]
       }

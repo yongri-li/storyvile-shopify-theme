@@ -8,6 +8,15 @@ function getQueryStringAsObject() {
   return search ? JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}') : {};
 }
 
+function getUrlParams(){
+  var params = {};
+  var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value){
+  		params[key] = value;
+  });
+  return params;
+}
+
+
 var DEBUG = true;
 
 
@@ -48,6 +57,7 @@ $(function () {
   if (query.default_product && validProducts.indexOf(query.default_product) >= 0) {
     options.defaultProduct = query.default_product;
   }
+  
 
   debug('Options', options);
 
@@ -69,7 +79,21 @@ $(function () {
   var $wantEpilogue = $builder.find('[data-option-want-epilogue]');
 
   var $percentPrice = $builder.find('[data-option-percent-price]');
-  var discount = 50;
+  
+  var $getDiscountCode = getUrlParams()["utm_content"];
+  var $getCouponCode = getUrlParams()["utm_coupon"];
+  
+  if ($getDiscountCode > 0){
+  	  var discount = getUrlParams()["utm_content"];
+  } else {
+      var discount = 50;
+  }
+  
+  if ($getCouponCode !== 'undefined'){
+  	  var couponCode = getUrlParams()["utm_coupon"];
+  } else {
+      var couponCode = 'FRESH';
+  } 
 
 
   function asPercentage(value) {
@@ -112,7 +136,7 @@ $(function () {
         'cart_token=' + state.cartToken,
         'myshopify_domain=' + options.shopify_domain
       ];
-      return 'https://checkout.rechargeapps.com/r/checkout?' + params.join('&');
+      return 'https://checkout.rechargeapps.com/r/checkout?' + params.join('&') + '&discount=' + couponCode;
     } else {
       return '/cart';
     }
@@ -170,8 +194,7 @@ $(function () {
     var product = options.products[state.product];
     var unitVariant = getUnitVariant();
 
-
-
+    
     $builder.find('[data-option]').removeClass('selected');
     $builder.find([
         '[data-options-set-type="product"]   [data-option][data-value="' + state.product + '"]',
@@ -180,41 +203,66 @@ $(function () {
       ].join(','))
       .addClass('selected')
     ;
-
-
       //Testing Pushing Gathering data per-step
 
+
+      
       if (state.product == 'beans') {
       		dataLayer.push({'Product': 'Whole Bean'});
 
             if (state.selectedQuantity == 0) {
-      			  dataLayer.push({'Quantity': '1 Bag'});
+      			  dataLayer.push({'Quantity': '1'});
             } else if (state.selectedQuantity == 1) {
-      			  dataLayer.push({'Quantity': '2 Bags'});
+      			  dataLayer.push({'Quantity': '2'});
             } else {
-      			  dataLayer.push({'Quantity': '3 Bags'});
+      			  dataLayer.push({'Quantity': '3'});
             }
+      
+            if (state.selectedFrequency == 0) {
+      			  dataLayer.push({'Frequency': '2 Weeks'});
+            } else if (state.selectedFrequency == 1) {
+      			  dataLayer.push({'Frequency': '3 Weeks'});
+            } else {
+      			  dataLayer.push({'Frequency': '4 Weeks'});
+            }
+      
 
 	  } else if (state.product == 'pods') {
       		dataLayer.push({'Product': 'Keurig® Pods'});
-
+      
             if (state.selectedQuantity == 0) {
-      			  dataLayer.push({'Quantity': '16 Pods'});
+      			  dataLayer.push({'Quantity': '16'});
             } else if (state.selectedQuantity == 1) {
-      			  dataLayer.push({'Quantity': '32 Pods'});
+      			  dataLayer.push({'Quantity': '32'});
             } else {
-      			  dataLayer.push({'Quantity': '48 Pods'});
+      			  dataLayer.push({'Quantity': '48'});
+            }
+      
+            if (state.selectedFrequency == 0) {
+      			  dataLayer.push({'Frequency': '2 Weeks'});
+            } else if (state.selectedFrequency == 1) {
+      			  dataLayer.push({'Frequency': '3 Weeks'});
+            } else {
+      			  dataLayer.push({'Frequency': '4 Weeks'});
             }
 
 	  } else {
       		dataLayer.push({'Product': 'Nespresso® Capsules'});
-
+      
             if (state.selectedQuantity == 0) {
-      			  dataLayer.push({'Quantity': '16 Capsules'});
+      			  dataLayer.push({'Quantity': '16'});
             } else if (state.selectedQuantity == 1) {
-      			  dataLayer.push({'Quantity': '32 Capsules'});
+      			  dataLayer.push({'Quantity': '32'});
             } else {
-      			  dataLayer.push({'Quantity': '48 Capsules'});
+      			  dataLayer.push({'Quantity': '48'});
+            }
+      
+            if (state.selectedFrequency == 0) {
+      			  dataLayer.push({'Frequency': '2 Weeks'});
+            } else if (state.selectedFrequency == 1) {
+      			  dataLayer.push({'Frequency': '3 Weeks'});
+            } else {
+      			  dataLayer.push({'Frequency': '4 Weeks'});
             }
 
 	  }
@@ -303,10 +351,12 @@ $(function () {
           .toggle(options.show_product_discounts && productOption.saved_percent > 0)
         ;
 
-        $option.find('[data-option-percent-price]')
-        .text('-' + (asMoney((unitVariant.price * productOption.quantity) * (discount / 100))) + ' OFF YOUR FIRST SHIPMENT')
+        if(discount > 0){$option.find('[data-option-percent-price]')
+		  .text('YOUR FIRST SHIPMENT IS ONLY ' + (asMoney((unitVariant.price * productOption.quantity) * (1 - (discount / 100)))) + '')
           .toggle(options.show_coupon_discount == true)
-        ;
+        ;}else{
+          $option.find('[data-option-percent-price]').hide();
+        }
 
         $option.find('[data-option-product-image]')
           .removeAttr('src')

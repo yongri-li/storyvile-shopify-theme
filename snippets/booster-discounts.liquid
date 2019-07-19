@@ -1290,11 +1290,11 @@ div#booster-close-notification{
   window.booster.discount_method = "code";
   window.booster.api = {};
 
-
+  
     {% raw %}
       window.booster.money_format = "${{amount}}";
     {% endraw %}
-
+  
 
 
   //baHandlebars
@@ -1310,7 +1310,7 @@ div#booster-close-notification{
 <div class="ba-discount-tiers">
     <h4>{{{product_message}}}</h4>
 
-
+  
     <table class="ba-discount-table">
         <thead>
           <tr>
@@ -1329,7 +1329,7 @@ div#booster-close-notification{
         {{/vol_rows}}
           </tbody>
       </table>
-
+  
 </div>
 
 </script>
@@ -1355,7 +1355,7 @@ div#booster-close-notification{
       </div>
 
       <div class="ba-price">
-
+        
         <span class="ba-sale ">{{{variants.0.qtyPrice}}}</span>
       </div>
 
@@ -1370,14 +1370,14 @@ div#booster-close-notification{
 
   {{/products}}
 
-
+  
       <div class="bundle-total show-savings">
 
-
+        
             <div class="ba-eqs">
               <img src="{{{ba_eqs_url}}}"/>
             </div>
-
+        
 
         <button class="add-booster-bundle">
           <span class='top-button'>Add Bundle</span>
@@ -1386,7 +1386,7 @@ div#booster-close-notification{
           {{/if}}
         </button>
       </div>
-
+  
 
 </div>
 </script>
@@ -2073,19 +2073,19 @@ reqJquery(function($){
 
   function baDelegate(data) {
     if(data.vol_rows && data.vol_rows.length > 0 && (data.type == 'vd' || data.type == 'bundle')){
-
-
+      
+        
           var vdElement = $("form[action*='/cart/add']").first();
-
+        
 
         if($('.ba-vol-wrapper').length == 0){
-
+          
             vdElement.after("<div class='ba-vol-wrapper'></div>");
-
+          
         }
 
         showVolDiscounts(data)
-
+      
     }
 
     if(data.ba_bundles){
@@ -2095,7 +2095,7 @@ reqJquery(function($){
           var referenceElement,bandle_placed;
           var bundle_wrapper= "<div class='ba-bundle-wrapper'></div>";
 
-
+          
 
           if (!bandle_placed) {
               referenceElement = $("form[action*='/cart/add']").first();
@@ -2160,9 +2160,9 @@ reqJquery(function($){
         return
     }
 
-
+    
     $('.additional_checkout_buttons,.additional-checkout-button').hide();
-
+    
 
     //Adjust cart totals only if positive discount present
     if (discounts.positive_discount) { displayCartTotals(discounts)}
@@ -2215,29 +2215,29 @@ reqJquery(function($){
       $('.subtotal .cart_savings.sale').hide();
 
 
-
+      
       $(".wh-cart-total").prepend("<span class='booster-messages'><div id='booster-discount-item'></div><div id='booster-summary-item'>" + boosterSummaryItemHtml + "</div></span>");
-
+      
       $(".wh-cart-total span").css("text-decoration", "none");
   }
 
   function showBoosterNotification(notifications){
      //no notification when we in selector mode.
      if (window.selector_mode) return;
-
+    
     if ((getCookie('booster_notifications_closed') != 1) && notifications != ""){
 
         var notification_placed = false;
         var barHtml = "<div id='booster-notification-bar'>" + notifications + "<div id='booster-close-notification'>X</div></div>";
 
+        
 
+        
 
-
-
-
+        
 
         if (!notification_placed){
-
+            
             var barElements = ["main", "div.content", "section.main-content", "div#content"];
             barElements.forEach(function(el){
                 if ($('#booster-notification-bar').length == 0){
@@ -2248,7 +2248,7 @@ reqJquery(function($){
                     }
                 }
             });
-
+            
         }
 
         if ($('#booster-notification-bar').length > 0){
@@ -2279,7 +2279,7 @@ reqJquery(function($){
 
     var container = btn.parents(".product-container");
     var offer_id  = btn.data("offer-id")
-
+    
     var i         = {id: container.data("variant-id"),quantity: container.data("quantity")};
     boosterUpsellItems.push(i);
 
@@ -2321,11 +2321,11 @@ reqJquery(function($){
 }
 
   function DiscountedPricingCheckout(e){
-
+    
     if ($("input[type='checkbox']#agree").length > 0 && $("input[type='checkbox']#agree:checked").length != $("input[type='checkbox']#agree").length) {
       return
     }
-
+    
 
     $(e.target).prop("disabled", 'disabled');
 
@@ -2580,9 +2580,9 @@ reqJquery(function($){
   function hideUpsell(offerId){
     var currentSkipIds = getCookie('ba-skip-ids');
     var allSkipIds = currentSkipIds + ',' + offerId;
-
+    
       setCookie('ba-skip-ids', allSkipIds, 14);
-
+    
   }
 
   $(document).on('click', '.no-thanks a', function(){
@@ -2615,7 +2615,7 @@ reqJquery(function($){
   if(window.location.search.includes('selector_mode')){
     var head = document.getElementsByTagName('head')[0];
     var script = document.createElement('script');
-
+    
     window.selector_mode = true;
     script.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'discounted-pricing.herokuapp.com/selector.js?v=1';
     script.type = 'text/javascript';

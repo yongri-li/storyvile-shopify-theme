@@ -215,15 +215,5 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 {% include 'subscription-theme-footer' %}
 {% include 'booster-discounts' %}
-  
-  
-{% comment %}
-   CARTHOOK DISABLED
-  
-<!-- Warning: Do not remove. This is used for CartHook Checkout Replacement -->
-{% capture the_snippet_content %}{% include 'carthook-checkout' %}{% endcapture %} {% unless the_snippet_content contains "Liquid error" %} {% include 'carthook-checkout' %} {% endunless %}
-<!-- Warning: Do not remove. This is used for CartHook Checkout Replacement -->
-
-  {% endcomment %}
 </body>
 </html>

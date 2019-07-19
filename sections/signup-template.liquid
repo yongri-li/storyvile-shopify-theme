@@ -1,0 +1,570 @@
+<div class="grid">
+  <div class="grid__item large--five-sixths push--large--one-twelfth">
+
+    <div class="signup-form">
+
+      <h2 class="signup-form__title mobile-only">OUR GIFT TO YOU</h2>
+
+      <div class="grid">
+
+        <div class="grid__item large--one-half signup-form__image-container">
+          <img
+            class="signup-form__image"
+            src="{{ section.settings.form_image | img_url: '1x1' }}"
+            data-src="{{ section.settings.form_image | img_url: '1x1' }}"
+            srcset="{% include 'bgset' image: section.settings.form_image %}"
+            data-srcset="{% include 'bgset' image: section.settings.form_image %}"
+          />
+        </div>
+
+        <div class="grid__item large--one-half">
+
+
+          <section class="signup-form__form-container">
+
+            <h2 class="signup-form__title desktop-only" data-signup-form-title>OUR GIFT TO YOU</h2>
+
+
+            <div class="signup-form__klaviyo" data-signup-form-klaviyo>
+              <div class="signup-form__klaviyo__loading" data-loading>
+                <span>Loading...</span>
+              </div>
+
+              {% for block in section.blocks %}
+                {% if block.type == 'location-form' %}
+                  <div
+                    class="klaviyo-form-{{ block.settings.form_id }}"
+                    data-klaviyo="{{ block.settings.location_id }}"
+                    style="display: none;">
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            <div class="signup-form__form-message" style="display: none;" data-signup-form-subscribed>
+              {{ section.settings.subscribed_message }}
+            </div>
+
+            <div class="signup-form__form-message" style="display: none;" data-signup-form-already-subscribed>
+              {{ section.settings.already_subscribed_message }}
+            </div>
+
+            <div class="signup-form__form-message" style="display: none;" data-signup-form-bad-url>
+              {{ section.settings.bad_url_message }}
+            </div>
+
+          </section>
+
+
+          <div class="signup-form__instructions" data-signup-form-instructions style="display: none;">
+            {{ section.settings.instructions }}
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="signup-form__disclaimer">
+        {{ section.settings.disclaimer }}
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .template-page-signup .main-content {
+    background: rgba(227,227,227,1);
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(227,227,227,1) 24%, rgba(192,192,190,1) 85%, rgba(192,192,190,1) 100%);
+  }
+
+  @media (min-width: 769px) {
+    .template-page-signup .main-content {
+      padding-top: 140px;
+      padding-bottom: 100px;
+    }
+  }
+</style>
+
+
+<script>
+
+  $(function () {
+
+    var debug = true ? console.log.bind(console, '[DEBUG][SignupPages]') : function () {};
+
+    var state = {
+      lastTimeFormSubmitted: null
+    };
+
+    function parseQuery(queryString) {
+      var query = {};
+      var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+      for (var i = 0; i < pairs.length; i++) {
+          var pair = pairs[i].split('=');
+          query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || true);
+      }
+      return query;
+    }
+
+    function deprecatedInit() {
+      var $signupForm = $('[data-signup-form]');
+
+
+      if (query.sl) {
+        var $sl = $('[data-signup-form-sl]');
+        $sl.val(query.sl);
+        $sl.attr('value', query.sl);
+        $sl.trigger('change');
+        $signupForm.animate({ opacity: 1 });
+
+      } else if (query.subscribed) {
+        var $subscribedMessage = $('[data-signup-form-subscribed]');
+        $signupForm.hide();
+        $subscribedMessage.fadeIn();
+
+      } else {
+        $signupForm.animate({ opacity: 1 });
+
+      }
+
+    }
+
+    function showForm() {
+      var $signupFormContainer = $('[data-signup-form-klaviyo]');
+      var $instructions = $('[data-signup-form-instructions]');
+      $signupFormContainer.animate({ opacity: 1 });
+      $instructions.fadeIn();
+    }
+
+    function showSuccess() {
+      var $signupFormContainer = $('[data-signup-form-klaviyo]');
+      var $instructions = $('[data-signup-form-instructions]');
+      var $subscribedMessage = $('[data-signup-form-subscribed]');
+      $signupFormContainer.hide();
+      $subscribedMessage.fadeIn();
+      $instructions.show();
+    }
+
+    function successMessageIsBeingDisplayed() {
+      var $signupFormContainer = $('[data-signup-form-klaviyo]');
+
+      function normalize(s) {
+        return s.toLowerCase().replace(/\s+/g, '-').replace('!', '');
+      }
+
+      return normalize($signupFormContainer.text()).indexOf(normalize('check your email')) != -1;
+    }
+
+    function initForm(query) {
+      var $signupFormContainer = $('[data-signup-form-klaviyo]');
+      var $loading = $signupFormContainer.find('[data-loading]');
+      $loading.fadeOut();
+
+      if (query.sl) {
+        var $sl = $signupFormContainer.find('input[placeholder="shop-location-hidden"]');
+        $sl.attr('value', query.sl);
+
+
+        $signupFormContainer.find('button').click(function () {
+
+          var thisTimeFormSubmitted = Date.now();
+          state.lastTimeFormSubmitted = thisTimeFormSubmitted;
+
+          debug('Form submitted, waiting 7 seconds to refresh');
+          setTimeout(function () {
+            if (thisTimeFormSubmitted == state.lastTimeFormSubmitted) {
+              if (successMessageIsBeingDisplayed()) {
+                debug('Refresh triggered');
+                window.location.reload();
+              } else {
+                debug('Cancelling page refresh. Success message is not visible');
+              }
+            } else {
+              debug('Cancelled page refresh, invalid state');
+            }
+          }, 5000);
+        });
+
+        showForm();
+
+      } else if (query.subscribed) {
+        showSuccess();
+
+      } else {
+        showForm();
+
+      }
+    }
+
+    function showAlreadySubscribed() {
+      var $signupFormContainer = $('[data-signup-form-klaviyo]');
+      var $loading = $signupFormContainer.find('[data-loading]');
+      var $alreadySubscribed = $('[data-signup-form-already-subscribed]');
+      $loading.fadeOut();
+      $signupFormContainer.hide();
+      $alreadySubscribed.fadeIn();
+    }
+
+
+    var waitTime = 0;
+    function init() {
+      var query = parseQuery(location.search);
+
+      var $signupFormContainer = $('[data-signup-form-klaviyo]');;
+      var $klaviyo = $signupFormContainer.find('[data-klaviyo="' + query.sl + '"]');
+
+      $klaviyo.show();
+
+      if ((query.sl && $klaviyo.length >= 1) || query.subscribed) {
+
+
+        if ($klaviyo.children().length >= 1 || query.subscribed) {
+          initForm(query);
+
+        } else if (waitTime < 200000) {
+          waitTime += 500;
+          setTimeout(init, 500);
+
+        } else {
+          showAlreadySubscribed();
+
+        }
+
+      } else {
+        var $loading = $signupFormContainer.find('[data-loading]');
+        $loading.hide();
+        $('[data-signup-form-title]').text("Oops!");
+        $('[data-signup-form-bad-url]').show();
+
+
+      }
+    }
+
+
+    init();
+
+  });
+
+</script>
+
+<script>
+window.addEventListener("klaviyoForms", function(e) { 
+
+ if (e.detail.type == 'submit') {
+     
+     _learnq.push(['track', 'Track User']);
+   
+     _learnq.push(['track', 'Signup Complete']);  	
+ }
+});
+</script>
+
+
+<style>
+
+  .signup-form {
+    max-width: 920px;
+    margin: 0 auto;
+  }
+
+  .signup-form__image-container {
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .signup-form__image-container {
+      margin-bottom: -10%;
+    }
+  }
+
+  .signup-form__image {
+    max-width: 90%;
+  }
+
+  .signup-form__form-container {
+    padding-bottom: 50px;
+  }
+
+  @media (min-width: 769px) {
+    .signup-form__form-container {
+      background-color: #fff;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .signup-form__form-container {
+      margin: 0 20px;
+    }
+  }
+
+  .signup-form__title {
+    font-size: 35px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #542f1c;
+    font-weight: 300;
+
+    padding: 0px 30px;
+  }
+
+  @media (min-width: 769px) {
+    .signup-form__title {
+      padding-top: 40px;
+      padding-bottom: 10px;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .signup-form__content {
+      padding: 0 30px;
+    }
+  }
+
+  .signup-form__row {
+  }
+
+  .signup-form__column {
+
+  }
+
+  .signup-form__field-block {
+
+  }
+
+  .signup-form__field {
+    margin-bottom: 12px;
+  }
+
+  .signup-form__input,
+  .signup-form__klaviyo input {
+    background-color: #F3F3F3 !important;
+    font-style: normal !important;
+    width: 100% !important;
+
+    letter-spacing: 0.1em !important;
+    color: #333 !important;
+    font-size: 15px !important;
+    min-height: 15px !important;
+    line-height: 15px !important;
+
+  }
+
+  .signup-form__klaviyo input[valid="1"] {
+    /* Inherited from global styles */
+    border-color: transparent !important;
+  }
+
+  .signup-form__input::placeholder, /* Chrome, Firefox, Opera, Safari 10.1+ */
+  .signup-form__input::-ms-input-placeholder, /* Microsoft Edge */
+  .signup-form__input:-ms-input-placeholder, /* Internet Explorer 10-11 */
+  .signup-form__klaviyo input::placeholder, /* Chrome, Firefox, Opera, Safari 10.1+ */
+  .signup-form__klaviyo input::-ms-input-placeholder, /* Microsoft Edge */
+  .signup-form__klaviyo input:-ms-input-placeholder /* Internet Explorer 10-11 */
+  {
+    color: #333 !important;
+    opacity: 1 !important; /* Firefox */
+  }
+
+  .signup-form__submit,
+  .signup-form__klaviyo button[content] {
+    /* inherited from global styles */
+    line-height: 1.6 !important;
+    /* end of inherited */
+
+    font-size: 20px !important;
+    font-weight: 500 !important;
+    font-style: normal !important;
+    letter-spacing: 0.2em !important;
+    color: #fff !important;
+    border: 0 !important;
+    background-color: #b41019 !important;
+    padding: 10px 60px !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+  }
+
+  @media (min-width: 769px) {
+    .signup-form__submit,
+    .signup-form__klaviyo button[content] {
+      margin: 10px 0 0px 0 !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .signup-form__submit,
+    .signup-form__klaviyo button[content] {
+      width: 100% !important;
+    }
+  }
+
+  .signup-form__field--submit {
+    text-align: center;
+    margin-bottom: 0px;
+  }
+
+  .signup-form__instructions {
+    text-align: center;
+    background-color: #dcdcdc;
+    font-size: 24px;
+    padding: 25px 50px;
+    color: #221f1f;
+    line-height: normal;
+  }
+
+  .signup-form__instructions > :last-child {
+    margin-bottom: 0px;
+  }
+
+  @media (max-width: 768px) {
+    .signup-form__instructions {
+      margin: 0 20px;
+      padding: 25px 0px;
+    }
+  }
+
+  .signup-form__form-message {
+    text-align: center;
+    font-size: 20px;
+    padding: 25px 50px 50px 50px;
+    color: #221f1f;
+    line-height: normal;
+  }
+
+  .signup-form__form-message > :last-child {
+    margin-bottom: 0px;
+  }
+
+  @media (max-width: 768px) {
+    .signup-form__form-message {
+      margin: 0 20px;
+      padding: 25px 0px;
+    }
+  }
+
+  .signup-form__disclaimer {
+    margin-top: 50px;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .signup-form__disclaimer {
+      margin: 50px 20px;
+    }
+  }
+
+  .signup-form__klaviyo {
+
+    position: relative;
+  }
+
+  .signup-form__klaviyo__loading {
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    z-index: 2;
+    background: white;
+  }
+
+  .signup-form__klaviyo__loading span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Error field */
+  .signup-form__klaviyo input { margin-bottom: 6px !important; }
+  .signup-form__klaviyo input + div span {
+    font-size: 11px !important;
+  }
+  .signup-form__klaviyo input + div {
+    position: absolute !important;
+    top: calc(100% - 17px) !important;
+  }
+
+  /* Shop location field (hidden) */
+  .signup-form__klaviyo input[placeholder="shop-location-hidden"] {
+    position: fixed !important;
+    bottom: 0 !important;
+    z-index: -100 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+</style>
+
+
+{% schema %}
+  {
+    "name": "Signup Form",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "form_image",
+        "label": "Form Image"
+      },
+      {
+        "type": "richtext",
+        "id": "subscribed_message",
+        "label": "Subscribed Message",
+        "default": "<p>Success! Please <strong>check your email.</strong></p>",
+        "info": "If Klaviyo form is set to 'Show Success Message' then this message will not be shown. You will have to modify the success text from Klaviyo."
+      },
+      {
+        "type": "richtext",
+        "id": "already_subscribed_message",
+        "label": "Already Subscribed Message",
+        "default": "<p>Looks like we've got your email. If you haven't received your Storyville mug, please see a Storyville employee.</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "bad_url_message",
+        "label": "Bad URL Message",
+        "default": "<p>Looks like your URL is not valid or has expired.</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "instructions",
+        "label": "Instructions",
+        "default": "<p>Bring your <strong>confirmation email</strong> to the Storyville bar.</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "disclaimer",
+        "label": "Disclaimer",
+        "default": "<p>For Storyville use only. Spam free. Must be 18 or older to participate.</p>"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "location-form",
+        "name": "Location Form",
+        "settings": [
+          {
+            "type": "text",
+            "id": "location",
+            "label": "Location Name"
+          },
+          {
+            "type": "text",
+            "id": "location_id",
+            "label": "Location URL ID",
+            "info": "When sharing the signup URL, you will need to add a ?sl=[location_id] query parameter, that location ID is defined here."
+          },
+          {
+            "type": "text",
+            "id": "form_id",
+            "label": "Form ID"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

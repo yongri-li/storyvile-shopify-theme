@@ -1,4 +1,4 @@
 yarn-error.log
-config/settings_schema.json
 node_modules/
 .DS_Store
+config/settings_data.json
