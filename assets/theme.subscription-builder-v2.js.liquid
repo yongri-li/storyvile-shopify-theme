@@ -3,6 +3,7 @@
  */
 
 
+
 function getQueryStringAsObject() {
   var search = location.search.substring(1);
   return search ? JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}') : {};
@@ -21,10 +22,18 @@ var DEBUG = true;
 
 
 $(function () {
+  
+  
+//Show and hide Learn More
+  
+  $(".learn-more-button").click(function(){
+  	$(".more-features").toggleClass("learn-more-visible");
+  });
+  
 
   var debug = DEBUG ? console.log.bind(console, '[DEBUG][SubscriptionBuilder]') : _.noop;
 
-  debug('Subscription Builder v1.0');
+  debug('Subscription Builder v1.2');
 
   var $builder = $('[data-subscription-builder]');
 
@@ -45,7 +54,7 @@ $(function () {
     cartToken: null
   };
 
-  /* Contains products: `options.products.{beans|pods|capsules}` */
+  /* Contains products: options.products.{beans|pods|capsules} */
   var options = Object.assign({
     show_starting_compare_at_price: false,
     show_the_math: false,
@@ -58,9 +67,11 @@ $(function () {
     options.defaultProduct = query.default_product;
   }
   
+ 
 
   debug('Options', options);
 
+  //globals
   var $steps = $builder.find('[data-steps] [data-step]');
   var $navSteps = $builder.find('[data-nav-steps] [data-step]');
   var $optionSets = $builder.find('[data-options-set]');
@@ -70,18 +81,37 @@ $(function () {
   var $priceUnit = $builder.find('[data-price-unit]');
 
   var $moneySaved = $builder.find('[data-money-saved]');
+  var $priceEach = $builder.find('[data-money-saved]');
 
   var $savedPrice = $builder.find('[data-saved-price]');
   var $packageType = $builder.find('[data-package-type]');
+  var $simpleTitle = $builder.find('[data-simple-title]');
   var $packagePresentation = $builder.find('[data-package-presentation]');
+  var $productTitle = $builder.find('[data-product-title]');
+  var $productQuantityHeadline = $builder.find('[data-product-quantity-headline]');
+  var $productBullets = $builder.find('.first-features');
+  var $productMoreBullets = $builder.find('.more-features');
+  var $totalPrice = $builder.find('[data-total-price]');
+  var $totalQuantity = $builder.find('[data-total-quantity]');
   var $packageDescription = $builder.find('[data-package-description]');
+  var $productSubtitle = $builder.find('[data-offering-subtitle]');
 
+  var $quantityOptions = $builder.find('[data-quantity-options]');
+  var $frequencyOptions = $builder.find('[data-frequency-options]');
+  
   var $wantEpilogue = $builder.find('[data-option-want-epilogue]');
 
   var $percentPrice = $builder.find('[data-option-percent-price]');
+  var $percentPriceTotal = $builder.find('[data-option-percent-price-total]');
   
+  var $selectedFrequencyTitle = $builder.find('[data-frequency-title]');
+  
+  //url params
   var $getDiscountCode = getUrlParams()["utm_content"];
   var $getCouponCode = getUrlParams()["utm_coupon"];
+  
+  
+ 
   var couponCode = 'FRESH';
   
   if ($getDiscountCode > 0){
@@ -93,7 +123,10 @@ $(function () {
   if ($getCouponCode){
   	  var couponCode = getUrlParams()["utm_coupon"];
   }
+  
 
+  
+  
 
   function asPercentage(value) {
     return (value * 100).toFixed(0) + '%';
@@ -125,21 +158,34 @@ $(function () {
   function singular(word) {
     return word.replace(/[sS]$/g, '');
   }
+  
+  
 
-
+  
   function getCheckoutUrl(cart) {
     var token = cart ? cart.token : state.cartToken;
 
     if (token) {
+      
       var params = [
         'cart_token=' + state.cartToken,
-        'myshopify_domain=' + options.shopify_domain
+        'myshopify_domain=' + options.shopify_domain,
+        'discount=' + couponCode
       ];
-      return 'https://checkout.rechargeapps.com/r/checkout?' + params.join('&') + '&discount=' + couponCode;
+      
+      //RECHARGE URL
+      return 'https://checkout.rechargeapps.com/r/checkout?' + params.join('&');
+      
     } else {
-      return '/cart';
+      return '/checkout';
     }
+    
   }
+  
+
+  
+
+  
 
   function getUnitVariant() {
     var product = options.products[state.product];
@@ -172,7 +218,7 @@ $(function () {
 
       $.merge($step, $navStep).toggleClass('fulfilled', i < state.step);
       $.merge($step, $navStep).toggleClass('current', i == state.step);
-
+      
     });
 
     $builder.find('[data-disclaimer]:not(:visible)').fadeIn();
@@ -181,14 +227,43 @@ $(function () {
       var step = $(this).data('visible-on-builder-step');
       if (step == state.step) {
         if (!$(this).is(':visible')) {
-          $(this).fadeIn();
+          $(this).show();
         }
       } else {
         if ($(this).is(':visible')) {
-          $(this).fadeOut();
+          $(this).hide();
         }
       }
     });
+    
+    
+    
+    $('[data-visible-on-builder-product]').each(function () {
+      var beans_btf = $(this).find('[data-beans-btf]');
+      var capsules_btf = $(this).find('[data-capsules-btf]');
+      var pods_btf = $(this).find('[data-pods-btf]');
+      
+      if (state.product == 'beans') {
+			$(beans_btf).fadeIn();} 
+      else{
+           $(beans_btf).fadeOut();}
+      
+      
+      if (state.product == 'capsules') {
+			$(capsules_btf).fadeIn();} 
+      else{
+           $(capsules_btf).fadeOut();}
+      
+      
+      if (state.product == 'pods') {
+			$(pods_btf).fadeIn();} 
+      else{
+           $(pods_btf).fadeOut();}
+      
+      
+    });
+    
+    
 
     var product = options.products[state.product];
     var unitVariant = getUnitVariant();
@@ -202,9 +277,12 @@ $(function () {
       ].join(','))
       .addClass('selected')
     ;
+    
+      
+    //Selected Option Test 
+      
+      
       //Testing Pushing Gathering data per-step
-
-
       
       if (state.product == 'beans') {
       		dataLayer.push({'Product': 'Whole Bean'});
@@ -300,6 +378,7 @@ $(function () {
     }
 
 
+    $simpleTitle.text(state.product);  
     $startingPrice.text(asMoney(product.starting_price));
     $priceUnit.text(product.price_unit ?  '/ ' + singular(product.price_unit) : '');
 
@@ -312,15 +391,37 @@ $(function () {
     }
 
 
+  
+  	var product_bullets = product.product_bullets;
+  	var product_more_bullets = product.product_more_bullets;
+  
+  	if ($productBullets.length){  
+      $productBullets.find('li').html(
+        product_bullets.map(i => $('<li>').text(i))
+      );
+
+      $productMoreBullets.find('li').html(
+        product_more_bullets.map(i => $('<li>').text(i))
+      );
+  	}
+  
+  
     $packagePresentation.text(product.package_presentation);
+  	$productTitle.html(product.product_title);
+    $productQuantityHeadline.html(product.product_quantity_headline);
     $packageType.text('PER ' + product.package_type);
     $packageDescription.text(product.package_description);
+    $productSubtitle.text(product.product_subtitle);
 
     $moneySaved.text('SAVE ' + product.money_saved);
 
     var $quantities = $('[data-options-set][data-options-set-type="quantity"]');
+	
+  
+  	
 
-
+ 
+  
     $quantities.find('[data-option]').each(function (i) {
       var $option = $(this);
       var productOption = state.productOptions[i];
@@ -331,7 +432,7 @@ $(function () {
         ;
 
         $option.find('[data-option-product-type]')
-          .text(productOption.type)
+          .text((productOption.type) + ' ' + (productOption.size))
         ;
 
 
@@ -350,10 +451,15 @@ $(function () {
           .toggle(options.show_product_discounts && productOption.saved_percent > 0)
         ;
 
-        if(discount > 0){$option.find('[data-option-percent-price]')
+        if(discount > 0){
+          
+          $option.find('[data-option-percent-price]')
 		  .text('YOUR FIRST SHIPMENT IS ONLY ' + (asMoney((unitVariant.price * productOption.quantity) * (1 - (discount / 100)))) + '')
-          .toggle(options.show_coupon_discount == true)
-        ;}else{
+          .toggle(options.show_coupon_discount == true);
+          
+
+        
+        }else{
           $option.find('[data-option-percent-price]').hide();
         }
 
@@ -374,6 +480,129 @@ $(function () {
         $option.hide();
       }
     });
+  
+  
+  var productOptionSelected = state.productOptions[state.selectedQuantity];
+  var productOptionSelectedFrequency = state.productOptions[state.selectedFrequency];
+  
+  if(discount > 0){
+    
+    $(".builder-option").on( "click", function() {
+    	$('.action__above').addClass("action-change");
+      
+      	setTimeout(
+        function() {
+                $('.action__above').removeClass("action-change");
+        }, 200);
+      
+    });
+    
+    
+  	$percentPriceTotal.text((asMoney((unitVariant.price * productOptionSelected.quantity) * (1 - (discount / 100)))) + '');
+    
+    
+
+  }
+  
+
+  
+  //UPDATE TOTAL VARIABLE (no discounts)
+
+  $totalPrice.text((asMoney((unitVariant.price * productOptionSelected.quantity) * 1)));
+  $totalQuantity.text(productOptionSelected.quantity);
+  
+  
+  
+  //UPDATE SELECTED FREQUENCY TITLE
+  
+  var currentFrequency = product.shipping_interval_frequency[state.selectedFrequency];
+  
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  
+  var today = new Date();
+  
+    var numberOfDaysToAdd = (currentFrequency * 7);
+    today.setDate(today.getDate() + numberOfDaysToAdd);
+
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1;
+
+
+    function getMonth(n) {
+      return months[mm - 1];
+    }
+
+    var month = getMonth(1);
+  
+  	var nextShipmentDate = month + '. ' + dd + (dd == 1 ? 'st' : dd == 2 ? 'nd' : dd == 3 ? 'rd' : 'th' );
+  
+  
+  $selectedFrequencyTitle.text(nextShipmentDate);
+  
+  
+  // EVERY WEEK REMOVED 
+  // $selectedFrequencyTitle.text(currentFrequency > 1 ? 'Every ' + currentFrequency + ' ' + 'Weeks' : 'Every ' + 'Week');
+  
+
+  
+  
+  
+  
+  
+  
+  //MODIFIED QUANTITIES
+  
+  var $quantitiesSelect = $('[data-quantity-options][data-options-set-type="quantity"]');
+  
+  $quantitiesSelect.find('.builder-option').each(function (i) {
+      var $option = $(this);
+      var productOption = state.productOptions[i];
+      var priceEach = parseFloat(product.price_each);
+      
+	  
+      if (productOption) {
+      	$option.html(productOption.type 
+         + " ($" + (productOption.quantity * priceEach) + ")"      
+       	);
+
+        
+      	$option.show();
+        
+      } else {      
+      	$option.hide();
+      }
+  });
+  
+ 
+ 
+  
+  
+  
+  //MODIFIED FREQUENCIES
+  var $frequencySelect = $('[data-frequency-options][data-options-set-type="frequency"]');
+  
+  $frequencySelect.find('.builder-option').each(function (i) {
+      var $option = $(this);
+      
+      var frequency = product.shipping_interval_frequency[i];
+      var unitType = product.shipping_interval_unit_type.toLowerCase();
+	  
+      if (product) {
+		
+      	$option.html(frequency > 1 ? 'Every ' + frequency + ' ' + unitType : 'Every ' + singular(unitType));
+
+        
+      	$option.show();
+        
+      } else {      
+      	$option.hide();
+      }
+  });
+  
+  
+  
+  
+  
 
 
 
@@ -382,29 +611,42 @@ $(function () {
 
       if (product.sample_image) {
         var $preview = $('[data-preview-image]');
-
-        if ($preview.attr('data-srcset') != product.sample_image.srcset) {
-          $preview.fadeOut(function () {
-
-            $preview.removeAttr('src')
-              .removeAttr('data-src')
-              .removeAttr('srcset')
-              .removeAttr('data-srcset')
-            ;
-
-            $preview.attr({
+        
+        $preview.attr({
               'src': product.sample_image.src,
               'data-src': product.sample_image.src,
               'srcset': product.sample_image.srcset,
               'data-srcset': product.sample_image.srcset
-            });
+         });
 
-            $preview.fadeIn();
-
-          });
-        }
 
       }
+      
+      
+      if (product.quantity_image) {
+        var $previewQuantity = $('[data-quantity-image]');
+        
+        $previewQuantity.attr({
+              'src': product.quantity_image.src,
+              'data-src': product.quantity_image.src,
+              'srcset': product.quantity_image.srcset,
+              'data-srcset': product.quantity_image.srcset
+        });
+       
+      }
+      
+      if (product.frequency_image) {
+        var $previewFrequency = $('[data-frequency-image]');
+        
+        $previewFrequency.attr({
+              'src': product.frequency_image.src,
+              'data-src': product.frequency_image.src,
+              'srcset': product.frequency_image.srcset,
+              'data-srcset': product.frequency_image.srcset
+        });
+       
+      }
+      
 
       var $frequencies = $('[data-options-set][data-options-set-type="frequency"] [data-option]');
 
@@ -415,8 +657,11 @@ $(function () {
         var $image = $frequency.find('[data-frequency-image]');
 
         var fileVariant = [unitType, frequency].join('-').toLowerCase();
+        
+		if ( $image.length ) {
+        	$image.attr('src', $image.attr('src').replace(/weeks\-[0-9]/, fileVariant));
+        }
 
-        $image.attr('src', $image.attr('src').replace(/weeks\-[0-9]/, fileVariant))
       })
 
       $builder.find('[data-ships-every]').each(function (i) {
@@ -426,9 +671,42 @@ $(function () {
 
         $(this).text(frequency > 1 ? frequency + ' ' + unitType : singular(unitType));
       });
+      
+     
+      
+      
+      
+	// TOTAL PRICE UPDATE
+      
+      if ( $quantityOptions.length ) {
+        var $quantityTotal = $quantityOptions.find(':selected').val();
+        var quantityOption = state.productOptions[$quantityTotal];
+        var frequencyOption = state.selectedFrequency;
+        var priceEach = parseFloat(product.price_each);
+
+        //Per Week Variable
+        var pricePerWeek = parseFloat((quantityOption.quantity * priceEach) / (frequencyOption + 2)).toFixed(0);
+        
+        //Simple total variable
+        var priceTotal = quantityOption.quantity * priceEach;
+
+        //Final output
+        $totalPrice.text(" $" + priceTotal + "");
+        
+        //Final output for discount
+        var percentPriceTotal = (asMoney((quantityOption.quantity * priceEach) * (1 - (discount / 100)) * 100)) + '';
+        
+        $percentPriceTotal.text(percentPriceTotal);
+        
+      }
+      
+
+      
     }
   }
 
+  
+  
   var update = theme.debounce(forceUpdate, 20);
 
 
@@ -438,10 +716,97 @@ $(function () {
   }
 
 
-  function checkout() {
 
-    if (typeof state.selectedQuantity == "number") {
-      debug('Checkout');
+//Update builder based on URL HASH
+/*
+var $currentStep = window.location.hash;
+
+if ($currentStep == "#frequency"){
+      setState({ step: 2 });
+  	  debug('Loaded Frequency Step...');
+}
+
+if ($currentStep == "#quantity"){
+      setState({ step: 1 }); 
+      debug('Loaded Quantity Step...');
+}
+*/
+
+
+
+
+
+
+
+
+function addToCartCarthook(){
+
+      var product = options.products[state.product];
+      var productOption = state.productOptions[state.selectedQuantity];
+      var unitVariant = getUnitVariant();
+
+      var cartItem = {
+        id: unitVariant.id,
+        quantity: productOption.quantity,
+        note: "order number 1",
+        properties: {
+          'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
+          'shipping_interval_unit_type': product.shipping_interval_unit_type,
+          'subscription_id': product.subscription_id
+        }
+      };
+      
+
+      $.get('/cart.json').done(function (cart) {
+      	
+        debug('Initializing checkout for: ' + cartItem.id);
+
+        
+        var cartItemVariants = [];
+          
+        cart.items.forEach(function(item) {
+          var i = item.variant_id
+          cartItemVariants.push(i);
+        });
+        
+        
+        debug('Current items in cart: ' + cartItemVariants);
+        
+
+        if (cartItemVariants.indexOf(cartItem.id) > -1){
+
+          
+        $.post('/cart/change.json', cartItem)
+          .done(function () {
+          
+            debug('Successfully changed the quantity of ' + cartItem.id);
+            
+            window.testGlobalBeforeReact(0);
+
+          });
+          
+        } else {
+        
+          $.post('/cart/add.json', cartItem)
+          .done(function () {
+            
+            debug('Successfully added item to the cart');
+
+            window.testGlobalBeforeReact(0);
+          });
+        }
+        
+      });
+	}
+
+
+
+
+
+
+
+
+function addToCart(){
 
       var product = options.products[state.product];
       var productOption = state.productOptions[state.selectedQuantity];
@@ -456,15 +821,11 @@ $(function () {
           'subscription_id': product.subscription_id
         }
       };
+      
+        
 
       
-      
-      
-      
-      
-      
-      
-            $.get('/cart.json').done(function (cart) {
+      $.get('/cart.json').done(function (cart) {
       	
         debug('Initializing checkout for: ' + cartItem.id);
         
@@ -473,17 +834,16 @@ $(function () {
         var cartItemVariants = [];
           
         cart.items.forEach(function(item) {
-          var i = item.variant_id
+          var i = item.variant_id;
           cartItemVariants.push(i);
         });
         
         
         debug('Current items in cart: ' + cartItemVariants);
 
-        
 // IF CART CONTAINS SAME ITEM
         
-        if (cartItemVariants.includes(cartItem.id)){
+        if (cartItemVariants.indexOf(cartItem.id) > -1){
 
 // UPDATE EXISTING CART ITEM
           
@@ -517,57 +877,113 @@ $(function () {
             }) 
             
           });
-        
-
-        
-        
         }
         
-        
       });
-      
-      
-      
-      
-      
-      
-      /**
-      $.post('/cart/add.json', cartItem)
-        .done(function () {
-          debug('Successfully added items to the cart');
+	}
 
-          $.get('/cart.json').done(function (cart) {
-            debug('Obtained new cart token');
-            setState({ cartToken: cart.token });
-            forceUpdate();
-            $builder.submit();
-          })
-        })
-        .fail(function () {
-          console.error('Failed to checkout');
-        });**/
 
+
+
+
+
+/** OLD CHECKOUT BUTTON
+
+//CARTHOOK CHECKOUT  BUTTON WITH URL PARAMS
+
+  var chBtn = document.getElementById('ch-checkout-btn');
+  chBtn && chBtn.addEventListener('click', function (evt) {
+      evt.preventDefault();
       
+      var $getEmail = getUrlParams()["utm_email"];
+      var email = '';
+    
+      if (typeof $getEmail !== "undefined"){
+        var email = $getEmail.replace(/%40/i, '@');
+      }
+    
+      var ch_params = [
+      	'email=' + email,
+      	'coupon=' + couponCode,
+        'utm_coupon=' + couponCode,
+        'utm_content=' + discount
+      ];
+    
+      debug('Customer Email: ', email);
+       
+       
+      window.ch_cust_param = ch_params.join('&');
+        
+      debug('Adding to cart... ');
+    
+      addToCartCarthook();
+       
+    
+      window.testGlobalBeforeReact(0);
+  
+    });
+
+// END EXTRA CHECKOUT BUTTON
+
+***/
+
+
+
+  var simpleAdd = document.getElementById('add-to-cart');
+  simpleAdd && simpleAdd.addEventListener('click', function (evt) {
+      evt.preventDefault();
       
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
+      var $getEmail = getUrlParams()["utm_email"];
+      var email = '';
+    
+      if (typeof $getEmail !== "undefined"){
+        var email = $getEmail.replace(/%40/i, '@');
+      }
+    
+      var ch_params = [
+      	'email=' + email,
+      	'coupon=' + couponCode,
+        'utm_coupon=' + couponCode,
+        'utm_content=' + discount
+      ];
+    
+      debug('Customer Email: ', email);
+       
+      window.ch_cust_param = ch_params.join('&');
+        
+      debug('Adding to cart... ');
+    
+      addToCartCarthook();
+
+
+  });
+
+
+
+
+
+
+
+
+
+  function checkout() {
+
+    if (typeof state.selectedQuantity == "number") {
+      debug('Checkout');
+
+	  addToCart();      
+   
+
     } else {
       debug('Quantity not selected or invalid.');
 
     }
   }
+
+
+
+
+
 
   function getImageForQuantity(images, quantity) {
     var defaultImage = images.find(function (image) { return image.alt.indexOf('quantity=any') != -1 });
@@ -590,7 +1006,8 @@ $(function () {
 
       return {
         priceEach: priceEach,
-        type: quantityWithUnit(quantity, productId == 'beans' ? 'bags' : productId),
+        size : productId == 'beans' ? '' : '', //(' + quantity * 8 + 'oz) FOR OUNCES OF COFFEE
+        type: quantityWithUnit(quantity, productId == 'beans' ? 'Bags' : productId == 'pods' ? 'Pods' : productId == 'capsules' ? 'Capsules' : productId),
         title: quantity + ' x Storyville ' + product.title,
         price: unitVariant.price * quantity,
         quantity: quantity,
@@ -603,12 +1020,14 @@ $(function () {
 
   function selectProduct(productId) {
     debug('Select product', productId);
+    
     setState({
       product: productId,
       productOptions: getProductOptions(productId),
       selectedQuantity: 1, // the second value
       selectedFrequency: 1 // the second value
     });
+
   }
 
 
@@ -620,6 +1039,28 @@ $(function () {
   }
 
 
+
+
+//Quantity Option Selector Only
+
+  $quantityOptions.on('change', function() {
+    
+    var value = $quantityOptions.find(':selected').val();
+    
+    setState({ 
+      selectedQuantity: parseInt(value) 
+    });
+    
+    debug('Select quantity', parseInt(value));
+  });
+
+
+
+// SELECTED DROPDOWN DEFAULTS
+	$quantityOptions.val(1).prop('selected', true); 
+	$frequencyOptions.val(1).prop('selected', true); 
+	
+
   function selectFrequency(frequency) {
     debug('Select frequency', frequency);
     setState({
@@ -628,14 +1069,40 @@ $(function () {
   }
 
 
+
+
+//Frequency Option Selector Only
+
+  $frequencyOptions.on('change', function() {
+    
+    var value = $frequencyOptions.find(':selected').val();
+    
+    setState({ 
+      selectedFrequency: parseInt(value) 
+    });
+    
+    debug('Select frequency', parseInt(value));
+  });
+
+
+
+
   function nextStepHandler() {
     debug('Next step', this);
     var $step = $(this).closest('[data-step]');
+    
     if (!$step.is(':last-child')) {
-      setState({ step: $step.index() + 1 });
+      setState({ step: $step.index() + 1 });     
+      
     } else {
+
       checkout();
+      
+      //Initialize Carthook Check
+      window.testGlobalBeforeReact(0);  
+ 
     }
+    
   }
 
 
@@ -643,6 +1110,7 @@ $(function () {
     var $navStep = $(this);
     if ($navStep.is('.fulfilled')) {
       setState({ step: $navStep.index() });
+      
     }
   }
 
@@ -667,7 +1135,6 @@ $(function () {
     };
   }
 
-
   function initialize() {
 
     $.getJSON('/cart.json').done(function (data) {
@@ -680,10 +1147,13 @@ $(function () {
 
     $optionSets.each(function () {
       var $optionSet = $(this);
-      var $options = $optionSet.find('[data-option]')
+      var $options = $optionSet.find('[data-option]');
+      
+      //Change Builder on Click
       $options.click(optionClickHandler($optionSet));
     });
-
+    
+    
     $wantEpilogue.on('change', function() {
       var value = $wantEpilogue.is(':checked');
       debug('Epilogue checkbox changed:', value);
@@ -697,7 +1167,7 @@ $(function () {
       state: state,
       options: options
     };
-
+    
   }
 
 

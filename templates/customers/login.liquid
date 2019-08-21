@@ -2,11 +2,8 @@
 
 <div class="grid">
 
-  <div class="grid__item large--one-third push--large--one-third text-center">
+  <div class="grid__item large--one-third push--large--one-third text-center accountGridItem">
 
-    <header class="section-header">
-      <h1>{{ 'customer.login.title' | t }}</h1>
-    </header>
 
     {% comment %}
       If a user has successfully requested a new password, the form.posted_successfully? variable
@@ -18,6 +15,8 @@
     </div>
 
     <div id="CustomerLoginForm" class="form-vertical">
+      <h1>{{ 'customer.login.title' | t }}</h1>
+      <br>
       {% form 'customer_login' %}
 
         {{ form.errors | default_errors }}
@@ -33,10 +32,9 @@
         <p>
           <input type="submit" class="btn btn--full" value="{{ 'customer.login.sign_in' | t }}">
         </p>
-        <p>{{ 'layout.customer.create_account' | t | customer_register_link }}</p>
-        <p><a href="{{ shop.url }}">{{ 'customer.login.cancel' | t }}</a></p>
+        <p style="font-size: 14px;">{{ 'layout.customer.create_account' | t | customer_register_link }} or
         {% if form.password_needed %}
-          <p><a href="#recover" id="RecoverPassword">{{ 'customer.login.forgot_password' | t }}</a></p>
+          <a href="#recover" id="RecoverPassword">{{ 'customer.login.forgot_password' | t }}</a></p>
         {% endif %}
 
       {% endform %}
@@ -47,7 +45,6 @@
     {% endcomment %}
     <div id="RecoverPasswordForm" style="display: none;">
 
-      <h2>{{ 'customer.recover_password.title' | t }}</h2>
       <p>{{ 'customer.recover_password.subtext' | t }}</p>
       <hr class="hr--small">
 

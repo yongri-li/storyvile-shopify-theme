@@ -1,19 +1,30 @@
-<!-- /templates/page.liquid -->
-<div class="grid">
-  <div class="grid__item large--five-sixths push--large--one-twelfth">
+{{ 'theme.subscription-builder-v2.js' | asset_url | script_tag }}
 
-    <header class="section-header text-center">
-      <h1>{{ page.title }}</h1>
-      <hr class="hr--small">
-    </header>
 
-    <div class="grid">
-      <div class="grid__item large--four-fifths push--large--one-tenth">
-        <div class="rte rte--nomargin rte--indented-images">
-          {{ page.content }}
-        </div>
-      </div>
-    </div>
+{% section 'page-subscribe-v3-template' %}
 
-  </div>
+
+<div data-visible-on-builder-step="0" style="display: none;">
+  {% section 'page-subscribe-v2-template__footer-blocks' %}
+  <br>
+<br>
+
 </div>
+
+<br>
+
+<div class="builder__disclaimer" style="width:90%;margin:0 auto;">
+      Nespresso&#xAE; is a registered trademark of Societe des Produits Nestle S.A.
+      Keurig&#xAE; is a registered trademark of Keurig Green Mountain, Inc. Storyville
+      Coffee products are not endorsed, sponsored, licensed, or approved by Nespresso
+      USA Inc., Societe des Produits Nestle S.A., Keurig Green Mountain, Inc., or any
+      of their respective affiliates.
+</div>
+
+  
+
+
+<!-- Warning: Do not remove.This is used for CartHook Checkout Replacement -->
+{% capture the_snippet_content %}{% include 'carthook-checkout' %} {% endcapture %} {% unless the_snippet_content contains "Liquid error" %} {% include 'carthook-checkout' %} {% endunless %}
+<!-- Warning: Do not remove.This is used for CartHook Checkout Replacement -->
+    

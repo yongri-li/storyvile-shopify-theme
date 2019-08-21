@@ -1,0 +1,41 @@
+<style>
+  body, html{
+    height: 100%;
+    background: #ebe9e4;
+  }
+  .formContain{
+  height: 250px;
+    margin-top: -50px;
+  }
+  
+  .formContain{
+  position: absolute;
+    left:0;right:0;top:0;bottom:0;
+    margin: auto;
+  }
+  
+  #shopify-section-footer{display:none;}
+  
+  .klaviyo-form-KBjCcg img{
+  margin: 0 !important;
+  }
+
+</style>
+
+
+<!-- /templates/page.liquid -->
+<div class="grid formContain">
+  <div class="grid__item large--five-sixths push--large--one-twelfth">
+    
+    <div class="grid">
+      <div class="grid__item large--four-fifths push--large--one-tenth">
+        <div class="rte rte--nomargin rte--indented-images">
+          {{ page.content }}
+          <div class="klaviyo-form-KBjCcg"></div>
+          
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

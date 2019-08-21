@@ -1,0 +1,1053 @@
+{%- assign collection = collections.subscription-v2-products -%}
+
+{%- assign product_beans_handle    = 'private-reserve-pro-epi' -%}
+{%- assign product_pods_handle     = 'k-cups' -%}
+{%- assign product_capsules_handle = 'nespresso-pods' -%}
+
+{%- assign product_beans = all_products[product_beans_handle] -%}
+{%- assign product_pods = all_products[product_pods_handle] -%}
+{%- assign product_capsules = all_products[product_capsules_handle] -%}
+
+{%- assign product_handles = product_beans_handle | append: ',' | append: product_pods_handle | append: ',' | append: product_capsules_handle | split: ',' -%}
+{%- assign product_builder_ids = 'beans,pods,capsules' | split: ',' %}
+
+
+{%- capture builder_config -%}
+{
+  "shopify_domain" : {{ shop.permanent_domain | json }},
+  "defaultProduct" : "beans",
+  "products": {
+    {% for product_builder_id in product_builder_ids -%}
+      {%- assign product_handle = product_handles[forloop.index0] -%}
+      {%- assign prod = all_products[product_handle] -%}
+
+{% if product_builder_id == 'beans' %}
+		{% assign product_title = 'Whole Bean Coffee' %}
+		{% assign product_subtitle = 'Fresh roasted whole bean.' %}
+		{% assign product_bullets = 'Sourced from the top 2% of beans in the world•8oz resealable pressurized bag•Our one and only signature blend•Roasted and shipped to you same day' | split: '•' %}
+      	{% assign product_more_bullets = 'Roasted-to-Order for peak flavor and freshness•Each bean varietal medium-roasted separately before blending•One-way degassing valve keeps moisture out and freshness in•Low-acidity, full-body, exceptional smoothness' | split: '•' %}
+
+{% elsif product_builder_id == 'pods' %}
+		{% assign product_title = 'Keurig® Compatible Pods' %}
+		{% assign product_subtitle = 'Fresh roasted pods.' %}
+		{% assign product_bullets = 'Sourced from the top 2% of beans in the world•Available in packages of 16, 32, 48•Keurig® compatible pods•Roasted and shipped to you same day' | split: '•' %}
+		{% assign product_more_bullets = 'Full-body, low-acidity, exceptional smoothness•Roasted-to-order so your pod is at peak freshness•The finest green coffee ensures the smoothest, richest taste•Compatible with Keurig® and Keurig 2.0® machines' | split: '•' %}
+
+{% elsif product_builder_id == 'capsules' %}
+		{% assign product_title = 'Nespresso® Compatible Capsules' %}
+		{% assign product_subtitle = 'Fresh roasted capsules.' %}
+		{% assign product_bullets = 'Sourced from the top 2% of beans in the world•Available in packages of 16, 32, 48•For Nespresso® original line machines only•Roasted and shipped to you same day' | split: '•' %}
+      	{% assign product_more_bullets = 'Rich, creamy flavor with notes of decadent caramel•Roasted-to-order so your capsule is always fresh•The finest green coffee ensures the smoothest, richest taste•Suitable for Nespresso® original line and compatible machines' | split: '•' %}
+
+{% endif %}
+
+      {% if product_builder_id == 'beans' %}
+        {% assign price_unit = false %}
+        {%- assign package_presentation = '8oz resealable pressurized bag' %}
+        {% assign package_type = 'bag' %}
+	    {% assign price_each = '14' %}
+        {% assign contained_products = 1 %}
+        {% assign sizes = '1, 2, 3' %}
+
+        {% assign unit_variant_for_epilogue = prod.metafields.subscriptions.unit-variant--epilogue %}
+        {% assign unit_variant_for_prologue = prod.metafields.subscriptions.unit-variant--prologue %}
+
+      {% else %}
+        {% assign price_unit = 'cups' %}
+
+	    {% assign package_type = 'cup' %}
+	    {% assign price_each = '1.25' %}
+        
+        {% assign unit_variant = prod.metafields.subscriptions.unit-variant %}
+
+        {% if product_builder_id == 'pods' %}
+          {% assign sizes = '16, 32, 48' %}
+        {% else %}
+          {% assign sizes = '16, 32, 48' %}
+        {% endif %}
+
+        {%- assign package_presentation = 'Available in packages of ' | append: sizes %}
+
+      {% endif %}
+
+      {%- if prod.metafields.subscriptions.subscription_id -%}
+        {%- assign subscription_id = prod.metafields.subscriptions.subscription_id -%}
+      {%- else -%}
+        {%- assign subscription_id = 133650 -%}
+      {%- endif %}
+
+      {%- assign sample_image_field = 'image_for_' | append: product_builder_id -%}
+      {%- assign sample_image = section.settings[sample_image_field] -%}
+
+      {%- capture product_images -%}
+        [
+          {%- for image in prod.images -%}
+            {%- unless forloop.first -%},{%- endunless -%}
+            {
+              "src": {{ image.src | json }},
+              "alt": {{ image.alt | json }}
+            }
+          {%- endfor -%}
+        ]
+      {%- endcapture -%}
+
+      "{{ product_builder_id }}": {
+        "sample_image": {
+          "src": "{{ sample_image | img_url: '1x1' }}",
+          "srcset": "{% include 'bgset' image: sample_image %}"
+        },
+        "description": {{ prod.description | strip_html | json }},
+        "title": {{ prod.title | json }},
+        "handle": {{ product_handle | json }},
+        "available": {{ prod.available | json }},
+        "starting_price": {{ prod.price_min | divided_by: contained_products | json }},
+        "compare_at_price": {{ prod.compare_at_price_min | divided_by: contained_products | json }},
+        "price_unit": {{ price_unit | json }},
+        "variants" : {{ prod.variants | json }},
+        "unit_variant": {
+          {% if product_builder_id == 'beans' %}
+            "epilogue": {{ unit_variant_for_epilogue | json }},
+            "prologue": {{ unit_variant_for_prologue | json }}
+          {% else %}
+            "default": {{ unit_variant | json }}
+          {% endif %}
+        },
+        "images": {{ product_images }},
+        "product_title": {{ product_title | json }},
+		"product_bullets": {{ product_bullets | json }},
+		"product_more_bullets": {{ product_more_bullets | json }},
+        "total_price": {{ total_price | json }},
+        "package_presentation": {{ package_presentation | json }},
+        "package_type": {{ package_type | json }},
+		"price_each": {{ price_each | json }},
+        "package_description": {{ package_description | json }},
+		"product_subtitle": {{ product_subtitle | json }},
+        "package_sizes": [{{ sizes }}],
+        "shipping_description": {{ shipping_description | json }},
+        "subscription_id": {{ prod.metafields.subscriptions.subscription_id | json }},
+        "shipping_interval_frequency": {{ prod.metafields.subscriptions.shipping_interval_frequency | replace: ' ', '' | split: ',' | json }},
+        "shipping_interval_unit_type": {{ prod.metafields.subscriptions.shipping_interval_unit_type | json }}
+
+      }
+
+      {%- unless forloop.last  -%}
+        ,
+      {%- endunless %}
+    {% endfor %}
+  }
+}
+{%- endcapture -%}
+
+
+
+<style>
+  .builder-option__content:before, .builder-product-offering__option.selected:before{
+  display:none !important;
+  }
+  
+  .builder-product-offering__option-text, .builder-option__title, .builder-product-offering__subtitle{
+  font-size: 14px;
+  text-transform: uppercase !important;
+  letter-spacing:0.03em;
+  }
+  
+  .builder-product-offering__title{
+  font-size: 25px;
+  font-weight: 600;
+  }
+  
+  .builder-option__content{
+  padding: 15px 5px;
+  }
+  .builder-option{
+  width: 100%;
+  }
+  body{
+    background: {{ section.settings.background_color }};
+  }
+  
+  .builder-product-offering__subtitle{
+    margin-top:0;
+  margin-bottom:0;
+  }
+  .builder-product-offering__option.selected, .builder-product-offering__option:hover, .builder-option__content:hover, .builder-option.selected .builder-option__content{
+  background-color: #fff;
+  }
+  
+  .builder-product-offering__header{
+  margin-bottom: 10px;
+  }
+  
+  .builder-product-offering{
+  	max-width: 1280px;
+    margin: 0 auto;
+  }
+  
+  .product-offering-contain{
+  position: relative;
+    height: auto;
+    background: #fff;
+    border-radius: 10px;
+    margin: 10px 0;
+    padding: 20px;
+    padding-bottom: 1px;
+    overflow:hidden;
+  }
+  
+  .builder-product-offering__content{
+  	margin-bottom: 20px;
+  }
+  
+  .builder-product-offering__features{
+  font-size: 14px !important;
+  }
+  
+  .builder-product-offering__features-title{
+  	text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight:700;
+    font-size: 14px;
+  }
+  
+  .product-offering-contain .seperatorLine{
+    position: relative;
+    height: 2px;
+    background: {{ section.settings.background_color }};
+    width: calc(100% + 50px);
+    left: -25px;
+    margin: 15px 0;
+  }
+  
+  .builder__option{
+  	margin:0 !important;
+    text-transform: capitalize !important;
+  }
+  
+  .builder__options{
+    border-radius: 10px;
+    font-size:14px;
+    background: #fff;
+    position: relative;
+    width: auto;
+    font-style: inherit;
+    padding-right: 60px;
+    margin-top:0;
+    text-transform: capitalize;
+  }
+  
+  .select__options{
+    position: relative;
+    display: inline-block;
+    margin-right: 20px;
+  }
+  
+  .builder__step-action{
+  	width: 100%;
+    border-radius: 10px;
+  }
+  
+  
+  .builder-product-offering__options{
+  width:calc(100% + 4px)
+  }
+  
+  .builder-product-offering__option{
+    box-shadow: 0 0 0 2px {{ section.settings.secondary_color }};
+    border-radius: 10px;
+    padding: 15px 5px;
+    padding-top:5px;
+    max-width: 100%;
+  }
+  
+  .learn-more-button{
+  width: 100%;
+    cursor:pointer;
+  }
+  
+  .builder-product-offering__option.selected, .builder-product-offering__option:hover{
+  	box-shadow:0 0 0 0 !important;
+  }
+  
+  .more-features{
+    height:auto;
+    max-height:0;
+    opacity:0;
+    transition:0.5s;
+  }
+  .learn-more-visible{max-height:300px;margin-bottom:30px;opacity:1;}
+  
+  .builder__note input{
+    margin-right: 0;
+    margin-left: 10px;
+  }
+  
+  .builder__note{
+   letter-spacing:0.03em;
+    margin: 7px 0;
+  }
+  
+  .builder__note label{
+   letter-spacing:0;
+    font-size: 17px;
+  }
+  
+  .builder__note.decafSelect{
+    margin-top: 15px;
+  	text-align: left;
+    color: #000;
+  }
+  
+  .proSelectRadio{
+    margin-left: 0px !important;
+    margin-top: 10px !important;
+  }
+  
+  .learn-more-button:after {
+    content: " ";
+    width: 10px;
+    height: 20px;
+    margin-top: 5px;
+    position: absolute;
+    right: 30px;
+    background-image: url(https://cdn.shopify.com/s/files/1/0090/2135/8137/files/arrow_e717880f-3a88-4f6e-8d1e-2ef55b1339d1.png);
+    background-size: 100%;
+    background-repeat: no-repeat;
+  }
+  
+  .select__options:after {
+    content: " ";
+    width: 10px;
+    height: 20px;
+    position: absolute;
+    right: 20px;
+    bottom: 7px;
+    background-image: url(https://cdn.shopify.com/s/files/1/0090/2135/8137/files/arrow_e717880f-3a88-4f6e-8d1e-2ef55b1339d1.png);
+    background-size: 100%;
+    background-repeat: no-repeat;
+    pointer-events: none;
+  }
+  
+  .builder__option-title{
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  
+  .builder__step-actions{
+  	margin-top: 15px;
+  }
+  
+  .order_summary{
+    margin-top: 20px;
+    font-size: 20px;
+    padding: 15px 0;
+    padding-bottom:5px;
+    border-top: 1px solid {{ section.settings.secondary_color }};
+    text-align: center;
+    margin-bottom: 15px;
+    width: 100%;
+    float:left;
+  }
+  
+  .order_summary .sub_text{
+  	font-size: 14px;
+    line-height: 105%;
+  }
+  
+  .summary_col1, .summary_col2{
+  	width: 49%;
+    display: inline-block;
+    float: left;
+    
+  }
+  
+  .summary_col1{
+  	text-align: left;
+  }
+  
+  .summary_col2{
+  	text-align: right;
+  }
+  
+  .order_summary p{
+  margin:0;
+  }
+  
+  .totalPrice{
+      margin-bottom: 0;
+    font-size: 25px;
+    font-weight: 600;
+  }
+  
+  
+  #shopify-section-footer{
+  display:none;
+  }
+  
+  .wrapper{
+  max-width: 100%;
+    padding:0;
+  }
+  
+  .builder-product-offering__preview{
+      -ms-flex-preferred-size: 60%;
+    -webkit-flex-basis: 60%;
+    -moz-flex-basis: 60%;
+    flex-basis: 60%;
+    text-align: right;
+  }
+  
+  
+  .builder-product-offering__info{
+    -ms-flex-preferred-size: 40%;
+    -webkit-flex-basis: 40%;
+    -moz-flex-basis: 40%;
+    flex-basis: 40%;  
+    padding: 0 30px;
+  }
+  
+  .header-container{
+  	display:none;
+  }
+  
+  .builder-product-offering__preview img{
+    max-width: 100%;
+  }
+  
+  .builder__steps{
+  margin-top: 20px;
+  }
+  
+  .headling__container{
+    width: 100%;
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  
+  .headling__container h1{
+	font-size: 40px;
+    margin-bottom: 0px;
+    line-height: 110%;
+  }
+  
+  .questionHover{
+    position: relative;
+    display: inline-block;
+    color: #fff;
+    background: rgba(0,0,0,0.15);
+    padding: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 200px;
+    line-height: 120%;
+    text-indent: 3px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .questionHover:after{
+    content: "Love us by the third sip or your coffee’s on the house. Call us at 206-780-5777 or email us at info@storyville.com";
+    position: absolute;
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    color: #000;
+    text-indent: 0px;
+    line-height: 150%;
+    width: 250px;
+    margin-left: 15px;
+    margin-top: -4px;
+    opacity:0;
+    display:none;
+    transition: 0.25s;
+    letter-spacing: 0.02em;
+    z-index:2;
+  }
+  
+  .questionHover:hover:after{display:block;opacity:1;} 
+  
+  .builder__note{text-align: left;}
+  
+  .strike-out{
+  	opacity:0.4;
+    text-decoration: line-through;
+  }
+  
+  
+  
+   
+  /******* CHECKED EPILOGUE *******/
+  
+  
+.selectOption {
+	display: block;
+	padding: 20px;
+	position: relative;
+	background:{{ section.settings.secondary_color }};
+	width:100%;
+	border-radius: 15px;
+	font-size:16px;
+  	margin-top:15px;
+  	margin-bottom: 0;
+	letter-spacing:0.03em;
+	box-shadow: 0 0 0 1px transparent;
+	transition:0.1s;
+	transition-delay: background 0.2s;
+  	opacity:0.5;  	
+}
+
+.checkedOutline{
+	background:#fff;
+  	opacity:1;
+    /*box-shadow: 0 0 0 1px {{ section.settings.dark_color }};*/
+}
+
+.selectOption label {
+	margin-left: 16px;
+	cursor: pointer;
+	display: inline-block;
+
+}
+
+.selectOption input[type="checkbox"] {
+	visibility: hidden;
+}
+
+.selectOption label:before {
+	content: '';
+	width: 16px;
+	height: 16px;
+	border-radius:3px;
+	background:transparent;
+	position: absolute;
+	left:23px;
+	top:25px;
+	z-index: 2;
+}
+
+.selectOption label:after {
+    content: '';
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    background-color: #fff;
+    position: absolute;
+    left: 20px;
+    top: 22px;
+    border: 1px solid {{ section.settings.secondary_color }};
+}
+
+
+.selectOption input:checked + label:before {
+	background: {{ section.settings.highlight_color }};
+}
+
+
+  .checkedOutline label{
+  	font-weight:700;
+  }
+  
+  
+  #ch-checkout-btn{
+    width: 100%;
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 20px;
+    margin-top: 10px;
+    background: #d9d9d9;
+    color: #000;
+  }
+  
+  #ch-checkout-btn:hover{
+  background-color: #f9f9f9 !important;
+  }
+  
+  .cart__checkout{
+    background-color: {{ section.settings.highlight_color }};
+    box-shadow:0 0 20px rgba(0,0,0,0);
+    transition: 0.3s ease;
+    max-width: 100%;
+    width: 100%;
+    cursor: pointer;
+    text-align: center;
+    color: #fff;
+    display: inline-block;
+    margin: 0 auto;
+    font-size: 20px;
+    padding: 15px 15px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-radius: 15px;
+    text-decoration: none !important;
+  }
+  
+  .cart__checkout:hover{
+  	background-color: {{ section.settings.highlight_color }};
+    transition: 0.3s ease;
+    box-shadow:10px 10px 30px rgba(0,0,0,0.2);
+  }
+
+  
+  @media screen and (max-width: 1268px){
+  .builder-product-offering__info{
+    -ms-flex-preferred-size: 50%;
+    -webkit-flex-basis: 50%;
+    -moz-flex-basis: 50%;
+    flex-basis: 50%; 
+  }
+  }
+  
+  
+  @media screen and (max-width: 768px){
+    .select__options{
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    
+    .builder__options{
+      width: 100%;
+      padding-bottom: 7px;
+    }
+    
+    .select__options:after{
+      right: 30px;
+    }
+    .builder__steps{
+ 	 margin-top: 0px;
+  	}
+    
+    .builder-product-offering__preview, .builder-product-offering__preview img{
+      width: 80%;
+      max-width: 80%;
+    }
+    
+    .headling__container h1{
+    	font-size: 30px;
+      margin-top: 25px;
+    }
+    
+    .builder-product-offering__preview{
+    text-align: center;
+    }
+    
+    .builder-product-offering__header{
+    	text-align: left;
+    }
+    
+    .wrapper{
+    padding:0;
+    }
+    
+    .builder-product-offering__info{
+    padding:0 15px;
+    }
+    
+    .builder__note.decafSelect{
+    margin-top:0;
+    }
+    .headling__container{
+      margin: 50px 0;
+      margin-bottom:0;
+    }
+    
+    .top-logo{
+      left:0 !important;right:0;
+      margin: auto;
+      top: -50px !important;
+    }
+    
+    .builder-product-offering__content{
+    	margin-top:0;
+    }
+    .summary_col1, .summary_col2{
+      text-align: left;
+      width: 100%;
+      padding: 5px 0;
+    }
+    
+    .selectOption, .select__options {
+      margin-top: 15px;
+      margin-bottom:0;
+    }
+    
+    .builder__options, .builder__option-title{
+      font-size:16px;
+    }
+    
+    .questionHover:after{
+      left: -50px;
+      top: 30px;
+    }
+    
+    .product-offering-contain{
+    	margin: 20px 0;
+    }
+    
+  
+  }
+  
+  
+  
+  .top-logo{
+    position: absolute;
+    top: 0;
+  	left: 20px;
+    z-index: 900000;
+  }
+  
+  
+</style>
+
+
+
+
+<form class="builder" data-subscription-builder='{{ builder_config }}'
+      action="/cart" method="post" enctype="multipart/form-data" novalidate>
+
+
+          
+  
+  
+<input type="hidden" name="checkout" value="true" />
+
+<div class="wrapper">
+
+<div class="builder__steps" data-steps>
+
+<img class="top-logo" src="https://cdn.shopify.com/s/files/1/0090/2135/8137/files/Logo_7286f712-5026-4406-95c2-217ac26080f3.png" width="150px"/>
+  
+  
+<div class="builder__step" data-step>
+
+<!-- PRODUCT DESCRIPTION -->  
+        {% capture offering_description %}
+  		<div class="product-offering-contain">
+          
+          <div class="builder-product-offering__features-title">
+            Wake up happy every day
+          </div>
+        
+          <ul class="builder-product-offering__features first-features" data-product-bullets>
+            <li class="builder-product-offering__feature" data-product-bullet></li>
+          </ul>
+          <div class="seperatorLine"></div>
+          <div class="product-learn-more">
+            <div class="builder-product-offering__features-title learn-more-button">
+            	Learn More
+          	</div>
+            
+            <ul class="builder-product-offering__features more-features" data-product-more-bullets>
+            	<li class="builder-product-offering__feature" data-product-bullet></li>
+          	</ul>
+            
+          </div>
+          
+  		</div>
+        {% endcapture %}
+
+  
+  
+  
+  		{% capture order_summary %}
+          <div class="order_summary">
+            <div class="summary_col1">Your Order Total<br>
+              <p class="sub_text">Discount applies to first order</p>
+            </div>
+            <div class="summary_col2"><span data-total-price class="strike-out">$14</span> <span data-option-percent-price-total></span></div>
+          </div>
+  		{% endcapture %}
+  
+
+<div class="builder__step-content">
+  
+  <div class="headling__container">
+    <h1>A Special Offer Just For You</h1>
+    <h3 class="builder-product-offering__subtitle" style="text-align: center;text-transform: uppercase !important;">Free Priority Shipping</h3>
+  </div>
+  
+   <div class="builder__product-offering builder-product-offering">
+            <div class="builder-product-offering__preview">
+              <img
+                class="builder-product-offering__preview-image lazyload"
+                data-sizes="auto"
+                data-src="{{ collection.image | img_url: '1x1' }}"
+                data-srcset="{% include 'bgset' image: collection.image %}"
+                data-preview-image
+              />
+            </div>
+
+            <div class="builder-product-offering__info">
+
+
+              <div class="builder-product-offering__header">
+                
+                
+
+                <h2 class="builder-product-offering__title">
+                  
+                  Select how you brew...
+                 <!-- <span data-product-title>Whole Bean Coffee</span>
+                  <span data-total-price style="font-size:20px;font-weight:500;">| $14</span></h2>
+
+                   <h3 class="builder-product-offering__subtitle" data-offering-subtitle>
+                    Fresh roasted pods.
+                   </h3>-->
+                </h2>
+
+              </div>
+              
+              
+<!-- SELECT YOUR PRODUCT -->
+              
+		<div class="builder-product-offering__options"
+                   data-options-set data-options-set-type="product">
+
+                <div class="builder-product-offering__option selected"
+                     data-option
+                     data-value="beans">
+                  <img src="https://cdn.shopify.com/s/files/1/0090/2135/8137/files/wholeBeans.png" width="60"/>
+                  <span class="builder-product-offering__option-text">Whole Bean</span>
+                </div>
+
+                <div class="builder-product-offering__option"
+                     data-option
+                     data-value="pods">
+                  <img src="https://cdn.shopify.com/s/files/1/0090/2135/8137/files/kCups.png" width="60"/>
+                  <span class="builder-product-offering__option-text">Pods</span>
+                </div>
+
+                <div class="builder-product-offering__option"
+                     data-option
+                     data-value="capsules" style="margin-right: 0;">
+                  <img src="https://cdn.shopify.com/s/files/1/0090/2135/8137/files/nespresso.png" width="60"/>
+                  <span class="builder-product-offering__option-text">Capsules</span>
+                </div>
+
+		</div>
+         
+              
+        <div class="builder-product-offering__content desktop-only">
+
+          {{ offering_description }}
+
+        </div>
+
+
+        
+        
+<!-- SELECT YOUR QUANTITY-->
+      
+      <div class="select__options">  
+          <h3 class="builder__option-title">Quantity</h3>
+          <select class="builder__options"
+              data-options-set 
+              data-quantity-options 
+              data-options-set-type="quantity">
+
+
+                  <option
+                    class="builder__option builder-option"
+                    data-option 
+                    data-value="0" value="0"></option>
+
+
+                  <option
+                    class="builder__option builder-option"
+                    data-option
+                    data-value="1" value="1" selected></option>
+
+
+                  <option
+                    class="builder__option builder-option"
+                    data-option
+                    data-value="2" value="2"></option>
+
+
+          </select>           
+      </div>   
+  
+              
+              
+<!-- SELECT YOUR FREQUENCY -->
+              
+              
+      <div class="select__options">     
+          <h3 class="builder__option-title">Delivery Schedule</h3>
+          <select class="builder__options"
+                  data-options-set 
+                  data-frequency-options 
+                  data-options-set-type="frequency">
+
+                  <option
+                    class="builder__option builder-option"
+                    data-option 
+                    data-value="0" value="0"></option>
+
+
+                  <option
+                    class="builder__option builder-option"
+                    data-option
+                    data-value="1" value="1" selected></option>
+
+
+                  <option
+                    class="builder__option builder-option"
+                    data-option
+                    data-value="2" value="2"></option>
+
+          </select>
+      </div>           
+              
+              
+                    
+        <span class="selectOption builder__note">
+            <input type="checkbox" id="blend" class="checkBlend" data-option-want-epilogue>
+            <label for="blend">Epilogue Blend (Decaf)</label>
+        </span>
+                
+              
+          
+		  {{ order_summary }}
+
+              
+          <!-- Carthook hidden checkout button -->
+		  <a href="/checkout" name="checkout" style="display: none;" id="ch-checkout-enabled"></a> 
+              
+              
+     <!-- DEBUG BUTTONS 
+          <div class="builder__step-actions">
+            <div class="builder__step-action checkoutButton" data-next-step>
+              RECHARGE CHECKOUT
+            </div>
+          </div>
+
+              		  
+
+ 
+              
+          <a class="btn" id="ch-checkout-btn">CARTHOOK CHECKOUT</a>-->
+          <a id="add-to-cart" class="btn cart__checkout">REVIEW ORDER</a>
+
+
+              
+              
+              
+        <div class="builder-product-offering__content mobile-only">
+
+          {{ offering_description }}
+
+        </div>
+              
+          <p class="builder__note">
+            <br>
+            <span style="margin-bottom: 7px !important; display:inline-block;">You're The Boss – Pause or Cancel Anytime</span><br>
+            <img class="icon" src="{{ 'icon--banner.svg' | asset_url }}" /> <span>3 Sip Guarantee <span class="questionHover">?</span></span>
+
+          </p>              
+              
+              
+              
+    </div>
+     
+     
+     
+     
+     
+ </div>      
+</div>
+
+<div class="builder__step-footer">
+          
+          
+
+
+</div>
+
+        
+    <!--CARTHOOK ORDER NOTE -->            
+<textarea id="cartSpecialInstructions" style="opacity:0 !important;">order number 1</textarea>      
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      </div>
+
+
+
+    </div>
+
+
+  </div>
+
+
+</form>
+
+<script text="javascript">
+      $( "#blend" ).click(function() {
+          $(".selectOption").toggleClass("checkedOutline");
+      });
+</script>
+
+
+{% schema %}
+  {
+    "name": "Product Details",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Product Images"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_for_beans",
+        "label": "Sample Image for beans"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_for_pods",
+        "label": "Sample Image for pods"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_for_capsules",
+        "label": "Sample Image for capsules"
+      },
+      {
+        "type": "header",
+        "content": "Color Scheme"
+      },
+      {
+        "type": "color",
+        "id": "highlight_color",
+        "label": "Highlight Color",
+		"default": "#a2111a"
+      }, 
+      {
+        "type": "color",
+        "id": "secondary_color",
+        "label": "Secondary Color",
+		"default": "#ebe9e4"
+      },
+      {
+        "type": "color",
+        "id": "dark_color",
+        "label": "Dark Color",
+		"default": "#0c0800"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background Color",
+		"default": "#ebe9e4"
+      }
+    ]
+  }
+{% endschema %}

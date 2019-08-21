@@ -2612,7 +2612,7 @@ reqJquery(function($){
 
 
 <script type="text/javascript">
-  if(window.location.search.includes('selector_mode')){
+  if(window.location.search.indexOf('selector_mode') > -1)){
     var head = document.getElementsByTagName('head')[0];
     var script = document.createElement('script');
     
