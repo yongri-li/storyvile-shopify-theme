@@ -1,16 +1,16 @@
-<div class="grid">
-  <div class="grid__item large--five-sixths push--large--one-twelfth">
-<!-- /templates/page.full-width.liquid -->
-<header class="section-header text-center">
 <style>
-  
-/*GLOBAL*/
 @import url('https://fonts.googleapis.com/css?family=Archivo+Narrow:400,600,700');
+
+  .site-header{max-width: 1050px; margin: 0 auto;}
+  .site-header .grid--table>.grid__item{padding-top: 30px;}
   
-  body{
-  background: #141515 !important;
-  }
-  h3{
+  
+  .site-header{padding: 0 30px !important;}
+  
+  .main-content{padding-bottom: 0 !important; padding-top: 0px !important;margin-top: -100px;}
+  
+  /* custom html styles */
+  .custom-content h3{
   	font-size: 55px;
     letter-spacing: 0.1em;
     text-align: left !important;
@@ -20,23 +20,14 @@
     font-weight: 900 !important;
     font-family: "Archivo Narrow",sans-serif !important;
   }
-  p{
+  .custom-content p{
     text-align: left !important;
   	margin: 0 !important;
     letter-spacing: 0.06em;
     line-height: 150%;
     display:inline-block !important;
   }
-  .site-nav li a, .supports-fontface .icon-fallback-text .icon, .site-nav__link--burger{color: #fff !important;}
-  .burger-icon{background: #fff !important;}
-  .site-header{max-width: 1050px; margin: 0 auto;}
-  
-  .site-header{padding:0 30px !important;}
 
-  .site-header .grid--table>.grid__item{padding-top: 25px !important;}
-  
-  .main-content{padding-bottom: 0 !important; padding-top: 40px !important;}
-  
   .custom-content{
     position: relative;
     padding-top: 90px;
@@ -46,73 +37,6 @@
   .one-half.leftCol{padding-left: 15%;}
   .one-half.rightCol{padding-right: 15%;}
   hr{float: left;}
-  
-  
-  #shopify-section-footer .one-half{    
-    width: 100% !important;
-    text-align: center !important;
-    margin: 0 auto !important;}
-
-/*SECTIONS*/  
-  .topItalics{
-    font-size: 20px;
-    font-weight: 400 !important;
-    letter-spacing: 0.3em;
-  }
-    
-  #shopify-section-header:after {
-    background-image: linear-gradient(rgba(0,0,0,1), rgba(0,0,0,0));
-    width: 100%;
-    height: 130px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    content: ' ';
-    z-index: 1;
-  }
-  
-/*PER PRODUCT*/
-  
-  
-  .full-width{ 
-    display: none !important;
-  	width: 100%;
-    text-align: center;
-  }
-  
-  
-  .product-single__form--no-variants{
-    margin-top: 0 !important;
-  	display: inline-block;
-  }
-  
-   .heroImage{
-      width: 100%;
-      height: 770px;
-      background: url(https://cdn.shopify.com/s/files/1/0090/2135/8137/files/1270055_671937786158324_1332990247_o.jpg);
-      background-size: cover;
-     background-position: top right;
-     margin-top: -210px;
-    }
-  
-  .locationContainer{
-    background: #fff;
-    width: 100% !important;
-    padding: 70px 0;
-    margin-top: -60px;
-    margin-bottom: -12px;
-  }
-  
-    .locationContainer.greyBackground{
-    background: #f7f6f6;
-    }
-  
-  .storeLocations{
-    width: 100% !important;
-    padding: 0 5%;
-    background: #fff;
-    margin: 0 auto;
-  }
   
   
   .instoreMenu{
@@ -149,21 +73,8 @@
   .large--five-sixths{width: 100% !important;}
   .push--large--one-twelfth{left:0 !important;}
   
+  .custom-content .rte a{position: relative;}
   
-  .locationAddress{
-    position: relative;
-    margin-left:40px !important;
-  }
-  .locationPin{
-  position:absolute;
-    left:-40px;
-  }
-  
-  .rte a{position: relative;}
-  
-  .video-wrapper{margin-bottom: 75px !important;}
-  
-  .custom__item-inner:nth-child(1){padding-left: 5%;}
   
   @media all and (max-width: 1200px) {
     p{font-size: 14px !important;}
@@ -172,54 +83,18 @@
   
   @media all and (max-width: 1118px) {
     
-    .custom__item-inner:nth-child(1){padding-left: 0;}
-    
-    .instoreMenu{width: 90%;}
-    
     .menuCol, .menuCol:nth-child(2){
       width: 100%;
       margin:0 !important;
     }
     
-    .site-header .grid--table{  width: 90%; margin: 0 auto;}
     .full-width{ display: block !important;}
-    .one-half{width: 90% !important; margin: 0 auto !important;}
+    .one-half{width: 90% !important; padding-left:0 !important; margin: 0 auto !important;}
 
     .custom-content{ height: 100% !important;}
 
-    .locationContainer{
-     padding: 70px 5% !important; 
-    }
   }
-  
-  @media all and (max-width:568px){
-    .heroImage{height: 400px;}
-    
-  }
-  
-  
   
 </style>
- 
 
-</header>
-
-    <div class="heroImage"></div>
-    
-<!-- /templates/page.liquid -->
-
-    <div class="rte storeLocations">
-      {% section 'advanced-content-14'%}
-    </div>
-   
-    
-    <div class="grid">
-      <div class="grid__item large--four-fifths push--large--one-tenth">
-        <div class="rte rte--nomargin rte--indented-images">
-          {{ page.content }}
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
+{% section 'sections-location-pike-place-market' %}

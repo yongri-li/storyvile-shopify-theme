@@ -1,279 +1,700 @@
-<style>
-  .site-header__logo img {
-    max-width: {{ section.settings.logo_max_width | escape | default: '180' | remove: 'px' | append: 'px' }};
-  }
+{% comment %}
+  @param nav_cta
+  @param nav_cta_url
+  @param text_01, text_02, text_03, text_04, text_05, text_06
+  @param link_01, link_02, link_03, link_04, link_05, link_06
+  @param enable_dropdown_01, enable_dropdown_02, enable_dropdown_03, enable_dropdown_04, enable_dropdown_05, enable_dropdown_06
+  @param dropdown_01, dropdown_02, dropdown_03, dropdown_04, dropdown_05, dropdown_06
+{% endcomment %}
 
-  @media screen and (max-width: 768px) {
-    .site-header__logo img {
-      max-width: 100%;
-    }
+
+
+{% if enable_dropdown_01 %}
+  {% assign text_size = 'large' %}
+{% else %}
+  {% assign text_size = 'small' %}
+{% endif %}
+
+
+<style>
+  .navDropdown{
+    height:0;
+    box-shadow: 0 2px 6px 0 rgba(0,0,0,0.06);
+    opacity:0;
+    transition: height 0s ease 0.2s, opacity 0.5s ease;
+    margin-top: 12px;
   }
+  
+  .dropdownEnabled:hover .navDropdown{
+    transition: height 0.5s, opacity 0s;
+    opacity:1;
+  }
+  
+  
+  .dropdownLink_01:hover .containerSubNav, .dropdownLink_02:hover .containerSubNav, .dropdownLink_03:hover .containerSubNav, .dropdownLink_04:hover .containerSubNav, .dropdownLink_05:hover .containerSubNav, .dropdownLink_06:hover .containerSubNav{
+  	opacity:1;
+  }
+  
+  nav{
+    transition-delay:0s !important;
+    transition:0s !important;
+  }
+  
+  .expand_nav{
+    height:auto;
+  }
+  
+
+/* Height on desktop */  
+  @media all and (min-width: 770px){
+      .dropdownLink_01:hover .navDropdown{
+        height: {{ section.settings.dropdown_01_height }}px;
+      }
+
+      .dropdownLink_02:hover .navDropdown{
+        height: {{ section.settings.dropdown_02_height }}px;
+      }
+
+      .dropdownLink_03:hover .navDropdown{
+        height: {{ section.settings.dropdown_03_height }}px;
+      }
+
+      .dropdownLink_04:hover .navDropdown{
+        height: {{ section.settings.dropdown_04_height }}px;
+      }
+
+      .dropdownLink_05:hover .navDropdown{
+        height: {{ section.settings.dropdown_05_height }}px;
+      }
+
+      .dropdownLink_06:hover .navDropdown{
+        height: {{ section.settings.dropdown_06_height }}px;
+      }
+  }
+  
+  
+  /* Height on mobile 
+  .dropdownLink_01.mobileLinkActive .navDropdown{
+    height: {{ section.settings.dropdown_01_height_mb }}px;
+  }
+  
+  .dropdownLink_02.mobileLinkActive .navDropdown{
+	height: {{ section.settings.dropdown_02_height_mb }}px;
+  }
+  
+  .dropdownLink_03.mobileLinkActive .navDropdown{
+	height: {{ section.settings.dropdown_03_height_mb }}px;
+  }
+  
+  .dropdownLink_04.mobileLinkActive .navDropdown{
+	height: {{ section.settings.dropdown_04_height_mb }}px;
+  }
+  
+  .dropdownLink_05.mobileLinkActive .navDropdown{
+	height: {{ section.settings.dropdown_05_height_mb }}px;
+  }
+  
+  .dropdownLink_06.mobileLinkActive .navDropdown{
+	height: {{ section.settings.dropdown_06_height_mb }}px;
+  }
+  
+  */ 
+  
 </style>
+
+
+
+
 
 {% assign hero_full_height = true %}
 <div data-section-id="{{ section.id }}" data-section-type="header-section" data-template="{{ template.name }}">
   <div class="header-container">
     <div class="header-wrapper{% unless hero_full_height %} header-wrapper--over-hero{% endunless %}">
-      {% if section.settings.show_announcement %}
-        {% if section.settings.home_page_only == false or template.name == 'index' %}
-          <style>
-            .announcement-bar {
-              background-color: {{ section.settings.color_bg }};
-            }
-
-            .announcement-bar--link:hover {
-              {% assign brightness = section.settings.color_bg | color_brightness %}
-
-              {% if brightness <= 192 %}
-                {% assign lightenAmount = 255 | minus: brightness | divided_by: 255 | times: 16 %}
-                background-color: {{ section.settings.color_bg | color_lighten: lightenAmount }};
-              {% else %}
-                {% assign darkenAmount = 255 | divided_by: brightness | times: 8 %}
-                background-color: {{ section.settings.color_bg | color_darken: darkenAmount }};
-              {% endif %}
-            }
-
-            .announcement-bar__message {
-              color: {{ section.settings.color_text }};
-            }
-          </style>
-
-          {% if section.settings.link == blank %}
-            <div class="announcement-bar">
-          {% else %}
-            <a href="{{ section.settings.link }}" class="announcement-bar announcement-bar--link">
-          {% endif %}
-
-            <p class="announcement-bar__message">{{ section.settings.text | escape }}</p>
-
-          {% if section.settings.link == blank %}
-            </div>
-          {% else %}
-            </a>
-          {% endif %}
-
-        {% endif %}
-      {% endif %}
 
       <header class="site-header" role="banner">
         <div class="wrapper">
-          <div class="grid--full grid--table">
-            <div class="grid__item large--hide large--one-sixth one-quarter">
-              <div class="site-nav--open site-nav--mobile">
-                <button type="button" class="icon-fallback-text site-nav__link site-nav__link--burger js-drawer-open-button-left" aria-controls="NavDrawer">
-                  <span class="burger-icon burger-icon--top"></span>
-                  <span class="burger-icon burger-icon--mid"></span>
-                  <span class="burger-icon burger-icon--bottom"></span>
-                  <span class="fallback-text">{{ 'general.drawers.navigation' | t }}</span>
-                </button>
-              </div>
-            </div>
-            <div class="grid__item large--one-third medium-down--one-half">
-              {% comment %}
-                Use the uploaded logo from theme settings if enabled.
-                Site name gets precedence with H1 tag on homepage, div on other pages.
-              {% endcomment %}
-              {% if template.name == 'index' %}
-                <h1 class="site-header__logo large--left" itemscope itemtype="http://schema.org/Organization">
-              {% else %}
-                <div class="h1 site-header__logo large--left" itemscope itemtype="http://schema.org/Organization">
-              {% endif %}
-                {% if section.settings.logo_max_width != blank %}
+          <div class="grid--full full__nav">
+            
+            
+            
+            {% if section.settings.logo_max_width != blank %}
                   {% capture image_size %}{{ section.settings.logo_max_width | escape }}x{% endcapture %}
-                {% else %}
+            {% else %}
                   {% assign image_size = "180x" %}
-                {% endif %}
+            {% endif %}
+                
+                
+            <div class="menuDrawerOpen">
+              <button type="button" id="nav_open" class="icon-fallback-text site-nav__link site-nav__link--burger" aria-controls="NavDrawer">
+                <span class="burger-icon burger-icon--top"></span>
+                <span class="burger-icon burger-icon--mid"></span>
+                <span class="burger-icon burger-icon--bottom"></span>
+              </button>
+            </div>
+            
+   
+            
+            <nav class="grid__item" role="navigation">
+           	 <!-- begin site-nav -->
+              <ul class="site-nav" id="AccessibleNav">
 
-                {% if section.settings.logo-inverted and template.name == 'index' %}
-                  <a href="/" itemprop="url" class="site-header__logo-link">
-                    <img src="{{ section.settings.logo-inverted | img_url: image_size }}"
-                    srcset="{{ section.settings.logo-inverted | img_url: image_size }} 1x, {{ section.settings.logo-inverted | img_url: image_size, scale: 2 }} 2x"
-                    alt="{{ section.settings.logo-inverted.alt | default: shop.name }}"
-                    itemprop="logo">
-                  </a>
-                {% elsif section.settings.logo %}
-                  <a href="/" itemprop="url" class="site-header__logo-link">
+
+                <!--  CUSTOM NAVIGATION  -->
+                
+                
+               <a href="/cart" class="site-nav__link site-nav__link--icon cart-link js-drawer-open-button-right {% if cart.item_count > 0 %}{% else %}cartZero{% endif %} siteCart_mobile" aria-controls="CartDrawer">
+                    {% if cart.item_count > 0 %} <span class="cartBubble"><span class="cartBubble_inside">{{ cart.item_count }}</span></span>{% endif %}
+               </a>
+                
+               <a href="/" class="site-logo_only mobileLogo"> 
+                     <img src="{{ section.settings.logo | img_url: image_size }}"
+                     class="lazyload"
+                     srcset="{{ section.settings.logo | img_url: image_size }} 1x, {{ section.settings.logo | img_url: image_size, scale: 2 }} 2x"
+                     alt="{{ section.settings.logo.alt | default: shop.name }}"
+                     itemprop="logo">
+               	</a>
+                
+               
+               {% assign limit_nav = section.settings.nav_item_per %}
+                
+               <div class="leftNav">
+				  
+                 
+                 {% for block in section.blocks limit:limit_nav %}
+                   <style>
+                    .dropdownLink_{{ block.id }}:hover .navDropdown{
+        				height: {{ block.settings.dropdown_height }}px;
+      				}
+                     
+                    .dropdownLink_{{ block.id }}:hover .containerSubNav{
+                     opacity:1;
+                    }
+                   </style>
+                 
+                   <li class="site-nav__item{% if block.settings.enable_dropdown %} dropdownEnabled{% endif %} dropdownLink_{{ block.id }}">
+                     <a href="{{ block.settings.main_link }}" class="site-nav__link" data-meganav-type="child">{{ block.settings.nav_text }}</a>
+                     
+                     {% if block.settings.enable_dropdown %}
+                     	<div class="navDropdown dropdown">
+                          <div class="containerSubNav">
+                            
+							
+                            
+                            {% if block.settings.dropdown_type == 'simple' %}
+                            <!-- SIMPLE DROPDOWN -->
+                               {% for link in linklists[block.settings.dropdown_links].links %}
+                                  <a href="{{ link.url }}" class="simpleLink">{{ link.title }}</a>
+                               {% endfor %}
+                            {% endif %}
+                            
+                            
+                            
+                            
+                            
+                            {% if block.settings.dropdown_type == 'medium' %}
+                            <!-- MEDIUM DROPDOWN -->
+                            {% capture link_img_size %}{{ block.settings.link_img_size | escape }}x{% endcapture %}
+                            
+                               {% for link in linklists[block.settings.dropdown_links].links limit:4 %}
+                            	  
+                            
+                                  <a href="{{ link.url }}" class="simpleLink">
+                                    {% if forloop.index == 1%}
+                                       <img src="{{ block.settings.link_img_01 | img_url: link_img_size }}"
+                                            class="lazyload"
+                                       srcset="{{ block.settings.link_img_01 | img_url: link_img_size }} 1x, {{ block.settings.link_img_01 | img_url: link_img_size, scale: 2 }} 2x"
+                                       width="{{ block.settings.link_img_size }}">
+                                    {% endif %}
+                                    {% if forloop.index == 2%}
+                                       <img src="{{ block.settings.link_img_02 | img_url: link_img_size }}"
+                                            class="lazyload"
+                                       srcset="{{ block.settings.link_img_02 | img_url: link_img_size }} 1x, {{ block.settings.link_img_02 | img_url: link_img_size, scale: 2 }} 2x"
+                                       width="{{ block.settings.link_img_size }}">
+                                    {% endif %}
+                                    {% if forloop.index == 3%}
+                                       <img src="{{ block.settings.link_img_03 | img_url: link_img_size }}"
+                                            class="lazyload"
+                                       srcset="{{ block.settings.link_img_03 | img_url: link_img_size }} 1x, {{ block.settings.link_img_03 | img_url: link_img_size, scale: 2 }} 2x"
+                                       width="{{ block.settings.link_img_size }}">
+                                    {% endif %}
+                                    {% if forloop.index == 4%}
+                                       <img src="{{ block.settings.link_img_04 | img_url: link_img_size }}"
+                                            class="lazyload"
+                                       srcset="{{ block.settings.link_img_04 | img_url: link_img_size }} 1x, {{ block.settings.link_img_04 | img_url: link_img_size, scale: 2 }} 2x"
+                                       width="{{ block.settings.link_img_size }}">
+                                    {% endif %} 
+                                    <br>
+                                    {{ link.title }}
+                            	  </a>
+                               {% endfor %}
+                            
+                            {% endif %}
+
+                            
+                            
+                            {% if block.settings.dropdown_type == 'advanced' %}
+                            <!-- ADVANCED DROPDOWN -->
+                            {% capture featured_img_size %}{{ block.settings.featured_img_size | escape }}x{% endcapture %}
+                            
+                              <span class="advancedLink advancedSelectors">
+                               {% for link in linklists[block.settings.dropdown_links].links %}
+                                  <a href="{{ link.url }}" class="simpleLink">{{ link.title }}</a>
+                               {% endfor %}
+                              </span>
+                            
+                            
+                              <a href="{{ block.settings.featured_link }}" class="advancedLink heroImageHardware">
+                               <img src="{{ block.settings.featured_image | img_url: featured_img_size }}"
+                                    class="lazyload"
+                               srcset="{{ block.settings.featured_image | img_url: featured_img_size }} 1x, {{ block.settings.featured_image | img_url: featured_img_size, scale: 2 }} 2x"
+                               width="{{ block.settings.featured_img_size }}" style="position: relative; bottom:-30px;">
+							  </a>
+                            
+							  <a href="{{ block.settings.featured_link }}" class="advancedLink heroLinkHardware">
+								<p class="h2">{{ block.settings.featured_headline }}</p>
+								<p>{{ block.settings.featured_text }}<br><br>
+								<span>Learn More</span>
+								</p>
+							  </a>
+                            {% endif %}
+
+                          </div>
+                     	</div>
+                     {% endif %}
+                   </li>
+                 {% endfor %}
+                 
+                 
+                 
+                 
+                 {% if section.blocks > limit_nav %}
+                 <span class="mobile-only">
+                 {% for block in section.blocks offset:limit_nav %}
+                   <style>
+                    .dropdownLink_{{ block.id }}:hover .navDropdown{
+        				height: {{ block.settings.dropdown_height }}px;
+      				}
+                     
+                    .dropdownLink_{{ block.id }}:hover .containerSubNav{
+                     opacity:1;
+                    }
+                   </style>
+                 
+                   <li class="site-nav__item{% if block.settings.enable_dropdown %} dropdownEnabled{% endif %} dropdownLink_{{ block.id }}">
+                     <a href="{{ block.settings.main_link }}" class="site-nav__link" data-meganav-type="child">{{ block.settings.nav_text }}</a>
+                     
+                     {% if block.settings.enable_dropdown %}
+                     	<div class="navDropdown dropdown">
+                          <div class="containerSubNav">
+                            
+							
+                            
+                            {% if block.settings.dropdown_type == 'simple' %}
+                            <!-- SIMPLE DROPDOWN -->
+                               {% for link in linklists[block.settings.dropdown_links].links %}
+                                  <a href="{{ link.url }}" class="simpleLink">{{ link.title }}</a>
+                               {% endfor %}
+                            {% endif %}
+                            
+                            
+                            
+                            
+                            
+                            {% if block.settings.dropdown_type == 'medium' %}
+                            <!-- MEDIUM DROPDOWN -->
+                            {% capture link_img_size %}{{ block.settings.link_img_size | escape }}x{% endcapture %}
+                            
+                               {% for link in linklists[block.settings.dropdown_links].links limit:4 %}
+                            	  
+                            
+                                  <a href="{{ link.url }}" class="simpleLink">
+                                    {% if forloop.index == 1%}
+                                       <img src="{{ block.settings.link_img_01 | img_url: link_img_size }}"
+                                            class="lazyload"
+                                       srcset="{{ block.settings.link_img_01 | img_url: link_img_size }} 1x, {{ block.settings.link_img_01 | img_url: link_img_size, scale: 2 }} 2x"
+                                       width="{{ block.settings.link_img_size }}">
+                                    {% endif %}
+                                    {% if forloop.index == 2%}
+                                       <img src="{{ block.settings.link_img_02 | img_url: link_img_size }}"
+                                            class="lazyload"
+                                       srcset="{{ block.settings.link_img_02 | img_url: link_img_size }} 1x, {{ block.settings.link_img_02 | img_url: link_img_size, scale: 2 }} 2x"
+                                       width="{{ block.settings.link_img_size }}">
+                                    {% endif %}
+                                    {% if forloop.index == 3%}
+                                       <img src="{{ block.settings.link_img_03 | img_url: link_img_size }}"
+                                            class="lazyload"
+                                       srcset="{{ block.settings.link_img_03 | img_url: link_img_size }} 1x, {{ block.settings.link_img_03 | img_url: link_img_size, scale: 2 }} 2x"
+                                       width="{{ block.settings.link_img_size }}">
+                                    {% endif %}
+                                    {% if forloop.index == 4%}
+                                       <img src="{{ block.settings.link_img_04 | img_url: link_img_size }}"
+                                            class="lazyload"
+                                       srcset="{{ block.settings.link_img_04 | img_url: link_img_size }} 1x, {{ block.settings.link_img_04 | img_url: link_img_size, scale: 2 }} 2x"
+                                       width="{{ block.settings.link_img_size }}">
+                                    {% endif %} 
+                                    <br>
+                                    {{ link.title }}
+                            	  </a>
+                               {% endfor %}
+                            
+                            {% endif %}
+
+                            
+                            
+                            {% if block.settings.dropdown_type == 'advanced' %}
+                            <!-- ADVANCED DROPDOWN -->
+                            {% capture featured_img_size %}{{ block.settings.featured_img_size | escape }}x{% endcapture %}
+                            
+                              <span class="advancedLink advancedSelectors">
+                               {% for link in linklists[block.settings.dropdown_links].links %}
+                                  <a href="{{ link.url }}" class="simpleLink">{{ link.title }}</a>
+                               {% endfor %}
+                              </span>
+                            
+                            
+                              <a href="{{ block.settings.featured_link }}" class="advancedLink heroImageHardware">
+                               <img src="{{ block.settings.featured_image | img_url: featured_img_size }}"
+                                    class="lazyload"
+                               srcset="{{ block.settings.featured_image | img_url: featured_img_size }} 1x, {{ block.settings.featured_image | img_url: featured_img_size, scale: 2 }} 2x"
+                               width="{{ block.settings.featured_img_size }}" style="position: relative; bottom:-30px;">
+							  </a>
+                            
+							  <a href="{{ block.settings.featured_link }}" class="advancedLink heroLinkHardware">
+								<p class="h2">{{ block.settings.featured_headline }}</p>
+								<p>{{ block.settings.featured_text }}<br><br>
+								<span>Learn More</span>
+								</p>
+							  </a>
+                            {% endif %}
+
+                          </div>
+                     	</div>
+                     {% endif %}
+                   </li>
+                 {% endfor %}
+                 </span>
+                 {% endif %}
+                 
+                 
+                 
+               </div>
+                
+                
+                
+               <a href="/" itemprop="url" class="site-logo_only desktopLogo">
                      <img src="{{ section.settings.logo | img_url: image_size }}"
                      srcset="{{ section.settings.logo | img_url: image_size }} 1x, {{ section.settings.logo | img_url: image_size, scale: 2 }} 2x"
                      alt="{{ section.settings.logo.alt | default: shop.name }}"
                      itemprop="logo">
-                  </a>
-                {% else %}
-                  <a href="/" itemprop="url">{{ shop.name }}</a>
-                {% endif %}
-              {% if template.name == 'index' %}
-                </h1>
-              {% else %}
-                </div>
-              {% endif %}
-            </div>
-            <nav class="grid__item large--two-thirds large--text-right medium-down--hide" role="navigation">
-              {% comment %}
-                List out your main-menu linklist (default)
+               </a>
+                
+                
+                
+               <div class="rightNav"> 
+                
+                 
+                 {% for block in section.blocks offset:limit_nav %}
+                   <style>
+                    .dropdownLink_{{ block.id }}:hover .navDropdown{
+        				height: {{ block.settings.dropdown_height }}px;
+      				}
+                     
+                    .dropdownLink_{{ block.id }}:hover .containerSubNav{
+                     opacity:1;
+                    }
+                   </style>
+                 
+                   <li class="site-nav__item{% if block.settings.enable_dropdown %} dropdownEnabled{% endif %} dropdownLink_{{ block.id }}">
+                     <a href="{{ block.settings.main_link }}" class="site-nav__link" data-meganav-type="child">{{ block.settings.nav_text }}</a>
+                     
+                     {% if block.settings.enable_dropdown %}
+                     	<div class="navDropdown dropdown">
+                          <div class="containerSubNav">
+                            
+							
+                            
+                            {% if block.settings.dropdown_type == 'simple' %}
+                            <!-- SIMPLE DROPDOWN -->
+                               {% for link in linklists[block.settings.dropdown_links].links %}
+                                  <a href="{{ link.url }}" class="simpleLink">{{ link.title }}</a>
+                               {% endfor %}
+                            {% endif %}
+                            
+                            
+                            
+                            
+                            
+                            {% if block.settings.dropdown_type == 'medium' %}
+                            <!-- MEDIUM DROPDOWN -->
+                            {% capture link_img_size %}{{ block.settings.link_img_size | escape }}x{% endcapture %}
+                            
+                               {% for link in linklists[block.settings.dropdown_links].links limit:4 %}
+                            	  
+                            
+                                  <a href="{{ link.url }}" class="simpleLink">
+                                    {% if forloop.index == 1%}
+                                       <img src="{{ block.settings.link_img_01 | img_url: link_img_size }}"
+                                            class="lazyload"
+                                       srcset="{{ block.settings.link_img_01 | img_url: link_img_size }} 1x, {{ block.settings.link_img_01 | img_url: link_img_size, scale: 2 }} 2x"
+                                       width="{{ block.settings.link_img_size }}">
+                                    {% endif %}
+                                    {% if forloop.index == 2%}
+                                       <img src="{{ block.settings.link_img_02 | img_url: link_img_size }}"
+                                            class="lazyload"
+                                       srcset="{{ block.settings.link_img_02 | img_url: link_img_size }} 1x, {{ block.settings.link_img_02 | img_url: link_img_size, scale: 2 }} 2x"
+                                       width="{{ block.settings.link_img_size }}">
+                                    {% endif %}
+                                    {% if forloop.index == 3%}
+                                       <img src="{{ block.settings.link_img_03 | img_url: link_img_size }}"
+                                            class="lazyload"
+                                       srcset="{{ block.settings.link_img_03 | img_url: link_img_size }} 1x, {{ block.settings.link_img_03 | img_url: link_img_size, scale: 2 }} 2x"
+                                       width="{{ block.settings.link_img_size }}">
+                                    {% endif %}
+                                    {% if forloop.index == 4%}
+                                       <img src="{{ block.settings.link_img_04 | img_url: link_img_size }}"
+                                            class="lazyload"
+                                       srcset="{{ block.settings.link_img_04 | img_url: link_img_size }} 1x, {{ block.settings.link_img_04 | img_url: link_img_size, scale: 2 }} 2x"
+                                       width="{{ block.settings.link_img_size }}">
+                                    {% endif %} 
+                                    <br>
+                                    {{ link.title }}
+                            	  </a>
+                               {% endfor %}
+                            
+                            {% endif %}
 
-                More info on linklists:
-                  - http://docs.shopify.com/themes/liquid-variables/linklists
-              {% endcomment %}
-              <!-- begin site-nav -->
-              <ul class="site-nav" id="AccessibleNav">
-                {% for link in linklists[section.settings.main_menu_link_list].links %}
-                  {% if link.links != blank %}
-                  {% assign parent_index = forloop.index %}
-                    <li
-                      class="site-nav__item site-nav--has-dropdown {% if link.active %}site-nav--active{% endif %}"
-                      aria-haspopup="true"
-                      data-meganav-type="parent">
-                      <a
-                        href="{{ link.url }}"
-                        class="site-nav__link"
-                        data-meganav-type="parent"
-                        aria-controls="MenuParent-{{ parent_index }}"
-                        aria-expanded="false"
-                        {% unless template.name == 'index' %}{% if link.active %}aria-current="page"{% endif %}{% endunless%}>
-                          {{ link.title | escape }}
-                          <span class="icon icon-arrow-down" aria-hidden="true"></span>
-                      </a>
-                      <ul
-                        id="MenuParent-{{ parent_index }}"
-                        class="site-nav__dropdown {% if link.levels == 2 %}site-nav--has-grandchildren{% endif %}"
-                        data-meganav-dropdown>
-                        {% for childlink in link.links %}
-                          {% if childlink.links != blank %}
-                          {% assign child_index = forloop.index %}
-                            <li
-                              class="site-nav__item site-nav--has-dropdown site-nav--has-dropdown-grandchild {% if childlink.active %}site-nav--active{% endif %}"
-                              aria-haspopup="true">
-                              <a
-                                href="{{ childlink.url }}"
-                                class="site-nav__dropdown-link"
-                                aria-controls="MenuChildren-{{ parent_index }}-{{ child_index }}"
-                                data-meganav-type="parent"
-                                {% unless template.name == 'index' %}{% if childlink.active %}aria-current="page"{% endif %}{% endunless%}
-                                tabindex="-1">
-                                  {{ childlink.title | escape }}
-                                  <span class="icon icon-arrow-down" aria-hidden="true"></span>
-                              </a>
-                              <div class="site-nav__dropdown-grandchild">
-                                <ul
-                                  id="MenuChildren-{{ parent_index }}-{{ child_index }}"
-                                  data-meganav-dropdown>
-                                  {% for grandchildlink in childlink.links %}
-                                    <li{% if grandchildlink.active %} class="site-nav--active"{% endif %}>
-                                      <a
-                                        href="{{ grandchildlink.url }}"
-                                        class="site-nav__dropdown-link"
-                                        data-meganav-type="child"
-                                        {% unless template.name == 'index' %}{% if grandchildlink.active %}aria-current="page"{% endif %}{% endunless %}
-                                        tabindex="-1">
-                                          {{ grandchildlink.title | escape }}
-                                        </a>
-                                    </li>
-                                  {% endfor %}
-                                </ul>
-                              </div>
-                            </li>
-                          {% else %}
-                            <li{% if childlink.active %} class="site-nav--active"{% endif %}>
-                              <a
-                                href="{{ childlink.url }}"
-                                class="site-nav__dropdown-link"
-                                data-meganav-type="child"
-                                {% if childlink.active %}aria-current="page"{% endif %}
-                                tabindex="-1">
-                                  {{ childlink.title | escape }}
-                              </a>
-                            </li>
-                          {% endif %}
-                        {% endfor %}
-                      </ul>
-                    </li>
-                  {% else %}
-                    <li class="site-nav__item{% if link.active %} site-nav--active{% endif %}">
-                      <a
-                        href="{{ link.url }}"
-                        class="site-nav__link"
-                        data-meganav-type="child"
-                        {% unless template.name == 'index' %}{% if link.active %}aria-current="page"{% endif %}{% endunless%}>
-                          {{ link.title | escape }}
-                      </a>
-                    </li>
-                  {% endif %}
-                {% endfor %}
+                            
+                            
+                            {% if block.settings.dropdown_type == 'advanced' %}
+                            <!-- ADVANCED DROPDOWN -->
+                            {% capture featured_img_size %}{{ block.settings.featured_img_size | escape }}x{% endcapture %}
+                            
+                              <span class="advancedLink advancedSelectors">
+                               {% for link in linklists[block.settings.dropdown_links].links %}
+                                  <a href="{{ link.url }}" class="simpleLink">{{ link.title }}</a>
+                               {% endfor %}
+                              </span>
+                            
+                            
+                              <a href="{{ block.settings.featured_link }}" class="advancedLink heroImageHardware">
+                               <img src="{{ block.settings.featured_image | img_url: featured_img_size }}"
+                                    class="lazyload"
+                               srcset="{{ block.settings.featured_image | img_url: featured_img_size }} 1x, {{ block.settings.featured_image | img_url: featured_img_size, scale: 2 }} 2x"
+                               width="{{ block.settings.featured_img_size }}" style="position: relative; bottom:-30px;">
+							  </a>
+                            
+							  <a href="{{ block.settings.featured_link }}" class="advancedLink heroLinkHardware">
+								<p class="h2">{{ block.settings.featured_headline }}</p>
+								<p>{{ block.settings.featured_text }}<br><br>
+								<span>Learn More</span>
+								</p>
+							  </a>
+                            {% endif %}
 
-                {% comment %}
-                  Remove comment tags below to add a search box to your header, visible on screens where your header menu
-                  is displayed inline.
-                  <li class="site-nav__item site-nav--search__bar medium-down--hide">
-                    {% include 'search-bar', search_btn_style: 'btn', search_bar_location: 'search-bar--header' %}
-                  </li>
-                {% endcomment %}
-                {% if shop.customer_accounts_enabled %}
-                  <li class="site-nav__item site-nav__expanded-item site-nav__item--compressed">
-                    <a class="site-nav__link site-nav__link--icon" href="/account">
-                      <span class="icon-fallback-text">
-                        <span class="icon icon-customer" aria-hidden="true"></span>
-                        <span class="fallback-text">
-                          {% if customer %}
-                            {{ 'layout.customer.account' | t }}
-                          {% else %}
-                            {{ 'layout.customer.log_in' | t }}
-                          {% endif %}
-                        </span>
-                      </span>
-                    </a>
-                  </li>
-                {% endif %}
-
-                {% if section.settings.search == 'page' or section.settings.search == 'modal' %}
-                  {% assign search_modal = true %}
-                  {% if section.settings.search == 'page' %}
-                    {% assign search_modal = false %}
-                  {% endif %}
-                  <li class="site-nav__item site-nav__item--compressed">
-                    <a href="/search" class="site-nav__link site-nav__link--icon{% if search_modal %} js-toggle-search-modal{% endif %}" data-mfp-src="#SearchModal">
-                      <span class="icon-fallback-text">
-                        <span class="icon icon-search" aria-hidden="true"></span>
-                        <span class="fallback-text">{{ 'general.search.title' | t }}</span>
-                      </span>
-                    </a>
-                  </li>
-                {% endif %}
-
-                <li class="site-nav__item site-nav__item--compressed">
-                  <a href="/cart" class="site-nav__link site-nav__link--icon cart-link js-drawer-open-button-right" aria-controls="CartDrawer">
-                    <span class="icon-fallback-text">
+                          </div>
+                     	</div>
+                     {% endif %}
+                   </li>
+                 {% endfor %}
+                 
+                 
+                 
+                 <li class="site-nav__item desktop-only">
+                   <a href="{{ section.settings.nav_cta_link }}" class="subscribeButton">
+                     <span class="subscribeText">{{ section.settings.nav_cta }}</span>
+                     <div class="subscribeBg"></div>
+                   </a>
+                   <a href="{% if customer.metafields.subscriptions.customer_string %}/tools/recurring/portal/{{ customer.metafields.subscriptions.customer_string }}/subscriptions{% else %}/account{% endif %}" class="account-button">
+                      <span class="icon icon-customer" aria-hidden="true"></span>
+                   </a>
+                    <a href="/cart" class="account-button">
                       <span class="icon icon-cart" aria-hidden="true"></span>
-                      <span class="fallback-text">{{ 'layout.cart.title' | t }}</span>
-                    </span>
-                    <span class="cart-link__bubble{% if cart.item_count > 0 %} cart-link__bubble--visible{% endif %}"></span>
-                  </a>
-                </li>
-
+                   </a>
+                 </li>
+                 
+                 
+                 
+                 <li class="site-nav__item mobile-only" style="display:block;">
+                   
+                   {% if customer %}
+                   <a href="{% if customer.metafields.subscriptions.customer_string %}/tools/recurring/portal/{{ customer.metafields.subscriptions.customer_string }}/subscriptions{% else %}/account{% endif %}" class="account-button">
+                      <span class="icon icon-customer" style="margin-right: 10px;"aria-hidden="true"></span>MY ACCOUNT
+                   </a>
+                   {% else %}
+                   <a href="{% if customer.metafields.subscriptions.customer_string %}/tools/recurring/portal/{{ customer.metafields.subscriptions.customer_string }}/subscriptions{% else %}/account{% endif %}" class="account-button">
+                     <span class="icon icon-customer" style="margin-right: 10px;"aria-hidden="true"></span>SIGN IN
+                   </a>
+                   {% endif %}
+                   <br><br>
+                   <a href="{{ section.settings.nav_cta_link }}" class="subscribeButton">
+                     <span class="subscribeText">{{ section.settings.nav_cta }}</span>
+                     <div class="subscribeBg"></div>
+                   </a>
+                 </li>         
+                 
+                 
+                 
+               </div>
               </ul>
-              <!-- //site-nav -->
             </nav>
-            <div class="grid__item large--hide one-quarter">
-              <div class="site-nav--mobile text-right">
-                <a href="/cart" class="site-nav__link cart-link js-drawer-open-button-right" aria-controls="CartDrawer">
-                  <span class="icon-fallback-text">
-                    <span class="icon icon-cart" aria-hidden="true"></span>
-                    <span class="fallback-text">{{ 'layout.cart.title' | t }}</span>
-                  </span>
-                  <span class="cart-link__bubble{% if cart.item_count > 0 %} cart-link__bubble--visible{% endif %}"></span>
-                </a>
-              </div>
-            </div>
           </div>
-
         </div>
       </header>
+      
+      <div class="header-spacer"></div>
+    
     </div>
   </div>
 </div>
 
+
+<script>
+  $('#nav_open').on('click', function(){
+    
+  	$('.full__nav').toggleClass('expand_nav');
+  	$('nav').toggleClass('expand_nav');
+    
+  });
+
+</script>
 {% schema %}
   {
     "name": "Header",
+    "max_blocks": 8,
+    "blocks": [
+      {
+        "type": "html",
+        "name": "Nav Link",
+        "settings": [
+    	  {
+            "type": "text",
+            "id": "nav_text",
+            "label": "Text"
+          },
+          {
+            "type": "url",
+            "id": "main_link",
+            "label": "Main Link",
+			"info": "This is optional"
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_dropdown",
+            "label": "Enable Dropdown",
+            "default": false
+          },
+          {
+             "type": "link_list",
+             "id": "dropdown_links",
+             "label": "Dropdown Links"
+          },
+          {
+            "type": "select",
+            "id": "dropdown_type",
+            "label": "Choose Dropdown Type",
+			"info": "*Enable dropdown must be checked",
+            "options": [
+              {
+                "value": "simple",
+                "label": "Simple (just text)"
+              },
+              {
+                "value": "medium",
+                "label": "Medium (text + images)"
+              },
+              {
+                "value": "advanced",
+                "label": "Advanced (text + featured)"
+              }
+            ],
+            "default": "simple"
+          },
+          {
+            "type": "range",
+            "id": "dropdown_height",
+            "min": 0,
+            "max": 400,
+            "step": 5,
+            "unit": "px",
+            "label": "Height",
+            "default": 200
+
+          },
+          {
+            "type": "range",
+            "id": "dropdown_height_mb",
+            "min": 0,
+            "max": 400,
+            "step": 5,
+            "unit": "px",
+            "label": "Mobile Height",
+            "default": 200
+
+          },
+          {
+             "type": "header",
+             "content": "Medium Dropdown Options",
+			 "info": "There can be a max number of 4 links."
+          },
+          {
+            "type": "text",
+            "id": "link_img_size",
+            "label": "Image Size (in pixels)",
+            "default": "150"
+          },
+          {
+            "type": "image_picker",
+            "id": "link_img_01",
+            "label": "Link 1 Image"
+          },
+          {
+            "type": "image_picker",
+            "id": "link_img_02",
+            "label": "Link 2 Image"
+          },
+          {
+            "type": "image_picker",
+            "id": "link_img_03",
+            "label": "Link 3 Image"
+          },
+          {
+            "type": "image_picker",
+            "id": "link_img_04",
+            "label": "Link 4 Image"
+          },
+          {
+             "type": "header",
+             "content": "Advanced Dropdown Options"
+          },
+          {
+            "type": "url",
+            "id": "featured_link",
+            "label": "Featured Link"
+          },
+          {
+            "type": "image_picker",
+            "id": "featured_image",
+            "label": "Featured Image"
+          },
+          {
+            "type": "text",
+            "id": "featured_img_size",
+            "label": "Image Size (in pixels)",
+            "default": "270"
+          },
+          {
+            "type": "text",
+            "id": "featured_headline",
+            "label": "Featured Headline"
+          },
+          {
+            "type": "textarea",
+            "id": "featured_text",
+            "label": "Featured text"
+          }
+        ]
+      }
+    ],
     "settings": [
       {
         "type": "link_list",
@@ -288,71 +709,31 @@
         "label": "Logo"
       },
       {
-        "type": "image_picker",
-        "id": "logo-inverted",
-        "label": "Home page logo",
-        "info": "Shown on slideshow"
-      },
-      {
         "type": "text",
         "id": "logo_max_width",
         "label": "Custom logo width (in pixels)",
         "default": "180"
       },
       {
-        "type": "select",
-        "id": "search",
-        "options": [
-           { "value": "modal",
-             "label": "Modal"
-           },
-           { "value": "page",
-             "label": "Page"
-           },
-           { "value": "none",
-             "label": "None"
-           }
-        ],
-        "label": "Search type"
-      },
-      {
-        "type": "header",
-        "content": "Announcement bar"
-      },
-      {
-        "type": "checkbox",
-        "id": "show_announcement",
-        "label": "Show announcement",
-        "default": false
-      },
-      {
-        "type": "checkbox",
-        "id": "home_page_only",
-        "label": "Home page only",
-        "default": true
+        "type": "range",
+        "id": "nav_item_per",
+		"min": 1,
+        "max": 5,
+        "step": 1,
+        "unit": "stp",
+        "label": "How many items per side",
+        "default": 3
       },
       {
         "type": "text",
-        "id": "text",
-        "label": "Text",
-        "default": "Announce something here"
+        "id": "nav_cta",
+        "label": "Button Text",
+		"default": "Get Started"
       },
       {
         "type": "url",
-        "id": "link",
-        "label": "Link"
-      },
-      {
-        "type": "color",
-        "id": "color_bg",
-        "label": "Bar",
-        "default": "#1c1d1d"
-      },
-      {
-        "type": "color",
-        "id": "color_text",
-        "label": "Text",
-        "default": "#fff"
+        "id": "nav_cta_link",
+        "label": "Button Url"
       }
     ]
   }

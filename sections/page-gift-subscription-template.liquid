@@ -1,0 +1,1188 @@
+{%- assign duration_01_handle = section.settings.product_01 -%}
+{%- assign duration_01_handle = section.settings.product_01 -%}
+{%- assign duration_02_handle = section.settings.product_02 -%}
+{%- assign duration_03_handle = section.settings.product_03 -%}
+
+{%- assign duration_01 = all_products[duration_01_handle] -%}
+{%- assign duration_02 = all_products[duration_02_handle] -%}
+{%- assign duration_03 = all_products[duration_03_handle] -%}
+
+
+
+
+
+
+{%- capture builder_config -%}
+
+{ 
+
+"products": [
+
+  {
+       "durations": ["{{ duration_01.variants[0].id }}", "{{ duration_02.variants[0].id }}", "{{ duration_03.variants[0].id }}"],
+	   "prices": ["{{ duration_01.variants[0].price | money_without_trailing_zeros }}", "{{ duration_02.variants[0].price | money_without_trailing_zeros }}", "{{ duration_03.variants[0].price | money_without_trailing_zeros }}"],
+	   "compare_at": ["{{ duration_01.variants[0].compare_at_price | money_without_trailing_zeros }}", "{{ duration_02.variants[0].compare_at_price | money_without_trailing_zeros }}", "{{ duration_03.variants[0].compare_at_price | money_without_trailing_zeros }}"],
+	   "savings": ["{{ duration_01.variants[0].compare_at_price | minus: duration_01.variants[0].price | money_without_trailing_zeros }}", "{{ duration_02.variants[0].compare_at_price | minus: duration_02.variants[0].price | money_without_trailing_zeros }}", "{{ duration_03.variants[0].compare_at_price | minus: duration_03.variants[0].price | money_without_trailing_zeros }}"]
+  },
+
+  {
+       "durations": ["{{ duration_01.variants[1].id }}", "{{ duration_02.variants[1].id }}", "{{ duration_03.variants[1].id }}"],
+	   "prices": ["{{ duration_01.variants[1].price | money_without_trailing_zeros }}", "{{ duration_02.variants[1].price | money_without_trailing_zeros }}", "{{ duration_03.variants[1].price | money_without_trailing_zeros }}"],
+	   "compare_at": ["{{ duration_01.variants[1].compare_at_price | money_without_trailing_zeros }}", "{{ duration_02.variants[1].compare_at_price | money_without_trailing_zeros }}", "{{ duration_03.variants[1].compare_at_price | money_without_trailing_zeros }}"],
+	   "savings": ["{{ duration_01.variants[1].compare_at_price | minus: duration_01.variants[1].price | money_without_trailing_zeros }}", "{{ duration_02.variants[1].compare_at_price | minus: duration_02.variants[1].price | money_without_trailing_zeros }}", "{{ duration_03.variants[1].compare_at_price | minus: duration_03.variants[1].price | money_without_trailing_zeros }}"]
+  },
+
+  {
+       "durations": ["{{ duration_01.variants[2].id }}", "{{ duration_02.variants[2].id }}", "{{ duration_03.variants[2].id }}"],
+	   "prices": ["{{ duration_01.variants[2].price | money_without_trailing_zeros }}", "{{ duration_02.variants[2].price | money_without_trailing_zeros }}", "{{ duration_03.variants[2].price | money_without_trailing_zeros }}"],
+	   "compare_at": ["{{ duration_01.variants[2].compare_at_price | money_without_trailing_zeros }}", "{{ duration_02.variants[2].compare_at_price | money_without_trailing_zeros }}", "{{ duration_03.variants[2].compare_at_price | money_without_trailing_zeros }}"],
+  	   "savings": ["{{ duration_01.variants[2].compare_at_price | minus: duration_01.variants[2].price | money_without_trailing_zeros }}", "{{ duration_02.variants[2].compare_at_price | minus: duration_02.variants[2].price | money_without_trailing_zeros }}", "{{ duration_03.variants[2].compare_at_price | minus: duration_03.variants[2].price | money_without_trailing_zeros }}"]
+  }
+
+]
+
+}
+
+{%- endcapture -%}
+
+
+
+
+<style>
+    html, body{
+  height: 100%;
+  }
+  .page-container{
+  	background: #ebe9e4;
+  }
+  .builder-option__content:before, .builder-product-offering__option.selected:before{
+  display:none !important;
+  }
+  
+  .builder-product-offering__option-text, .builder-option__title, .builder-product-offering__subtitle{
+  font-size: 14px;
+  text-transform: uppercase !important;
+  letter-spacing:0.03em;
+  }
+  
+  .builder-product-offering__title{
+  font-size: 25px;
+  font-weight: 600;
+  }
+  
+  .builder-option__content{
+  padding: 15px 5px;
+  }
+  .builder-option{
+  width: 100%;
+  }
+  body{
+    background: {{ section.settings.background_color }};
+  }
+  
+  .builder-product-offering__subtitle{
+    margin-top:0;
+  margin-bottom:0;
+  }
+  .builder-product-offering__option.selected, .builder-product-offering__option:hover, .builder-option__content:hover, .builder-option.selected .builder-option__content{
+  background-color: #fff;
+  }
+  
+  .builder-product-offering__header{
+  margin-bottom: 10px;
+  }
+  
+  .builder-product-offering{
+  	max-width: 1280px;
+    margin: 0 auto;
+  }
+  
+  .product-offering-contain{
+  position: relative;
+    height: auto;
+    background: #fff;
+    border-radius: 10px;
+    margin: 10px 0;
+    padding: 20px;
+    padding-bottom: 1px;
+    overflow:hidden;
+  }
+  
+  .builder-product-offering__content{
+  	margin-bottom: 20px;
+  }
+  
+  .builder-product-offering__features{
+  font-size: 14px !important;
+  }
+  
+  .builder-product-offering__features-title{
+  	text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight:700;
+    font-size: 14px;
+  }
+  
+  .product-offering-contain .seperatorLine{
+    position: relative;
+    height: 2px;
+    background: {{ section.settings.background_color }};
+    width: calc(100% + 50px);
+    left: -25px;
+    margin: 15px 0;
+  }
+  
+  .builder__option{
+  	margin:0 !important;
+    text-transform: capitalize !important;
+  }
+  
+  .builder__options{
+    border-radius: 10px;
+    font-size:14px;
+    background: #fff;
+    position: relative;
+    width: 100%;
+    font-style: inherit;
+    padding-right: 60px;
+    margin-top:0;
+    text-transform: capitalize;
+  }
+  
+  .select__options{
+    position: relative;
+    display: inline-block;
+    margin-right: 20px;
+  }
+  
+  .builder__step-action{
+  	width: 100%;
+    border-radius: 10px;
+  }
+  
+  
+  .builder-product-offering__options{
+  width:calc(100% + 4px)
+  }
+  
+  .builder-product-offering__option{
+    box-shadow: 0 0 0 2px {{ section.settings.secondary_color }};
+    border-radius: 10px;
+    padding: 15px 5px;
+    padding-top:5px;
+    max-width: 100%;
+  }
+  
+  .learn-more-button{
+  width: 100%;
+    cursor:pointer;
+  }
+  
+  .builder-product-offering__option.selected, .builder-product-offering__option:hover{
+  	box-shadow:0 0 0 0 !important;
+  }
+  
+  .more-features{
+    height:auto;
+    max-height:0;
+    opacity:0;
+    transition:0.5s;
+  }
+  .learn-more-visible{max-height:300px;margin-bottom:30px;opacity:1;}
+  
+  .builder__note input{
+    margin-right: 0;
+    margin-left: 10px;
+  }
+  
+  .builder__note{
+   letter-spacing:0.03em;
+    margin: 7px 0;
+  }
+  
+  .builder__note label{
+   letter-spacing:0;
+    font-size: 17px;
+  }
+  
+  .builder__note.decafSelect{
+    margin-top: 15px;
+  	text-align: left;
+    color: #000;
+  }
+  
+  .proSelectRadio{
+    margin-left: 0px !important;
+    margin-top: 10px !important;
+  }
+  
+  .learn-more-button:after {
+    content: " ";
+    width: 10px;
+    height: 20px;
+    margin-top: 5px;
+    position: absolute;
+    right: 30px;
+    background-image: url(https://cdn.shopify.com/s/files/1/0090/2135/8137/files/arrow_e717880f-3a88-4f6e-8d1e-2ef55b1339d1.png);
+    background-size: 100%;
+    background-repeat: no-repeat;
+  }
+  
+  .select__options:after {
+    content: " ";
+    width: 10px;
+    height: 20px;
+    position: absolute;
+    right: 20px;
+    bottom: 7px;
+    background-image: url(https://cdn.shopify.com/s/files/1/0090/2135/8137/files/arrow_e717880f-3a88-4f6e-8d1e-2ef55b1339d1.png);
+    background-size: 100%;
+    background-repeat: no-repeat;
+    pointer-events: none;
+  }
+  
+  .builder__option-title{
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  
+  .builder__step-actions{
+  	margin-top: 15px;
+  }
+  
+  .order_summary{
+    margin-top: 20px;
+    font-size: 20px;
+    padding: 15px 0;
+    padding-bottom:5px;
+    border-top: 1px solid {{ section.settings.secondary_color }};
+    text-align: center;
+    margin-bottom: 15px;
+    width: 100%;
+    float:left;
+  }
+  
+  .order_summary .sub_text{
+  	font-size: 14px;
+    line-height: 105%;
+  }
+  
+  .summary_col1, .summary_col2{
+  	width: 49%;
+    display: inline-block;
+    float: left;
+    
+  }
+  
+  .summary_col1{
+  	text-align: left;
+  }
+  
+  .summary_col2{
+  	text-align: right;
+  }
+  
+  .order_summary p{
+  margin:0;
+  }
+  
+  .totalPrice{
+      margin-bottom: 0;
+    font-size: 25px;
+    font-weight: 600;
+  }
+  
+  /*
+  #shopify-section-footer{
+  display:none;
+  }*/
+  
+  .wrapper{
+  max-width: 100%;
+    padding:0;
+  }
+  
+  .builder-product-offering__preview{
+      -ms-flex-preferred-size: 60%;
+    -webkit-flex-basis: 60%;
+    -moz-flex-basis: 60%;
+    flex-basis: 60%;
+    text-align: right;
+  }
+  
+  
+  .builder-product-offering__info{
+    -ms-flex-preferred-size: 40%;
+    -webkit-flex-basis: 40%;
+    -moz-flex-basis: 40%;
+    flex-basis: 40%;  
+    padding: 0 30px;
+  }
+  
+ /* .header-container{
+  	display:none;
+  }
+  */
+  .builder-product-offering__preview img{
+    max-width: 100%;
+  }
+  
+  .builder__steps{
+  margin-top: 20px;
+  }
+  
+  .headling__container{
+    width: 100%;
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  
+  .headling__container h1{
+	font-size: 40px;
+    margin-bottom: 0px;
+    line-height: 110%;
+  }
+  
+  .questionHover{
+    position: relative;
+    display: inline-block;
+    color: #fff;
+    background: rgba(0,0,0,0.15);
+    padding: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 200px;
+    line-height: 120%;
+    text-indent: 3px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .questionHover:after{
+    content: "Love us by the third sip or your coffee’s on the house. Call us at 206-780-5777 or email us at info@storyville.com";
+    position: absolute;
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    color: #000;
+    text-indent: 0px;
+    line-height: 150%;
+    width: 250px;
+    margin-left: 15px;
+    margin-top: -4px;
+    opacity:0;
+    display:none;
+    transition: 0.25s;
+    letter-spacing: 0.02em;
+    z-index:2;
+  }
+  
+  .questionHover:hover:after{display:block;opacity:1;} 
+  
+  .builder__note{text-align: left;}
+  
+  .strike-out{
+  	opacity:0.4;
+    text-decoration: line-through;
+  }
+  
+  
+  
+   
+  /******* CHECKED EPILOGUE *******/
+  
+  
+.selectOption {
+	display: block;
+	padding: 20px;
+	position: relative;
+	background:{{ section.settings.secondary_color }};
+	width:100%;
+	border-radius: 15px;
+	font-size:16px;
+  	margin-top:15px;
+  	margin-bottom: 0;
+	letter-spacing:0.03em;
+	box-shadow: 0 0 0 1px transparent;
+	transition:0.1s;
+	transition-delay: background 0.2s;
+  	opacity:0.5;  	
+}
+
+.checkedOutline{
+	background:#fff;
+  	opacity:1;
+    /*box-shadow: 0 0 0 1px {{ section.settings.dark_color }};*/
+}
+
+.selectOption label {
+	margin-left: 16px;
+	cursor: pointer;
+	display: inline-block;
+
+}
+
+.selectOption input[type="checkbox"] {
+	visibility: hidden;
+}
+
+.selectOption label:before {
+	content: '';
+	width: 16px;
+	height: 16px;
+	border-radius:3px;
+	background:transparent;
+	position: absolute;
+	left:23px;
+	top:25px;
+	z-index: 2;
+}
+
+.selectOption label:after {
+    content: '';
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    background-color: #fff;
+    position: absolute;
+    left: 20px;
+    top: 22px;
+    border: 1px solid {{ section.settings.secondary_color }};
+}
+
+
+.selectOption input:checked + label:before {
+	background: {{ section.settings.highlight_color }};
+}
+
+
+  .checkedOutline label{
+  	font-weight:700;
+  }
+  
+  
+  #ch-checkout-btn{
+    width: 100%;
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 20px;
+    margin-top: 10px;
+    background: #d9d9d9;
+    color: #000;
+  }
+  
+  #ch-checkout-btn:hover{
+  background-color: #f9f9f9 !important;
+  }
+  
+  .cart__checkout{
+    background-color: {{ section.settings.highlight_color }};
+    box-shadow:0 0 20px rgba(0,0,0,0);
+    transition: 0.3s ease;
+    max-width: 100%;
+    width: 32%;
+    cursor: pointer;
+    text-align: center;
+    color: #fff;
+    display: inline-block;
+    margin: 0 auto;
+    font-size: 20px;
+    padding: 15px 15px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-radius: 15px;
+    text-decoration: none !important;
+  }
+  
+  .cart__checkout:hover{
+  	background-color: {{ section.settings.highlight_color }};
+    transition: 0.3s ease;
+    box-shadow:10px 10px 30px rgba(0,0,0,0.2);
+  }
+  
+  
+  
+  /****** FIXED PRICE OPTIONS ****/
+  
+  
+  .fixedPriceActive .select__options{
+  	display:none;
+  }
+  
+  .fixedPriceOptions{
+  	display:none;
+  }
+  
+  .showFixedPriceOptions{display:none;}
+  
+  .fixedPriceOptions.showFixedPrices{
+  	display:block;
+  }
+  
+    
+  .next_shipment_date{
+    font-size: 17px;
+    display: block;
+    position: relative;
+    margin-top: 10px !important;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 20px !important;
+  }
+  
+  .recurring__icon{
+    width: 20px;
+    margin-bottom: -4px;
+    margin-right: 3px;
+    display: inline-block;
+  }
+  
+  .fixedPriceQuantity{
+    font-weight:bold;
+    margin-bottom: 16px;
+  }
+  
+  .fixed_price_headline{
+  font-size: 25px !important;
+    font-weight: 600;
+    text-align: left;
+    margin-bottom:10px !important;
+  }
+  
+  .fixedPriceOptions p{
+  	font-size: 16px;
+    text-align:left;
+    margin: 5px 0;
+  }
+  
+  .fixed_price_quantity, .fixed_price_frequency{
+    width: 50%;
+    display: inline-block;
+    float: left;
+    font-size: 19px !important;
+  }
+  
+  .fixedPriceOptions p.sub_text{
+    margin-top: 0 !important;
+  }
+  
+  .fixedPriceOptions p b{
+  	font-size: 14px;
+  }
+  
+  .fixedPriceOptions .order_summary{
+    margin-top: 0px;
+    padding: 5px 0;
+    padding-bottom: 5px;
+    border-top: 0px solid #e5e1da;
+    margin-bottom: 5px;
+  }
+  
+  .fixed_price_nextDate{
+    border-bottom: 1px solid {{ section.settings.secondary_color }};
+    border-top: 1px solid {{ section.settings.secondary_color }};
+    padding: 10px 0;
+    display: inline-block;
+    width: 100%;
+    margin: 10px 0 !important;
+  }
+  
+
+  
+  @media screen and (max-width: 1268px){
+  .builder-product-offering__info{
+    -ms-flex-preferred-size: 50%;
+    -webkit-flex-basis: 50%;
+    -moz-flex-basis: 50%;
+    flex-basis: 50%; 
+  }
+  }
+  @media screen and (max-width: 768px){
+    .select__options{
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    
+    .builder__options{
+      width: 100%;
+      padding-bottom: 7px;
+    }
+    
+    .select__options:after{
+      right: 30px;
+    }
+    .builder__steps{
+ 	 margin-top: 0px;
+  	}
+    
+    .builder-product-offering__preview, .builder-product-offering__preview img{
+      width: 80%;
+      max-width: 80%;
+    }
+    
+    .headling__container h1{
+    	font-size: 25px;
+      margin-top: 25px;
+    }
+    
+    .builder-product-offering__preview{
+    text-align: center;
+    }
+    
+    .builder-product-offering__header{
+    	text-align: left;
+    }
+    
+    .wrapper{
+    padding:0;
+    }
+    
+    .builder-product-offering__info{
+    padding:0 15px;
+    }
+    
+    .builder__note.decafSelect{
+    margin-top:0;
+    }
+    .headling__container{
+      margin: 50px 0;
+      margin-bottom:0;
+    }
+    
+    .top-logo{
+      left:0 !important;right:0;
+      margin: auto;
+      top: -50px !important;
+    }
+    
+    .builder-product-offering__content{
+    	margin-top:0;
+    }
+    .summary_col1, .summary_col2{
+      width: 50%;
+      padding: 5px 0;
+    }
+    
+    .selectOption, .select__options {
+      margin-top: 15px;
+      margin-bottom:0;
+    }
+    
+    .builder__options, .builder__option-title{
+      font-size:16px;
+    }
+    
+    .questionHover:after{
+      left: -50px;
+      top: 30px;
+    }
+    
+    .product-offering-contain{
+    	margin: 20px 0;
+    }
+    
+  
+  }
+  
+  
+  
+  #add-to-cart{
+  	width: 32%;
+  }
+  
+  .builder-gift{
+     max-width: 1080px;
+    text-align:  center;
+    margin:0 auto;
+  
+  }
+  
+  .top-logo{
+    position: absolute;
+    top: 0;
+  	left: 20px;
+    z-index: 900000;
+  }
+  
+  
+  
+  
+  .gift-steps {
+    position: relative;
+    display: flex;
+    justify-content: space-evenly;
+    margin: 0 auto;
+    margin-bottom: 30px;
+  }
+  
+  .gift-step {
+    background: rgba(255,255,255,0.5);
+    height: 430px;
+    width: 32%;
+    flex-basis: 32%;
+    border-radius: 10px;
+    transition:0.5s;
+    padding: 15px;
+    box-shadow: 0 2px 3px 0 rgba(0,0,0,0);
+    opacity:0.5;
+  }
+  
+.headling__container h1{
+  	font-size: 50px !important;
+  }
+  
+  .headling__container{
+  margin-bottom: 10px !important;
+  }
+  
+  
+  .gift-step h3{
+    text-transform: none;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+    margin-bottom:0;
+  }
+  
+  .gift-step h4{
+    font-weight: 600;
+    font-size: 26px;
+    margin-top: 5px;
+    letter-spacing: 0.01em;
+  }
+  
+  .gift-step h4 s{
+  	opacity:0.4;
+    font-size: 20px;
+  }
+  
+  .gift-step .savings{
+  	color: {{ section.settings.highlight_color }};
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    margin-bottom: 0;
+    margin-top: -15px;
+    text-transform: uppercase;
+  }
+  
+  
+  .gift-step.selected{
+  	background: #fff !important;
+    border:0;
+    box-shadow: 0 2px 6px 0 rgba(0,0,0,0.1);
+    opacity:1;
+  }
+  
+  
+    .gift-steps__container{
+    width: 100%;
+    text-align: center;
+    margin: 50px auto;
+  }
+  
+  .headling__container h1{
+	font-size: 40px;
+    margin-bottom: 0px;
+    line-height: 110%;
+    font-family: 'Lato', sans-serif;
+    text-transform: capitalize;
+    text-align: center !important;
+    font-weight: 600 !important;
+  }
+  
+  .step_01, .step_02, .step_03{
+    display:none;
+  
+  }
+  
+  .active-step{
+  display:block;
+  }
+  
+  .builder-product-offering__subtitle {
+    margin-top: 0;
+    margin-bottom: 0;
+    text-transform: none !important;
+    color: #000 !important;
+    margin-bottom: 40px;
+    font-size: 25px;
+    letter-spacing: 0.01em;
+    text-align: center;
+    font-weight:200;
+  }
+  
+  .gift-step-slider{
+    width: 550px;
+    background: #fff;
+    position: fixed;
+    top: 0;
+    right: -550px;
+    height: 100%;
+    transition:0.25s ease;
+    z-index: 100;
+  }
+  
+  .gift-step-slider .slider-container{
+    width: 90%;
+    margin: 0 auto;
+    position: relative;
+    height: 100%;
+  }
+  
+  .active-slider{
+    opacity:1 !important;
+  	right:0;
+    pointer-events: auto !important;
+  }
+  .btn{
+    background-color: {{ section.settings.highlight_color }};
+    box-shadow:0 0 20px rgba(0,0,0,0);
+    transition: 0.3s ease;
+    max-width: 100%;
+    width: 32%;
+    cursor: pointer;
+    text-align: center;
+    color: #fff;
+    display: inline-block;
+    margin: 0 auto;
+    font-size: 20px;
+    padding: 15px 15px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-radius: 15px;
+    text-decoration: none !important;
+  }
+  
+  .btn:hover{
+  	background-color: {{ section.settings.highlight_color }};
+    transition: 0.3s ease;
+    box-shadow:10px 10px 30px rgba(0,0,0,0.2);
+  }
+  
+  /*#add-to-cart {
+    width: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 30px;
+  }
+  */
+  .slider-col {
+    display: flex;
+    border-bottom: 1px solid #ebe9e4;
+    padding: 20px 0;
+    justify-content:space-between;
+  }
+  
+  .slider-col p, .slider-col h3{
+  margin:0;
+  }
+  
+  .gift-step-slider h3{
+  	text-align: center;
+  }
+  
+  .gift-step-slider h2{
+	font-size: 40px;
+    margin-bottom: 0px;
+    line-height: 110%;
+    font-weight: 800;
+    font-family: 'Lato', sans-serif;
+    padding: 20px 0;
+    text-align: center !important;
+  }
+  
+  .slider-overlay{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    background: rgba(0,0,0,0.75);
+    left: 0;
+    opacity:0;
+    pointer-events:none;
+  }
+  
+  input, textarea {
+    width: 80%;
+    margin: 5px 0;
+    background: #fff;
+    padding: 10px 30px;
+  }
+  
+  textarea{
+    height: 120px;
+    margin-bottom: 30px;
+    resize: vertical;
+  }
+  
+  .back-button{
+  	display:block;
+    margin-top:10px;
+    cursor:pointer;
+  }
+  
+  @media screen and (max-width: 768px){  
+    .gift-steps{
+    	display:block;
+    }
+    
+    .gift-step{
+      width: 90%;
+      margin: 10px auto;
+      height: auto;
+      display:flex;
+      align-items: center;
+      justify-content: space-evenly;
+    }
+    .gift-step h3{
+    	font-size: 20px;
+    }
+    .gift-step h4{
+    	margin-bottom:0;
+    }
+    .gift-step img{
+      max-width: 30%;
+    }
+    .btn{
+      width: 90%;
+    }
+    #add-to-cart {
+      width: 90% !important;
+	}
+    .gift-step .savings{
+      margin-top: 0;
+      font-size: 15px;
+    }
+    input, textarea{
+    width: 90%;
+    }
+  }
+  
+</style>
+
+
+
+
+<form class="builder-gift" action="/cart" method="post" data-gift-subscription-builder='{{ builder_config }}' enctype="multipart/form-data" novalidate>
+
+  <div class="gift-steps__container">
+    <div class="headling__container">
+      <h1>Give Storyville Coffee</h1>
+    </div>
+    <div class="step_01 active-step">
+      <h3 class="builder-product-offering__subtitle">Seattle-roasted, delivered fresh - the perfect gift for any time of year!</h3>
+      <div class="gift-steps product-select">
+        <div class="gift-step selected" data-value="0">
+          <img src="{{ section.settings.image_for_beans | img_url: 'master' }}" class="lazyload">
+          <span>
+            <h3>Whole Bean</h3>
+            <p>Signature Prologue Blend</p>
+          </span>
+        </div>
+        <div class="gift-step" data-value="1">
+          <img src="{{ section.settings.image_for_pods | img_url: 'master' }}" class="lazyload">
+          <span>
+            <h3>Pods</h3>
+            <p>Keurig® Compatible Pods</p>
+          </span>
+        </div>
+        <div class="gift-step" data-value="2">
+          <img src="{{ section.settings.image_for_capsules | img_url: 'master' }}" class="lazyload">
+          <span>
+            <h3>Capsules</h3>
+            <p>Nespresso® Compatible Capsules</p>
+          </span>
+        </div>
+      </div>
+      
+      <a class="btn" onclick="steptwo();">NEXT STEP</a>
+    </div>
+    
+    
+    <div class="step_02">
+      <h3 class="builder-product-offering__subtitle" data-headline>Your gift of 3 bags of Storyville Prologue will be delivered once a month.</h3>
+      <div class="gift-steps duration-select">
+        <div class="gift-step" data-value="0">
+          <div class="gift-container">
+          	<h3>3 Months</h3>
+            <h4><s data-price-01>$400</s> <span data-price-discount-01>$120</span></h4>
+            <p class="savings" data-savings-01>Save $00</p>
+          </div>
+          <img src="{{ section.settings.image_for_duration_01 | img_url: 'master' }}" class="lazyload">
+        </div>
+        <div class="gift-step selected" data-value="1">
+          <div class="gift-container">
+          	<h3>6 Months</h3>
+            <h4><s data-price-02>$400</s> <span data-price-discount-02>$240</span></h4>
+            <p class="savings" data-savings-02>Save $00</p>
+          </div>
+          <img src="{{ section.settings.image_for_duration_02 | img_url: 'master' }}" class="lazyload">
+          
+        </div>
+        <div class="gift-step" data-value="2">
+          <div class="gift-container">
+          	<h3>12 Months</h3>
+            <h4><s data-price-03>$500</s> <span data-price-discount-03>$480</span></h4>
+            <p class="savings" data-savings-03>Save $00</p>
+          </div>
+          <img src="{{ section.settings.image_for_duration_03 | img_url: 'master' }}" class="lazyload">
+          
+        </div>
+      </div>
+      
+      <a class="btn" onclick="stepthree();">NEXT STEP</a>
+      <a class="back-button" onclick="goback()">Go Back</a>
+
+    </div>
+    
+    <div class="step_03">
+      <h3 class="builder-product-offering__subtitle" required>Personalize your gift!</h3>
+      <input id="giftto" type="text" placeholder="Who is your gift to..." required>
+      <input id="giftfrom" type="text" placeholder="Who is your gift from..." required>
+      <textarea id="giftnote" type="text" placeholder="We'll send a note for you, what should it say?" required></textarea>
+	  
+      <br>
+      
+      <a id="add-to-cart" class="btn cart__checkout" onclick="addToCart()">REVIEW ORDER</a>
+      <a class="back-button" onclick="goback()">Go Back</a>
+
+    </div>
+  </div>
+
+  <div class="gift-step-slider">
+    <div class="slider-container">
+      <h2>Gift Overview</h2>
+      <br>
+      
+      <h3 class="builder-product-offering__subtitle" data-details>3 Bags delivered every month.</h3>
+
+      <div class="slider-col">
+        <p>Gift Duration:</p>
+        <p data-selected-price>6 Months</p>
+      </div>
+
+      <div class="slider-col">
+        <p>Total:</p>
+        <p data-selected-price>$252</p>
+      </div>
+
+      <a id="add-to-cart" class="btn cart__checkout" onclick="addToCart()">CHECKOUT</a>
+    </div>
+  </div>
+
+  
+  <div class="slider-overlay" onclick="closeoverview();"></div>
+  
+  
+</form>
+
+<script>
+  
+</script>
+
+{% schema %}
+  {
+    "name": "Product Details",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Products to Include"
+      },
+      {
+        "type": "product",
+        "id": "product_01",
+        "label": "Product #01"
+      },
+      {
+        "type": "product",
+        "id": "product_02",
+        "label": "Product #02"
+      },
+      {
+        "type": "product",
+        "id": "product_03",
+        "label": "Product #03"
+      },
+      {
+        "type": "header",
+        "content": "Product Images"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_for_beans",
+        "label": "Sample Image for beans"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_for_pods",
+        "label": "Sample Image for pods"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_for_capsules",
+        "label": "Sample Image for capsules"
+      },
+      {
+        "type": "header",
+        "content": "Duration Images"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_for_duration_01",
+        "label": "3 Months Duration"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_for_duration_02",
+        "label": "6 Months Duration"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_for_duration_03",
+        "label": "12 Months Duration"
+      },
+      {
+        "type": "header",
+        "content": "Compare at Prices"
+      },
+      {
+        "type": "text",
+        "id": "compare_for_wholebean",
+        "label": "Whole Bean Compare Prices",
+		"info": "Seperated by commas..."
+      },
+      {
+        "type": "header",
+        "content": "Color Scheme"
+      },
+      {
+        "type": "color",
+        "id": "highlight_color",
+        "label": "Highlight Color",
+		"default": "#a2111a"
+      }, 
+      {
+        "type": "color",
+        "id": "secondary_color",
+        "label": "Secondary Color",
+		"default": "#ebe9e4"
+      },
+      {
+        "type": "color",
+        "id": "dark_color",
+        "label": "Dark Color",
+		"default": "#0c0800"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background Color",
+		"default": "#ebe9e4"
+      }
+    ]
+  }
+{% endschema %}

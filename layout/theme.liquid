@@ -5,14 +5,8 @@
 <!--[if IE 9 ]><html class="ie9 no-js"> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
-
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-NWDRBC2');</script>
-<!-- End Google Tag Manager -->
+  <script src="https://www.googleoptimize.com/optimize.js?id=OPT-N4FWJT2"></script>
+  {% include 'elevar-head' %}
 
   <!-- Basic page needs ================================================== -->
   <meta charset="utf-8">
@@ -84,32 +78,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     {{ 'shopify_common.js' | shopify_asset_url | script_tag }}
   {% endif %}
 
-  <!-- Tidio ================================================== -->
-  <script>
-  document.tidioIdentify = {
-     distinct_id: '{{ customer.id }}',
-     email: '{{ customer.email }}',
-     name: '{{ customer.name }}',
-     postcode: '{{ customer.default_address }}',
-     phone: '{{ customer.customer_address.phone }}'
-  };
-  </script>
-
-  <script src="//code.tidio.co/csuwaftoc3a50vyhwrczsldgghkju8ry.js"></script>
-
-  <script>
-  tidioChatApi.setVisitorData({
-      email: '{{ customer.email }}',
-      name: '{{ customer.name }}',
-      postcode: '{{ customer.default_address }}',
-      phone: '{{ customer.customer_address.phone }}'
-   });
-  </script>
+  
 
   <!-- Product hider app Code Start -->
   {% include 'product_hider_nofollow_noindex_meta_tag_sco_manager' %}
   <!-- Product hider app app Code End -->
 
+
+<!-- Start of Littledata - Fix Google Analytics Script-->
+{% include 'LittledataLayer' %}
+<!-- End of Littledata - Fix Google Analytics Script -->
+<script src="https://cdn.attn.tv/storyville/dtag.js"></script>
 </head>
 
 {% comment %}
@@ -215,13 +194,70 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 {% include 'subscription-theme-footer' %}
 {% comment %}DISABLED{% include 'booster-discounts' %}
-  
+   {% endcomment %}  
   
 <!-- Warning: Do not remove.This is used for CartHook Checkout Replacement -->
 {% capture the_snippet_content %}{% include 'carthook-checkout' %} {% endcapture %} {% unless the_snippet_content contains "Liquid error" %} {% include 'carthook-checkout' %} {% endunless %}
 <!-- Warning: Do not remove.This is used for CartHook Checkout Replacement -->
      
- {% endcomment %}  
+  
+<!-- Start of storyville Zendesk Widget script -->
+<script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=865cf939-eddc-4fb0-bf56-33941fdf5ec6"> </script>
+<script type="text/javascript">
 
+  window.zESettings = {
+    webWidget: {
+	  "color": {
+         "theme": "#2C2721"
+      },
+      launcher: {
+        chatLabel: {
+          '*': 'Help'
+        },
+        mobile: {
+          labelVisible: false
+        }
+      }
+    },
+    "contactOptions": {
+         "enabled": true
+    }
+  }
+  
+{% if customer %}
+  
+var c_name = "{{  customer.first_name }} {{ customer.last_name }}";
+var c_email = "{{ customer.email }}";
+    
+zE('webWidget', 'identify', {
+  name: c_name,
+  email: c_email
+});
+
+zE('webWidget', 'prefill', {
+    name: {
+      value: c_name
+    },
+    email: {
+      value: c_email
+    }
+});
+
+{% endif %}
+  
+  
+  $(function() {
+    $('.zendesk-opener').on('click', function(e) {
+      e.preventDefault();
+      zE('webWidget', 'toggle');
+    });
+  });
+  
+</script>
+<!-- End of storyville Zendesk Widget script -->
+
+
+  {% include 'elevar-body-end' %}
+<!-- This line added automatically by JSON-LD for SEO. -->{% include 'jsonld-for-seo' %}
 </body>
 </html>

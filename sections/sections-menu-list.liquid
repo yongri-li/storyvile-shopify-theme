@@ -1,0 +1,130 @@
+
+{% assign espresso_blocks = section.blocks | map: 'settings' | where: 'menu_item_category_select', 'espresso' %}
+{% assign brewed_blocks = section.blocks | map: 'settings' | where: 'menu_item_category_select', 'brewed' %}
+{% assign drinks_blocks = section.blocks | map: 'settings' | where: 'menu_item_category_select', 'drinks' %}
+{% assign baked_blocks = section.blocks | map: 'settings' | where: 'menu_item_category_select', 'baked' %}
+{% assign made_blocks = section.blocks | map: 'settings' | where: 'menu_item_category_select', 'made' %}
+
+
+
+<div class="menu_category menu_category-left">
+
+  <h2>Espresso</h2>
+  <hr>
+
+  {% for block in espresso_blocks %}
+
+    <div class="menu-item">
+      <h3>{{ block.menu_item_title }}</h3>
+      <p>{{ block.menu_item_description }}</p>
+    </div>
+
+  {% endfor %}
+
+
+  <h2>Brewed Coffee</h2>
+  <hr>
+  {% for block in brewed_blocks %}
+
+    <div class="menu-item">
+      <h3>{{ block.menu_item_title }}</h3>
+      <p>{{ block.menu_item_description }}</p>
+    </div>
+
+  {% endfor %}
+
+  <h2>Drinks</h2>
+  <hr>
+  {% for block in drinks_blocks %}
+
+    <div class="menu-item">
+      <h3>{{ block.menu_item_title }}</h3>
+      <p>{{ block.menu_item_description }}</p>
+    </div>
+
+  {% endfor %}
+</div>
+
+<div class="menu_category menu_category-right">
+
+  <h2>Baked Fresh</h2>
+  <hr>
+  {% for block in baked_blocks %}
+
+    <div class="menu-item">
+      <h3>{{ block.menu_item_title }}</h3>
+      <p>{{ block.menu_item_description }}</p>
+    </div>
+
+  {% endfor %}
+
+  <h2>Made Fresh</h2>
+  <hr>
+  {% for block in made_blocks %}
+
+    <div class="menu-item">
+      <h3>{{ block.menu_item_title }}</h3>
+      <p>{{ block.menu_item_description }}</p>
+    </div>
+
+  {% endfor %}
+</div>
+
+
+
+
+{% schema %}
+  {
+    "name": "Menu Items",
+    "blocks": [
+      {
+        "type": "menu_item",
+        "name": "Menu Item",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Menu Item Details"
+          },
+          {
+            "type": "text",
+            "id": "menu_item_title",
+            "label": "Item Title"
+          },
+          {
+            "type": "textarea",
+            "id": "menu_item_description",
+            "label": "Item Description"
+          },
+          {
+            "type": "select",
+            "id": "menu_item_category_select",
+            "label": "Item Category",
+            "options": [
+              {
+                "value": "espresso",
+                "label": "Espresso"
+              },
+              {
+                "value": "brewed",
+                "label": "Brewed Coffee"
+              },
+              {
+                "value": "drinks",
+                "label": "Drinks"
+              },
+              {
+                "value": "baked",
+                "label": "Baked Fresh"
+              },
+              {
+                "value": "made",
+                "label": "Made Fresh"
+              }
+            ],
+            "default": "espresso"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

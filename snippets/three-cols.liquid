@@ -1,0 +1,114 @@
+{% comment %}
+  @param image_01, image_02, image_03 
+  @param image_size
+  @param top_bottom_padding
+  @param top_bottom_section
+  @param title_01, title_02, title_03
+  @param link_01, link_02, link_03
+  @param description_01, description_02, description_03
+  @param background_color
+  @param full_width
+  @param section_background_color
+{% endcomment %}
+
+{% if image_size == 0 %}
+  {% assign image_visible = 'image-visible_off' %}
+{% else %}
+  {% assign image_visible = 'image-visible_on' %}
+{% endif %}
+
+{% if link_01 %}
+{% else %}
+  {% assign link_hover_one = 'no_link_hover_effect' %}
+{% endif %}
+
+{% if link_02 %}
+{% else %}
+  {% assign link_hover_two = 'no_link_hover_effect' %}
+{% endif %}
+
+{% if link_03 %}
+{% else %}
+  {% assign link_hover_three = 'no_link_hover_effect' %}
+{% endif %}
+
+{% if link_01 %}
+{% else %}
+  {% assign link_hover_one = 'no_link_hover_effect' %}
+{% endif %}
+
+{% if full_width %}
+  {% assign full_width_container = '' %}
+{% else %}
+  {% assign full_width_container = 'component-three-contain' %}
+{% endif %}
+
+
+{% if three_box_shadow %}
+  {% assign box_shadow = 'component-three-shadow' %}
+{% else %}
+  {% assign box_shadow = '' %}
+{% endif %}
+
+{% if three_use_light_text %}
+  {% assign light_text = 'lightText' %}
+{% else %}
+  {% assign light_text = '' %}
+{% endif %}
+
+{% if horizontal_scroll %}
+	{% assign hz_scroll = 'hz_scrollEnabled' %}
+{% else %}
+	{% assign hz_scroll = '' %}
+{% endif %}
+
+
+
+<span class="component-three-bg {{ hz_scroll }}" style="background: {{ background_color }};">
+<div class="component-three-cols {{ full_width_container }}" style="padding: {{ top_bottom_padding }}px 0;{% if three_remove_padding == 'top' %}padding-top:0 !important;{% endif %}{% if three_remove_padding == 'bottom' %}padding-bottom:0 !important;{% endif %}">
+  <div class="component-three {{ box_shadow }}" style="background: {{ section_background_color }};">
+    <{%if link_01 != blank%}a href="{{ link_01 }}"{% else %}div{% endif %} class="{{ link_hover_one }}" style="background: {{ section_background_color }}; padding: {{ top_bottom_section }}px 0;">
+      <img
+        class="component-three-cols_image lazyload {{ image_visible }}"
+        src="{{ image_01 | img_url: '1x1' }}"
+        data-src="{{ image_01 | img_url: '1x1' }}"
+        data-sizes="auto"
+        data-srcset="{% include 'bgset' image: image_01 %}"
+        style="width:{{ image_size }}%;"
+      />
+      <h3 class="component-three-cols__title {{ light_text }}">{{ title_01 }}</h3>
+      <p class="component-three-cols__description {{ light_text }}" style="font-size:{{ three_desc_size }}px;">{{ description_01 }}</p>
+    </{% if link_01 != blank%}a{% else %}div{% endif %}>
+  </div>
+  
+  <div class="component-three {{ box_shadow }}" style="background: {{ section_background_color }};">
+ 	<{%if link_02 != blank%}a href="{{ link_02 }}"{% else %}div{% endif %} class="{{ link_hover_two }}" style="background: {{ section_background_color }}; padding: {{ top_bottom_section }}px 0;">
+      <img
+        class="component-three-cols_image lazyload {{ image_visible }}"
+        src="{{ image_02 | img_url: '1x1' }}"
+        data-src="{{ image_02 | img_url: '1x1' }}"
+        data-sizes="auto"
+        data-srcset="{% include 'bgset' image: image_02 %}"
+        style="width:{{ image_size }}%;"
+      />
+      <h3 class="component-three-cols__title {{ light_text }}">{{ title_02 }}</h3>
+      <p class="component-three-cols__description {{ light_text }}" style="font-size:{{ three_desc_size }}px;">{{ description_02 }}</p>
+    </{% if link_02 != blank%}a{% else %}div{% endif %}>
+  </div> 
+  
+  <div class="component-three {{ box_shadow }}" style="background: {{ section_background_color }};">
+    <{%if link_03 != blank%}a href="{{ link_03 }}"{% else %}div{% endif %} class="{{ link_hover_three }}" style="background: {{ section_background_color }}; padding: {{ top_bottom_section }}px 0;">
+      <img
+        class="component-three-cols_image lazyload {{ image_visible }}"
+        src="{{ image_03 | img_url: '1x1' }}"
+        data-src="{{ image_03 | img_url: '1x1' }}"
+        data-sizes="auto"
+        data-srcset="{% include 'bgset' image: image_03 %}"
+        style="width:{{ image_size }}%;"
+      />
+      <h3 class="component-three-cols__title {{ light_text }}">{{ title_03 }}</h3>
+      <p class="component-three-cols__description {{ light_text }}" style="font-size:{{ three_desc_size }}px;">{{ description_03 }}</p>
+    </{% if link_03 != blank%}a{% else %}div{% endif %}>
+  </div> 
+</div>
+</span>

@@ -8,6 +8,39 @@
     "theme_support_url": "https:\/\/support.shopify.com\/"
   },
   {
+    "name": "Onsite Discount",
+    "settings": [
+      {
+        "type": "range",
+        "id": "onsite_discount",
+        "min": 1,
+        "max": 100,
+        "step": 1,
+        "unit": "%",
+        "label": "Onsite Discount",
+        "default": 50
+      },
+      {
+        "type": "text",
+        "id": "onsite_coupon",
+        "label": "Onsite Coupon (ie 'HOME')",
+        "default": "HOME"
+      }
+    ]
+  },
+  {
+    "name": "Hide Product Pages",
+    "settings": [
+      {
+        "type": "textarea",
+        "id": "products_to_hide",
+        "label": "Seperate by a comma followed by a space",
+        "info": "These are the URL handles attached to each product. Thes products will simple redirect to the homepage.",
+        "default": "gift-subscription-3-months, gift-subscription-6-months, gift-subscription-12-months"
+      }
+    ]
+  },
+  {
     "name": "Colors",
     "settings": [
       {

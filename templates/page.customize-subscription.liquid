@@ -1,0 +1,136 @@
+<style>
+  
+    @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,600&display=swap');
+  
+  *{
+    font-family: 'Montserrat', sans-serif !important;
+  }
+  
+  .main-content{
+    padding-top:0 !important;
+    margin-top: -55px;
+    padding-bottom:0 !important;
+  }
+  
+  .component-banner__button-on{
+    padding: 10px 35px;
+    border-radius: 200px;
+  }
+  
+  .component-banner{
+    padding-bottom:50px;
+  }
+  
+  .component-three{
+    min-height:500px;
+  }
+  
+  .component-three-cols__description {
+    width: 80% !important;
+    text-align: left;
+    line-height:180%;
+  }
+  
+  h3.component-three-cols__title {
+    text-transform: none;
+    text-align: left;
+    padding-left:10%;
+    color:#000 !important;
+    font-size:30px !important;
+    letter-spacing:0.01em;
+  }
+  
+  .select_btn{
+    position: absolute;
+    width:80%;
+    left:10%;
+    bottom:20px;
+    border-radius:200px;
+    background:#b7121b;
+    color:#fff;
+    padding: 10px 0;
+    text-transform: uppercase;
+    cursor:pointer;
+  }
+  
+  .component-one:nth-child(1){
+    margin: 0 !Important;
+    padding:0 !Important;
+  }
+  
+  @media screen and (max-width: 768px){
+    
+    .component-three{
+      margin-bottom: 80px;
+    }
+    
+  }
+  
+</style>
+
+{% section 'sections-subscribe' %}
+
+
+<script>
+$(document).ready(function(){
+
+  function getQueryStringAsObject() {
+     var search = location.search.substring(1);
+     return search ? JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}') : {};
+  }
+
+  var query = getQueryStringAsObject();
+ 
+  
+  var email_attribute = query.klaviyo_user ? ('klaviyo_user=' + query.klaviyo_user) : '';
+  var coupon_attribute = query.utm_coupon ? ('utm_coupon=' + query.utm_coupon) : '';
+  var source = query.utm_source ? ('utm_source=' + query.utm_source) : '';
+  var content = query.utm_content ? ('utm_content=' + query.utm_content) : '';
+  var medium = query.utm_medium ? ('utm_medium=' + query.utm_medium) : '';
+  var campaign = query.utm_campaign ? ('utm_campaign=' + query.utm_campaign) : '';
+
+  var url_params = [
+      email_attribute,
+      coupon_attribute,
+      campaign,
+      source,
+      content, 
+      medium
+ ];
+
+ var url = url_params.filter(val => val).join('&');
+  
+  
+  
+  console.log(url);
+  
+  
+  $(".select_btn").on('click', function(event) {
+    
+    
+  	
+    event.preventDefault();
+  	console.log(this.id)
+    
+    
+    window.location = ("/products/"+ this.id + "?" + url)
+    
+  });
+  
+  
+  
+  
+  $("a").on('click', function(event) {
+    if (this.hash !== "") {
+      event.preventDefault();
+
+      var hash = this.hash;
+
+      $('html, body').animate({
+        scrollTop: $(hash).offset().top
+      }, 500);
+    }
+  });
+  
+});
+</script>

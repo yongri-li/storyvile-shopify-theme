@@ -1,0 +1,308 @@
+function getQueryStringAsObject() {
+  var search = location.search.substring(1);
+  return search ? JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}') : {};
+}
+var query = getQueryStringAsObject();
+
+var DEBUG = true;
+var debug = DEBUG ? console.log.bind(console, '[DEBUG][Gift Subscription Builder]') : _.noop;
+
+
+
+//Shopify Variant Ids Whole Bean, Pods, Capsules
+var gift_duration = {
+  three: [
+    31098942718025,
+    31098942750793,
+    31098942783561
+  ],
+  six: [
+    31113879421001,
+    31113879453769, 
+    31113879486537
+  ],
+  twelve: [
+    31113883549769,
+    31113883582537, 
+    31113883615305
+  ]
+}
+
+
+//Recharge subscription Ids (3, 6, 12 months)
+var product_id = [225970, 225973, 225974];
+var charge_frequency = [12, 24, 48];
+  
+
+// Edit defaults here...
+/*
+var state = {
+    product: 0,
+    duration: 31113879421001,
+};*/
+
+var state = {
+    product: 0,
+    duration: 0,
+};
+
+
+$(function(){
+  
+  	var $builder = $('[data-gift-subscription-builder]');
+  	var options = JSON.parse($builder.attr('data-gift-subscription-builder'));
+  
+    console.log("JQUERY PARSE: " + options.products[state.product].durations[state.duration]);
+  	
+    update();
+  
+  
+  
+    //Step Handler
+    $(".product-select .gift-step").on("click", function(){
+
+        var product_selected = this;
+
+        $('.product-select .gift-step.selected').removeClass('selected');
+        $(product_selected).addClass('selected');
+
+        var product_step = product_selected.getAttribute('data-value');
+
+        state.product = product_step;
+      	
+     	update();
+
+    });
+  
+
+    $(".duration-select .gift-step").on("click", function(){
+
+        var duration_selected = this;
+
+        $('.duration-select .gift-step.selected').removeClass('selected');
+        $(duration_selected).addClass('selected');
+		
+      	
+      	var duration_step = duration_selected.getAttribute('data-value');
+      
+      	var duration = gift_duration.six[state.product]
+        
+        if (duration_step == 0){
+      		duration = gift_duration.three[state.product];
+      	}
+
+      	if (duration_step == 1){
+      		duration = gift_duration.six[state.product];
+      	}
+      
+      	if (duration_step == 2){
+      		duration = gift_duration.twelve[state.product];
+      	}
+      
+        state.duration = duration_step;
+
+      	console.log(state.duration);
+        console.log(options.products[state.product].durations[state.duration]);
+    });
+  
+  
+});
+
+function goback(){
+  	$(".step_02").removeClass("active-step");
+    $(".step_03").removeClass("active-step");
+    $(".step_01").addClass("active-step");
+}
+
+    
+function steptwo(){
+  	$(".step_01").removeClass("active-step");
+    $(".step_02").addClass("active-step");
+}
+
+function stepthree(){
+  	$(".step_02").removeClass("active-step");
+    $(".step_03").addClass("active-step");
+}
+
+
+function overview(){
+  	$(".gift-step-slider").addClass("active-slider");
+    $(".slider-overlay").addClass("active-slider");
+}
+
+function closeoverview(){
+  	$(".gift-step-slider").removeClass("active-slider");
+    $(".slider-overlay").removeClass("active-slider");
+}
+
+
+function update(){
+
+  
+  	var $builder = $('[data-gift-subscription-builder]');
+  	var options = JSON.parse($builder.attr('data-gift-subscription-builder'));
+  
+  
+    $('[data-price-01]').text(options.products[state.product].compare_at[0]);
+    $('[data-price-02]').text(options.products[state.product].compare_at[1]);
+    $('[data-price-03]').text(options.products[state.product].compare_at[2]);
+    
+    $('[data-price-discount-01]').text(options.products[state.product].prices[0]);
+    $('[data-price-discount-02]').text(options.products[state.product].prices[1]);
+    $('[data-price-discount-03]').text(options.products[state.product].prices[2]);
+    
+    $('[data-savings-01]').text("Save 10% (" + options.products[state.product].savings[0] + ")");
+    $('[data-savings-02]').text("Save 15% (" + options.products[state.product].savings[1] + ")");
+    $('[data-savings-03]').text("Save 20% (" + options.products[state.product].savings[2] + ")");
+  
+  
+  
+  
+  
+  
+  if (state.product == 0){
+    $('[data-headline]').text("Your gift of 3 bags of Storyville Prologue will be delivered once a month.");
+
+    console.log("Selected Whole Bean");
+  }
+  
+  if (state.product == 1){
+    $('[data-headline]').text("Your gift of 32 Keurig® compatible pods will be delivered once a month.");
+    
+    console.log("Selected Pods");
+  }
+  
+  if (state.product == 2){
+    $('[data-headline]').text("Your gift of 32 Nespresso® compatible capsules will be delivered once a month.");
+    
+    console.log("Selected Capsules");
+  }
+  
+
+}
+
+
+
+function addToCart(){
+  		  
+  
+    
+  	  var $builder = $('[data-gift-subscription-builder]');
+  	  var options = JSON.parse($builder.attr('data-gift-subscription-builder'));
+  
+      var to = document.getElementById("giftto").value ? document.getElementById("giftto").value : '';
+  	  var from = document.getElementById("giftfrom").value ? document.getElementById("giftfrom").value : '';
+  	  var note = document.getElementById("giftnote").value ? document.getElementById("giftnote").value : '';
+  
+      var cartItem = {
+        id: options.products[state.product].durations[state.duration],
+        quantity: 1,
+        note: "",
+        properties: {
+          	  'charge_interval_frequency' : charge_frequency[state.duration],
+          	  'charge_interval_unit_type': 'Weeks',
+              'shipping_interval_frequency': 4,
+              'shipping_interval_unit_type': 'Weeks',
+              'subscription_id': product_id[state.duration],
+              'to': to,
+              'from': from,
+              'note': note
+        }
+      };
+	
+      console.log("Adding to cart...");
+  	  console.log(cartItem);
+
+      $.get('/cart.json').done(function (cart) {
+        
+        var token = cart.token;
+        
+        function getCheckoutUrl(cart) {
+          
+
+          
+          debug(cart);
+          
+          if (token) {
+
+              var params = [
+                  'cart_token=' + token,
+                  'myshopify_domain=' + 'storyvillecoffee.myshopify.com'
+              ];
+
+              //RECHARGE URL
+              return 'https://checkout.rechargeapps.com/r/checkout?' + params.join('&');
+
+          } else {
+                  return '/checkout';
+          }
+    
+		}
+        
+        
+        debug(getCheckoutUrl());
+        
+  
+        debug('Initializing checkout for: ' + cartItem.id);
+        
+        var cartItemVariants = [];
+          
+        cart.items.forEach(function(item) {
+          var i = item.variant_id
+          cartItemVariants.push(i);
+        });
+        
+        var lineNumber = (cartItemVariants.indexOf(cartItem.id) + 1);
+        
+          var cartUpdate = {
+            line: lineNumber,
+            quantity: 1,
+            note: "",
+            properties: {
+              'shipping_interval_frequency': 4,
+              'shipping_interval_unit_type': 'weeks',
+              'subscription_id': product_id[state.product],
+              'to': to,
+              'from': from,
+              'note': note
+            }
+          };
+        
+        debug('Current items in cart: ' + cartItemVariants);
+        debug('Line Item Number: ' + lineNumber);
+        
+
+        
+        if (cartItemVariants.indexOf(cartItem.id) > -1){
+          
+
+
+
+
+          $.post('/cart/change.json', cartUpdate)
+            .done(function () {
+
+              debug('Successfully changed the quantity of ' + cartItem.id);
+
+              $('.builder-gift').attr('action', getCheckoutUrl());
+            $('.builder-gift').submit();
+
+            });
+          
+        } else {
+        
+          $.post('/cart/add.json', cartItem)
+          .done(function () {
+            
+            debug('Successfully added item to the cart');
+			
+            $('.builder-gift').attr('action', getCheckoutUrl());
+            $('.builder-gift').submit();
+            
+          });
+        }
+        
+      });
+	}
+

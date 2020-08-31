@@ -1,8 +1,8 @@
 {%- assign collection = collections.subscription-v2-products -%}
 
-{%- assign product_beans_handle    = 'private-reserve-pro-epi' -%}
-{%- assign product_pods_handle     = 'k-cups' -%}
-{%- assign product_capsules_handle = 'nespresso-pods' -%}
+{%- assign product_beans_handle    = 'coffee-subscription' -%}
+{%- assign product_pods_handle     = 'keurig-k-cup-subscription' -%}
+{%- assign product_capsules_handle = 'nespresso-capsule-subscription' -%}
 
 {%- assign product_beans = all_products[product_beans_handle] -%}
 {%- assign product_pods = all_products[product_pods_handle] -%}
@@ -23,13 +23,13 @@
 
       {% if product_builder_id == 'beans' %}
         {% assign package_description = 'Our one and only signature blend' %}
-        {% assign shipping_description = 'Roasted and shipped to you same day' %}
+        {% assign shipping_description = 'Roasted fresh and shipped to your door' %}
       {% elsif product_builder_id == 'pods' %}
         {% assign package_description = 'Keurig® compatible pods' %}
-        {% assign shipping_description = 'Roasted, sealed and shipped within hours' %}
+        {% assign shipping_description = 'Roasted fresh and shipped to your doors' %}
       {% elsif product_builder_id == 'capsules' %}
         {% assign package_description = 'For Nespresso® original line machines only' %}
-        {% assign shipping_description = 'Roasted, sealed and shipped within hours' %}
+        {% assign shipping_description = 'Roasted fresh and shipped to your door' %}
       {% endif %}
 
       {% if product_builder_id == 'beans' %}
@@ -70,17 +70,55 @@
       {%- assign sample_image_field = 'image_for_' | append: product_builder_id -%}
       {%- assign sample_image = section.settings[sample_image_field] -%}
 
-      {%- capture product_images -%}
-        [
-          {%- for image in prod.images -%}
-            {%- unless forloop.first -%},{%- endunless -%}
+
+
+	  {%- capture product_images -%}
+		[
+		{% if product_builder_id == 'beans' %}
             {
-              "src": {{ image.src | json }},
-              "alt": {{ image.alt | json }}
+              "src": "{{ section.settings.w_quantity_1 | img_url: 'original' }}",
+              "alt": "quantity=1"
+            },
+            {
+              "src": "{{ section.settings.w_quantity_2 | img_url: 'original' }}",
+              "alt": "quantity=2"
+            },
+            {
+              "src": "{{ section.settings.w_quantity_3 | img_url: 'original' }}",
+              "alt": "quantity=3"
             }
-          {%- endfor -%}
-        ]
-      {%- endcapture -%}
+		{% endif %}
+		{% if product_builder_id == 'pods' %}
+            {
+              "src": "{{ section.settings.p_quantity_1 | img_url: 'original' }}",
+              "alt": "quantity=16"
+            },
+            {
+              "src": "{{ section.settings.p_quantity_2 | img_url: 'original' }}",
+              "alt": "quantity=32"
+            },
+            {
+              "src": "{{ section.settings.p_quantity_3 | img_url: 'original' }}",
+              "alt": "quantity=48"
+            }
+		{% endif %}
+		{% if product_builder_id == 'capsules' %}
+            {
+              "src": "{{ section.settings.c_quantity_1 | img_url: 'original' }}",
+              "alt": "quantity=16"
+            },
+            {
+              "src": "{{ section.settings.c_quantity_2 | img_url: 'original' }}",
+              "alt": "quantity=32"
+            },
+            {
+              "src": "{{ section.settings.c_quantity_3 | img_url: 'original' }}",
+              "alt": "quantity=48"
+            }
+		{% endif %}
+		]
+	  {%- endcapture -%}
+
 
       "{{ product_builder_id }}": {
         "sample_image": {
@@ -123,6 +161,15 @@
   }
 }
 {%- endcapture -%}
+
+
+<style>
+
+  
+
+</style>
+
+
 
 <form class="builder" data-subscription-builder='{{ builder_config }}'
       action="/cart" method="post" enctype="multipart/form-data" novalidate>
@@ -173,7 +220,7 @@
             <li class="builder-product-offering__feature">Sourced from the top 2% of the world's beans</li>
             <li class="builder-product-offering__feature" data-package-presentation></li>
             <li class="builder-product-offering__feature" data-package-description>Our one and only signature blend</li>
-            <li class="builder-product-offering__feature">Roasted and shipped to you same day</li>
+            <li class="builder-product-offering__feature">Roasted fresh and shipped to your door</li>
           </ul>
         {% endcapture %}
 
@@ -181,7 +228,7 @@
           <h2 class="builder__title">A Special Offer Just For You</h2>
           <div class="builder__subtitle">
             <p style="display: none;">
-              <strong>FREE PRIORITY SHIPPING</strong>
+              <strong>FREE SHIPPING</strong>
             </p>
           </div>
         </div>
@@ -213,7 +260,7 @@
                 </h2>
 
                 <h3 class="builder-product-offering__subtitle" data-offering-subtitle>
-                  <span data-money-saved>SAVE $4</span><span data-package-type>PER BAG</span> FREE PRIORITY SHIPPING
+                  <span data-money-saved>SAVE $4</span><span data-package-type>PER BAG</span>FREE SHIPPING
                 </h3>
 
               </div>
@@ -225,27 +272,28 @@
 
               </div>
 
+              
               <div class="builder-product-offering__options"
                    data-options-set data-options-set-type="product">
 
                 <div class="builder-product-offering__option selected"
                      data-option
                      data-value="beans">
-                  <img class="builder-product-offering__option-image" src="{{ product_beans.featured_image | img_url: '100x' }}" />
+                  <img class="builder-product-offering__option-image" src="https://cdn.shopify.com/s/files/1/0090/2135/8137/files/wholeBeans_4cc45d11-6d97-469e-b352-ea2745f527ba.png?v=1586482823" class="lazyload" />
                   <span class="builder-product-offering__option-text">Whole Bean</span>
                 </div>
 
                 <div class="builder-product-offering__option"
                      data-option
                      data-value="pods">
-                  <img class="builder-product-offering__option-image" src="{{ product_pods.featured_image | img_url: '100x' }}" />
+                  <img class="builder-product-offering__option-image" src="https://cdn.shopify.com/s/files/1/0090/2135/8137/files/kCups_1c15257a-993d-4dbf-b8ab-6b21d76d0134.png?v=1586482823" class="lazyload" />
                   <span class="builder-product-offering__option-text">PODS</span>
                 </div>
 
                 <div class="builder-product-offering__option"
                      data-option
                      data-value="capsules">
-                  <img class="builder-product-offering__option-image" src="{{ product_capsules.featured_image | img_url: '100x' }}" />
+                  <img class="builder-product-offering__option-image" src="https://cdn.shopify.com/s/files/1/0090/2135/8137/files/nespresso_b431c186-6529-4f33-9144-a9590c43e47c.png?v=1586482823" class="lazyload" />
                   <span class="builder-product-offering__option-text">CAPSULES</span>
                 </div>
 
@@ -267,8 +315,9 @@
           </div>
 
           <p class="builder__note">
-            <img class="icon" src="{{ 'icon--banner.svg' | asset_url }}" /> <span>If you don't love your coffee, it's on us.</span>
+            <img class="icon lazyload" src="{{ 'icon--banner.svg' | asset_url }}" /> <span>If you don't love your coffee, it's on us.</span>
           </p>
+          
 
           <div class="builder-product-offering__content mobile-only">
 
@@ -324,7 +373,7 @@
                   <p class="builder-option__feature desktop-only" data-option-save-percentage style=":none">Save 0%</p>
                   <img
                     class="builder-option__product-image" data-option-product-image
-                    src="https://via.placeholder.com/850x550"
+                    src="https://via.placeholder.com/850x550" class="lazyload"
                   />
                 </div>
 
@@ -359,7 +408,7 @@
                 <div class="builder-option__product-image-container">
                   <p class="builder-option__feature desktop-only" data-option-save-percentage style=":none">Save 0%</p>
                   <img
-                    class="builder-option__product-image" data-option-product-image
+                    class="builder-option__product-image lazyload" data-option-product-image
                     src="https://via.placeholder.com/850x550"
                   />
                 </div>
@@ -395,7 +444,7 @@
                 <div class="builder-option__product-image-container">
                   <p class="builder-option__feature desktop-only" data-option-save-percentage style=":none">Save 0%</p>
                   <img
-                    class="builder-option__product-image" data-option-product-image
+                    class="builder-option__product-image lazyload" data-option-product-image
                     src="https://via.placeholder.com/850x550"
                   />
                 </div>
@@ -490,14 +539,22 @@
         <div class="builder__step-footer">
 
           <div class="builder__step-actions">
-            <div class="builder__step-action checkoutButton" data-next-step>
+            <!--<div class="builder__step-action checkoutButton" id="checkoutButton" data-next-step>
               Review Order
-            </div>
+            </div>-->
+            
+            <a href="/checkout" name="checkout" style="display: none;" id="ch-checkout-enabled"></a> 
+            <a id="add-to-cart" class="btn cart__checkout">REVIEW ORDER</a>
           </div>
-
+        
         </div>
 
 
+        
+    <!--CARTHOOK ORDER NOTE -->            
+	<textarea id="cartSpecialInstructions" style="opacity:0 !important;">order number 0</textarea>      
+      
+        
       </div>
 
 
@@ -535,6 +592,63 @@
         "type": "image_picker",
         "id": "image_for_capsules",
         "label": "Sample Image for capsules"
+      },
+      {
+        "type": "header",
+        "content": "Whole Bean Quantity Images"
+      },
+      {
+        "type": "image_picker",
+        "id": "w_quantity_1",
+        "label": "Quantity Image 1"
+      },
+      {
+        "type": "image_picker",
+        "id": "w_quantity_2",
+        "label": "Quantity Image 2"
+      },
+      {
+        "type": "image_picker",
+        "id": "w_quantity_3",
+        "label": "Quantity Image 3"
+      },
+      {
+        "type": "header",
+        "content": "Pods Quantity Images"
+      },
+      {
+        "type": "image_picker",
+        "id": "p_quantity_1",
+        "label": "Quantity Image 16"
+      },
+      {
+        "type": "image_picker",
+        "id": "p_quantity_2",
+        "label": "Quantity Image 32"
+      },
+      {
+        "type": "image_picker",
+        "id": "p_quantity_3",
+        "label": "Quantity Image 48"
+      },
+      {
+        "type": "header",
+        "content": "Capsules Quantity Images"
+      },
+      {
+        "type": "image_picker",
+        "id": "c_quantity_1",
+        "label": "Quantity Image 16"
+      },
+      {
+        "type": "image_picker",
+        "id": "c_quantity_2",
+        "label": "Quantity Image 32"
+      },
+      {
+        "type": "image_picker",
+        "id": "c_quantity_3",
+        "label": "Quantity Image 48"
       }
     ]
   }

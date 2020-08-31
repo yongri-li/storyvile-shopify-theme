@@ -1,0 +1,727 @@
+{%- assign wb_product = all_products[section.settings.wholebean_product] -%}
+{%- assign pod_product = all_products[section.settings.pods_product] -%}
+{%- assign cap_product = all_products[section.settings.capsules_product] -%}
+
+
+
+
+<head><meta name="robots" content="noindex"></head>
+
+<div class="popup">
+  <div class="popup_contain">
+    <div class="popup_inside"></div>
+    <div class="done-btn">Done</div>
+  </div>
+	<div class="overlay"></div>
+</div>
+
+<div class="trial_nav">
+  <div class="trial_nav_btn active_trial_step" data-go-to-step="1"><span>1</span>Select Coffee</div>
+  <div class="trial_arrow"></div>
+  <div class="trial_nav_btn" data-go-to-step="2"><span>2</span>Account Info</div>
+</div>
+
+
+<div class="trial_contain">
+
+  <div class="trial_step" data-step="1">
+    <h2>{{ section.settings.step_one_headline }}</h2>
+    <p class="step_01_desc">{{ section.settings.step_one_desc }}</p>
+
+
+
+    <div class="product_contain">
+
+      <div class="product_select component-three-shadow" data-product-index="0">
+        <img
+          class="component-three-cols_image lazyload"
+          src="{{ section.settings.capsules_image | img_url: '900x900' }}"
+          data-src="{{ section.settings.capsules_image | img_url: '900x900' }}"
+          data-sizes="auto"
+          data-srcset="{% include 'bgset' image: section.settings.capsules_image %}"
+          style="width:100%;"
+        />
+        <h4>{{ section.settings.capsules_title }}</h4>
+        <p>{{ cap_product.content }} <a data-product-hash="cap_product" class="learnmore">Learn More</a></p>
+
+        <div class="next_step" data-product-index="0">{{ section.settings.btn_text }}</div>
+
+      </div>
+
+
+
+      <div class="product_select component-three-shadow" data-product-index="1">
+        <img
+          class="component-three-cols_image lazyload"
+          src="{{ section.settings.wholebean_image | img_url: '900x900' }}"
+          data-src="{{ section.settings.wholebean_image | img_url: '900x900' }}"
+          data-sizes="auto"
+          data-srcset="{% include 'bgset' image: section.settings.wholebean_image %}"
+          style="width:100%;"
+        />
+        <h4>{{ section.settings.wholebean_title }}</h4>
+        <p>{{ wb_product.content }} <a data-product-hash="wb_product" class="learnmore">Learn More</a></p>
+
+        <div class="next_step" data-product-index="1">{{ section.settings.btn_text }}</div>
+
+      </div>
+
+
+      <div class="product_select component-three-shadow" data-product-index="2">
+        <img
+          class="component-three-cols_image lazyload"
+          src="{{ section.settings.pods_image | img_url: '900x900' }}"
+          data-src="{{ section.settings.pods_image | img_url: '900x900' }}"
+          data-sizes="auto"
+          data-srcset="{% include 'bgset' image: section.settings.pods_image %}"
+          style="width:100%;"
+        />
+        <h4>{{ section.settings.pods_title }}</h4>
+        <p>{{ pod_product.content }} <a data-product-hash="pod_product" class="learnmore">Learn More</a></p>
+
+        <div class="next_step" data-product-index="2">{{ section.settings.btn_text }}</div>
+
+      </div>
+
+    </div>
+
+    <div class="disclaimer">Nespresso® is a registered trademark of Societe des Produits Nestle S.A. Keurig® is a registered trademark of Keurig Green Mountain, Inc. Storyville Coffee products are not endorsed, sponsored, licensed, or approved by Nespresso USA Inc., Societe des Produits Nestle S.A., Keurig Green Mountain, Inc., or any of their respective affiliates.</div>
+
+  </div>
+
+  <div class="trial_step inactive_step" data-step="2">
+
+    <div class="trial_left">
+      <div class="trial_header">
+        <h3>{{ section.settings.step_two_headline }}</h3>
+        <p>{{ section.settings.step_two_desc }}</p>
+      </div>
+
+      <h3>Shipping Address</h3>
+      <fieldset>
+      <div class="shipping_contain">
+        <div class="shipping_col">
+      		<label class="trial_shipping_label" for="first-name">First name *</label>
+      		<input class="trial_shipping_input" id="first-name" name="first-name" type="text" required aria-required="true">
+        </div>
+
+        <div class="shipping_col">
+      		<label class="trial_shipping_label" for="last-name">Last name *</label>
+      		<input class="trial_shipping_input" id="last-name" name="last-name" type="text" required aria-required="true">
+        </div>
+
+      </div>
+
+      <div class="shipping_contain">
+      	<div class="shipping_col">
+      		<label class="trial_shipping_label" for="mailing-address-1">Full Street Address *</label>
+      		<input class="trial_shipping_input" id="mailing-address-1" name="mailing-address-1" type="text">
+        </div>
+
+        <div class="shipping_col">
+      		<label class="trial_shipping_label" for="mailing-address-2">Apt, Floor, Unit</label>
+      		<input class="trial_shipping_input" id="mailing-address-2" name="mailing-address-2" type="text">
+        </div>
+      </div>
+
+
+      <div class="shipping_contain">
+      	<div class="shipping_col">
+      		<label class="trial_shipping_label" for="city">City *</label>
+      		<input class="trial_shipping_input" id="city" name="city" type="text">
+        </div>
+
+		<div class="shipping_col">
+          <label class="trial_shipping_label" for="state">State</label>
+          <select class="trial_shipping_select" id="state" name="state">
+              <option value>- Select -</option>
+              <option value="AL">Alabama</option>
+              <option value="AK">Alaska</option>
+              <option value="AZ">Arizona</option>
+              <option value="AR">Arkansas</option>
+              <option value="CA">California</option>
+              <option value="CO">Colorado</option>
+              <option value="CT">Connecticut</option>
+              <option value="DE">Delaware</option>
+              <option value="DC">District of Columbia</option>
+              <option value="FL">Florida</option>
+              <option value="GA">Georgia</option>
+              <option value="HI">Hawaii</option>
+              <option value="ID">Idaho</option>
+              <option value="IL">Illinois</option>
+              <option value="IN">Indiana</option>
+              <option value="IA">Iowa</option>
+              <option value="KS">Kansas</option>
+              <option value="KY">Kentucky</option>
+              <option value="LA">Louisiana</option>
+              <option value="ME">Maine</option>
+              <option value="MD">Maryland</option>
+              <option value="MA">Massachusetts</option>
+              <option value="MI">Michigan</option>
+              <option value="MN">Minnesota</option>
+              <option value="MS">Mississippi</option>
+              <option value="MO">Missouri</option>
+              <option value="MT">Montana</option>
+              <option value="NE">Nebraska</option>
+              <option value="NV">Nevada</option>
+              <option value="NH">New Hampshire</option>
+              <option value="NJ">New Jersey</option>
+              <option value="NM">New Mexico</option>
+              <option value="NY">New York</option>
+              <option value="NC">North Carolina</option>
+              <option value="ND">North Dakota</option>
+              <option value="OH">Ohio</option>
+              <option value="OK">Oklahoma</option>
+              <option value="OR">Oregon</option>
+              <option value="PA">Pennsylvania</option>
+              <option value="RI">Rhode Island</option>
+              <option value="SC">South Carolina</option>
+              <option value="SD">South Dakota</option>
+              <option value="TN">Tennessee</option>
+              <option value="TX">Texas</option>
+              <option value="UT">Utah</option>
+              <option value="VT">Vermont</option>
+              <option value="VA">Virginia</option>
+              <option value="WA">Washington</option>
+              <option value="WV">West Virginia</option>
+              <option value="WI">Wisconsin</option>
+              <option value="WY">Wyoming</option>
+        </select>
+      </div>
+    </div>
+    <div class="shipping_contain">
+       <div class="shipping_col">
+    		<label class="trial_shipping_label" for="zip">Postal Code *</label>
+    		<input class="trial_shipping_input" id="zip" name="zip" type="text" pattern="[\d]{5}(-[\d]{4})?">
+      </div>
+
+       <div class="shipping_col">
+    		<label class="trial_shipping_label" for="phone">Phone Number</label>
+    		<input class="trial_shipping_input" id="phone" name="phone" type="tel">
+      </div>
+
+    </div>
+    </fieldset>
+      <div class="review_btn">Review Order</div>
+    </div>
+
+    <div class="trial_right">
+      <h3>Trial Summary</h3>
+      <label class="trial_shipping_label">Frequency</label>
+      <p class="summary_option">One-Time</p>
+
+      <label class="trial_shipping_label">Coffee Type</label>
+      <p class="summary_option"><span data-product-title>Signature Whole Bean</span></p>
+
+      <label class="trial_shipping_label">Quantity</label>
+      <p class="summary_option"><span data-product-quantity-title></span><span class="text-right">{{ section.settings.total_price }}</span><span class="text-right" style="margin-right:10px;opacity:0.5;text-decoration: line-through;" data-crossed-out-price></span> </p>
+
+      <span class="seperator"></span>
+      <p class="summary_option" style="margin-bottom:0;">Shipping <span class="text-right">{{ section.settings.shipping_price }}</span></p>
+      <p class="summary_option"><b>Today's Total <span class="text-right">$5</span></b></p>
+      <span class="seperator"></span>
+
+      <h3>Subscription Summary</h3>
+      <label class="trial_shipping_label">Frequency</label>
+      <p class="summary_option">Every <span data-frequency></span></p>
+
+      <label class="trial_shipping_label">Quantity</label>
+      <p class="summary_option"><span data-product-quantity-title></span></p>
+
+
+      <span class="seperator"></span>
+      <p class="summary_option" style="margin-bottom:0;">Your Subscription <span class="text-right" data-crossed-out-price></span></p>
+      <p class="summary_option">Shipping <span class="text-right">FREE</span></p>
+
+
+    </div>
+
+
+  </div>
+
+
+
+</div>
+
+
+
+
+<script>
+$(function () {
+
+  var state = {
+  	cartToken: null,
+    product: 1
+  }
+
+
+  var products = [
+    {
+      title: "Nespresso® Compatible Capsules",
+      qtitle: "Capsules",
+      id: "{{ cap_product.variants[0].id }}",
+      price: {{ cap_product.compare_at_price }},
+      quantity: {{ section.settings.capsules_quantity }},
+      frequency: {{ section.settings.capsules_frequency }},
+      ruleset: {{ section.settings.capsules_ruleset }}
+    },
+    {
+      title: "Signature Whole Bean",
+      qtitle: "Bags",
+      id: "{{ wb_product.variants[0].id }}",
+      price: {{ wb_product.compare_at_price }},
+      quantity: {{ section.settings.wholebean_quantity }},
+      frequency: {{ section.settings.wholebean_frequency }},
+      ruleset: {{ section.settings.wholebean_ruleset }}
+    },
+    {
+      title: "Keurig® Compatible Pods",
+      qtitle: "Pods",
+      id: "{{ pod_product.variants[0].id }}",
+      price: {{ pod_product.compare_at_price }},
+      quantity: {{ section.settings.pods_quantity }},
+      frequency: {{ section.settings.pods_frequency }},
+      ruleset: {{ section.settings.pods_ruleset }}
+    },
+
+  ];
+
+
+  console.log(products);
+  $("[data-product-title]").html(products[state.product].title);
+  $("[data-product-quantity-title]").html(products[state.product].quantity + " x " + products[state.product].qtitle);
+  $("[data-crossed-out-price]").html("$" + ((products[state.product].price * products[state.product].quantity) / 100));
+  $("[data-frequency]").html(products[state.product].frequency + " Weeks");
+  nextShipmentDate();
+
+
+  function nextShipmentDate(){
+
+    var currentFrequency = products[state.product].frequency;
+
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+    var today = new Date();
+
+    var numberOfDaysToAdd = (currentFrequency * 7) - 3;
+    today.setDate(today.getDate() + numberOfDaysToAdd);
+
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1;
+
+
+    function getMonth(n) {
+      return months[mm - 1];
+    }
+
+    var month = getMonth(1);
+
+  	var nextShipmentD = month + '. ' + dd + (dd == 1 ? 'st' : dd == 2 ? 'nd' : dd == 3 ? 'rd' : 'th' );
+
+
+    $("[data-next-trial-date]").html(nextShipmentD);
+
+  }
+
+
+  function popup(p){
+
+    if(p == 'wb_product'){
+      $('.popup_inside').html("<span class='popup_title'>" + products[1].title + "</span>" + "{{ section.settings.wb_popup | strip_newlines }}");
+    }
+
+    if(p == 'cap_product'){
+        $('.popup_inside').html("<span class='popup_title'>" + products[0].title + "</span>" + "{{ section.settings.cap_popup | strip_newlines }}");
+    }
+
+    if(p == 'pod_product'){
+        $('.popup_inside').html("<span class='popup_title'>" + products[2].title + "</span>" + "{{ section.settings.pod_popup | strip_newlines }}");
+    }
+
+    $(".popup").addClass("active_popup");
+
+  }
+
+
+  function gotostep(step){
+
+    $('.trial_step').addClass('inactive_step');
+    $('[data-step="'+step+'"]').removeClass('inactive_step');
+
+    $('.active_trial_step').removeClass('active_trial_step');
+    $('[data-go-to-step="'+step+'"]').addClass('active_trial_step');
+
+
+    $(window).scrollTop(0);
+
+
+  }
+
+  $(".next_step").click(function(){
+  	var selected_product = $(this).data('product-index');
+  	state.product = selected_product;
+
+    $("[data-product-title]").html(products[state.product].title);
+    $("[data-product-quantity-title]").html(products[state.product].quantity + " x " + products[state.product].qtitle);
+    $("[data-crossed-out-price]").html("$" + ((products[state.product].price * products[state.product].quantity) / 100));
+    $("[data-frequency]").html(products[state.product].frequency + " Weeks");
+    nextShipmentDate();
+
+    console.log('Updated Selected Product State to: '+ selected_product);
+    console.log(state);
+    console.log(products[state.product]);
+
+
+    gotostep(2);
+  });
+
+
+  $(".trial_nav_btn").click(function(){
+     var next_step = $(this).data('go-to-step');
+     gotostep(next_step);
+  });
+
+
+  $(".review_btn").click(function(){
+  	checkout();
+  });
+
+  $(".overlay").click(function(){
+    $(".active_popup").removeClass("active_popup");
+  });
+
+
+  $(".done-btn").click(function(){
+    $(".active_popup").removeClass("active_popup");
+  });
+
+
+  $(".learnmore").click(function(){
+  	popup($(this).data('product-hash'));
+  });
+
+
+  $.get('/cart.json').done(function (cart) {
+
+    	state.cartToken = cart.token;
+
+  });
+
+
+
+
+
+  function getCheckoutUrl(cart) {
+    var token = cart ? cart.token : state.cartToken;
+
+    if (token) {
+
+      var params = [
+        'cart_token=' + state.cartToken,
+        'myshopify_domain=' + options.shopify_domain,
+        'discount=' + couponCode
+      ];
+
+      //RECHARGE URL
+      return 'https://checkout.rechargeapps.com/r/checkout?' + params.join('&');
+
+    } else {
+      return '/checkout';
+    }
+
+  }
+
+
+
+
+
+
+  function checkout(){
+
+    var params = [
+        'cart_token=' + state.cartToken,
+        'myshopify_domain=' + "storyvillecoffee.myshopify.com",
+        'first_name=' + document.getElementById('first-name').value,
+        'last_name=' + document.getElementById('last-name').value,
+        'city=' + document.getElementById('city').value,
+        'province=' + $("#state option:selected" ).text(),
+        'zip=' + document.getElementById('zip').value,
+        'address1=' + document.getElementById('mailing-address-1').value,
+        'address2=' + document.getElementById('mailing-address-2').value,
+        'phone=' + document.getElementById('phone').value
+    ];
+
+
+    var url = "https://checkout.rechargeapps.com/r/checkout?" + params.join('&');
+
+    console.log(url);
+
+    var cartItem = {
+      id: products[state.product].id,
+      quantity: products[state.product].quantity,
+      properties: {
+        'shipping_interval_frequency': products[state.product].frequency,
+        'shipping_interval_unit_type': "Weeks",
+        'subscription_id': products[state.product].ruleset
+      }
+  	};
+
+    $.ajax({
+        type: "POST",
+        url: '/cart/clear.js',
+        data: '',
+        dataType: 'json',
+        success: function() {
+
+            console.log("Cart cleared.");
+
+            console.log("Adding to cart...");
+            console.log(cartItem);
+
+            $.post('/cart/add.json', cartItem)
+            .done(function () {
+
+
+                  console.log('Successfully added item to the cart');
+                  window.location = url;
+
+                });
+
+        },
+        error: function(XMLHttpRequest, textStatus) {
+          /* error code */
+        }
+      });
+
+
+
+
+  }
+
+
+
+});
+</script>
+
+{% schema %}
+  {
+    "name": "Modify Trial Settings",
+	"settings": [
+          {
+            "type": "header",
+            "content": "Edit Step 1"
+          },
+		  {
+			"type": "text",
+			"id": "step_one_headline",
+			"label": "Step 1 Headline",
+			"default": "What type of coffee would you like to try?"
+		  },
+		  {
+			"type": "textarea",
+			"id": "step_one_desc",
+			"label": "Step 1 Description",
+			"default": "Regardless of which brew method you choose, every one of our coffees are sourced with an eye toward freshness, deliciousness, and sustainability."
+		  },
+		  {
+			"type": "text",
+			"id": "btn_text",
+			"label": "Button Text",
+			"default": "Try This Coffee"
+		  },
+          {
+            "type": "header",
+            "content": "Edit Step 2"
+          },
+		  {
+			"type": "text",
+			"id": "step_two_headline",
+			"label": "Step 2 Headline",
+			"default": "How the free trial works:"
+		  },
+		  {
+			"type": "textarea",
+			"id": "step_two_desc",
+			"label": "Step 2 Description",
+			"default": "1. We'll send you of the best coffee in the world. 2. You Brew. 3. A few days before your first billing date we'll send you a reminder that your free trial is ending and your subscription is beginning."
+		  },
+		  {
+			"type": "text",
+			"id": "shipping_price",
+			"label": "Shipping Price",
+			"default": "$5"
+		  },
+		  {
+			"type": "text",
+			"id": "total_price",
+			"label": "Total Price",
+			"default": "$0"
+		  },
+          {
+            "type": "header",
+            "content": "Edit Capsules"
+          },
+		  {
+			"type": "product",
+			"id": "capsules_product",
+			"label": "Select capsules Product",
+			"info": "This can be any product (ie. a trial or actual product)"
+		  },
+		  {
+			"type": "image_picker",
+			"id": "capsules_image",
+			"label": "Select Capsules Image"
+		  },
+		  {
+			"type": "text",
+			"id": "capsules_title",
+			"label": "Product Title",
+			"default": "Capsules"
+		  },
+		  {
+			"type": "textarea",
+			"id": "cap_popup",
+			"label": "Capsules Popup",
+			"default": "Rich, creamy flavor with notes of caramel. Sourced from the top 2% of coffee in the world. Roasted-to-order for peak freshness. Compatible with Nespresso Original Line machines."
+		  },
+          {
+            "type": "range",
+            "id": "capsules_quantity",
+            "min": 1,
+            "max": 96,
+            "step": 1,
+            "unit": "cap",
+            "label": "Subscription Quantity",
+            "info" : "Based on amount of capsules",
+            "default": 32
+          },
+          {
+            "type": "range",
+            "id": "capsules_frequency",
+            "min": 1,
+            "max": 6,
+            "step": 1,
+            "unit": "Wks",
+            "label": "Capsules Subscription Frequency",
+            "info" : "Based on weeks",
+            "default": 3
+          },
+		  {
+			"type": "text",
+			"id": "capsules_ruleset",
+			"label": "Capsules Ruleset",
+			"default": "135836"
+		  },
+          {
+            "type": "header",
+            "content": "Edit Whole Bean"
+          },
+		  {
+			"type": "product",
+			"id": "wholebean_product",
+			"label": "Select Whole Bean Product",
+			"info": "This can be any product (ie. a trial or actual product)"
+		  },
+		  {
+			"type": "image_picker",
+			"id": "wholebean_image",
+			"label": "Select Whole Bean Image"
+		  },
+		  {
+			"type": "text",
+			"id": "wholebean_title",
+			"label": "Product Title",
+			"default": "Whole Bean"
+		  },
+		  {
+			"type": "textarea",
+			"id": "wb_popup",
+			"label": "Whole Bean Popup",
+			"default": "Full-bodied flavor with no bitterness. Sourced from top 2% of coffee in the world. Varietals roasted individually, then blended together. Packaged fresh in 8oz re-sealable pressurized bag"
+		  },
+          {
+            "type": "range",
+            "id": "wholebean_quantity",
+            "min": 1,
+            "max": 6,
+            "step": 1,
+            "unit": "bag",
+            "label": "Subscription Quantity",
+            "info" : "Based on amount of bags",
+            "default": 2
+          },
+          {
+            "type": "range",
+            "id": "wholebean_frequency",
+            "min": 1,
+            "max": 6,
+            "step": 1,
+            "unit": "Wks",
+            "label": "Whole Bean Subscription Frequency",
+            "info" : "Based on weeks",
+            "default": 3
+          },
+		  {
+			"type": "text",
+			"id": "wholebean_ruleset",
+			"label": "Whole Bean Ruleset",
+			"default": "137269"
+		  },
+          {
+            "type": "header",
+            "content": "Edit Pods"
+          },
+		  {
+			"type": "product",
+			"id": "pods_product",
+			"label": "Select Pods Product",
+			"info": "This can be any product (ie. a trial or actual product)"
+		  },
+		  {
+			"type": "image_picker",
+			"id": "pods_image",
+			"label": "Select Pods Image"
+		  },
+		  {
+			"type": "text",
+			"id": "pods_title",
+			"label": "Product Title",
+			"default": "Pods"
+		  },
+		  {
+			"type": "textarea",
+			"id": "pod_popup",
+			"label": "Pods Popup",
+			"default": "Full-body flavor, low-acidity, exceptionally smooth. Sourced from the top 2% of coffee in the world. Roasted-to-order for peak freshness. Compatible with any Keurig or Keurig 2.0 machine"
+		  },
+          {
+            "type": "range",
+            "id": "pods_quantity",
+            "min": 1,
+            "max": 96,
+            "step": 1,
+            "unit": "pod",
+            "label": "Subscription Quantity",
+            "info" : "Based on amount of pods",
+            "default": 32
+          },
+          {
+            "type": "range",
+            "id": "pods_frequency",
+            "min": 1,
+            "max": 6,
+            "step": 1,
+            "unit": "Wks",
+            "label": "Pods Subscription Frequency",
+            "info" : "Based on weeks",
+            "default": 3
+          },
+		  {
+			"type": "text",
+			"id": "pods_ruleset",
+			"label": "Pods Ruleset",
+			"default": "135834"
+		  }
+	  ]
+  }
+{% endschema %}

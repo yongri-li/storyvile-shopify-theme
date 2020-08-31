@@ -1,3 +1,4 @@
+
 <!-- /templates/customers/account.liquid -->
 {% comment %}
 
@@ -7,26 +8,116 @@
 {% endcomment %}
 
 {% paginate customer.orders by 20 %}
+<style>
+  
+
+.loading-acc {
+    display: none;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #f4f3f1;
+    z-index: 1000000000;
+}
+  .loading-acc p{
+  margin: 0 auto;
+    z-index: 10;
+    text-align: center;
+  }
+  .loading-acc .btn--loading:after{
+    border-color: #ba8748;
+    border-top-color: transparent !important;
+    width: 40px;
+    height: 40px;
+    margin-left: -23px;
+    margin-top: -33px;
+  }
+  .loading-active{
+  	display:flex;
+  }
+  
+  .loading-acc:before{
+	content: '';
+    background-image: linear-gradient(-45deg, #f3e3cf 0%, #eae9e8 40%, #fff 100%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 200%;
+    animation: subtlemove 6s ease-in-out infinite;
+    background-size: 100% 100%;
+}
+
+@keyframes subtlemove{
+   0% {
+        transform: translate(0, 0);
+    }
+    25% {
+        transform: translate(-50%, 0%);
+    }
+    50% {
+        transform: translate(-50%, -50%);
+    }
+    75% {
+        transform: translate(0, -50%);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+</style>
+
+
+<div class="loading-acc loading-active">
+  
+  <p>
+    <span class="btn--loading"></span>
+    <br>
+    Loading your account...
+  </p>
+</div>
+
 
 <header class="section-header text-center">
-  <div class="accountLogout">
-  	<h1>{{ 'customer.account.title' | t }}</h1>
-  	{{ 'layout.customer.log_out'| t | customer_logout_link }}
-  </div>
-  
+
   <div class="accountManageSub">
-    {% if customer.metafields.subscriptions.customer_string %}
+  {% if customer.metafields.subscriptions.customer_string %}
+    <script>
+  
+	window.location.replace("/tools/recurring/portal/{{ customer.metafields.subscriptions.customer_string }}/subscriptions");
+    
+    </script>
+    
+    
   <!-- Begin ReCharge code -->
-  <p><a href="/tools/recurring/customer/{{ customer.metafields.subscriptions.customer_string }}/subscriptions/">Manage Subscriptions</a></p>
+  <p><a href="/tools/recurring/portal/{{ customer.metafields.subscriptions.customer_string }}/subscriptions">Manage Subscriptions</a></p>
   <!-- End ReCharge code -->
+    
+    {% else %}
+    
+    <script>
+      
+      setTimeout(function(){ 
+    	$(".loading-acc").removeClass("loading-active");
+      }, 3000);
+      
+    	
+    </script>
+    
   {% endif %}
   </div>
 </header>
 
+
+
 <div class="grid">
 
 
-  <div class="grid__item one-third medium-down--one-whole" style="display:none;">
+  <div class="grid__item one-half medium-down--one-whole" style="display:none;">
     <h3>Shipping Addresses</h3>
 	<div class="accountShipping">
       {{ customer.default_address | format_address }}
@@ -35,9 +126,20 @@
     </div>
   </div>
   
-  <div class="grid__item one-third medium-down--one-whole">
-    <h3>{{ 'customer.account.details' | t }}</h3>
+  
+
+  
+  
+  <div class="grid__item one-half medium-down--one-whole">
+    
+  <div class="accountLogout">
+  	<h1>{{ 'customer.account.title' | t }}</h1>
+  	{{ 'layout.customer.log_out'| t | customer_logout_link }}
+  </div>
+    
+    
 	<div class="accountDetails">
+      <h3>{{ 'customer.account.details' | t }}</h3>
       <p class="h5">{{ customer.name }}</p>
 
       <p class="h5">{{ customer.email }}</p>

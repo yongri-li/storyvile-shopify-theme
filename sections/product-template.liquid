@@ -221,25 +221,12 @@
               {% endcomment %}
 
               
-              
-              
-              <span id="ProductPrice"
-                class="product-single__price{% if current_variant.compare_at_price > current_variant.price %} on-sale{% endif %}"
-                itemprop="price"
-                content="{{ current_variant.price | divided_by: 100.00 }}"
-                {% unless current_variant.available %}aria-hidden="true"{% endunless %}>
-                {{ current_variant.price | money }}{% if current_variant.compare_at_price < current_variant.price %}{% endif %}
-              </span>
-              
-               
-              
-              
-              
-               {% if current_variant.compare_at_price > current_variant.price %}
+     
+              {% if current_variant.compare_at_price > current_variant.price %}
                 <span id="PriceA11y" class="visually-hidden" {% unless current_variant.available %}aria-hidden="true"{% endunless %}>{{ 'products.general.regular_price' | t }}</span>
                 <span class="product-single__price--wrapper" aria-hidden="false">
                   <span id="ComparePrice" class="product-single__price--compare-at">
-                    {{ current_variant.compare_at_price | money }}
+                    {{ current_variant.compare_at_price | money_without_trailing_zeros }}
                   </span>
                 </span>
               
@@ -253,6 +240,23 @@
                 </span>
                 <span id="ComparePriceA11y" class="visually-hidden" aria-hidden="true">{{ 'products.general.sale_price' | t }}</span>
               {% endif %}
+              
+              
+              
+              
+              <span id="ProductPrice"
+                class="product-single__price{% if current_variant.compare_at_price > current_variant.price %} on-sale{% endif %}"
+                itemprop="price"
+                content="{{ current_variant.price | divided_by: 100.00 }}"
+                {% unless current_variant.available %}aria-hidden="true"{% endunless %}>
+                {{ current_variant.price | money_without_trailing_zeros }}{% if current_variant.compare_at_price < current_variant.price %}{% endif %}
+              </span>
+              
+               
+              
+              
+              
+
               
               
                
@@ -281,7 +285,12 @@
               
               
               
-              
+
+				<br>
+                {% if product.tags contains 'subscription' or product.tags contains 'carthook_checkout' %}
+              	{% else %}
+                <span style="color: #ba8748 !important;"><b>{% if customer.tags contains 'Active Subscriber' %}Your {% endif %}Subscriber Price: {{ current_variant.price | times: 0.85 | money_without_trailing_zeros }} (15% OFF)</b></span>
+                {% endif %}  
               
               
 

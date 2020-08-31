@@ -1,0 +1,1426 @@
+
+
+/**
+ * Subscriptions Builder
+ */
+
+
+
+function getQueryStringAsObject() {
+  var search = location.search.substring(1);
+  return search ? JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}') : {};
+}
+
+
+var DEBUG = true;
+
+
+$(function () {
+  
+  
+//Show and hide Learn More
+  
+  $(".learn-more-button").click(function(){
+  	$(".more-features").toggleClass("learn-more-visible");
+  });
+  
+
+  var debug = DEBUG ? console.log.bind(console, '[DEBUG][SubscriptionBuilder]') : _.noop;
+
+  debug('Subscription Builder v1.2');
+
+  var $builder = $('[data-subscription-builder]');
+
+  var query = getQueryStringAsObject();
+
+  var validProducts = ['beans', 'pods', 'capsules'];
+
+  var state = {
+    step: 0,
+
+    // A string, can be: beans, pods or capsules 
+    product: validProducts[0],
+
+    productOptions: [],
+
+    wantsEpilogue: false,
+    
+    coupon: '',
+    
+    onetime: false,
+
+    cartToken: null
+    
+  };
+
+
+  /* Contains products: options.products.{beans|pods|capsules} */
+  var options = Object.assign({
+    show_starting_compare_at_price: false,
+    show_the_math: false,
+    show_coupon_discount: true,
+    show_save_money_line: false,
+    show_product_discounts: false,
+    defaultQuantity: 1,
+    defaultFrequency: 1
+  }, JSON.parse($builder.attr('data-subscription-builder')));
+
+  
+  // ESTABLISH DEFAULT URL PARAMS (IF ANY)
+  if (query.default_product && validProducts.indexOf(query.default_product) >= 0) {
+    options.defaultProduct = query.default_product;
+  }
+  
+  
+  if (query.default_quantity && query.default_quantity <= 2) {
+    options.defaultQuantity = query.default_quantity;
+  }
+  
+  if (query.default_frequency && query.default_frequency <= 2) {
+    options.defaultFrequency = query.default_frequency;
+  }
+  
+  if (query.default_onetime) {
+    state.onetime = true;
+    $builder.find('.onetime_default').click();
+
+  }
+  
+  
+  var onetime_product = {
+    "beans": 31169914798153,
+    "pods": 31169920172105,
+    "capsules": 31169917583433,
+    "epilogue": 31169914830921
+  }
+  
+  
+var onetime = { 
+
+"products": [
+
+  	   {
+       "id": 31169914798153,
+         "quantity": [16, 32, 48]
+       }
+  ]
+  
+};
+ 
+
+  debug('Options', options);
+
+  //globals
+  var $steps = $builder.find('[data-steps] [data-step]');
+  var $navSteps = $builder.find('[data-nav-steps] [data-step]');
+  var $optionSets = $builder.find('[data-options-set]');
+
+  var $startingPrice = $builder.find('[data-starting-price]');
+  var $startingCompareAtPrice = $builder.find('[data-compare-at-price]');
+  var $priceUnit = $builder.find('[data-price-unit]');
+
+  var $moneySaved = $builder.find('[data-money-saved]');
+  var $priceEach = $builder.find('[data-money-saved]');
+
+  var $savedPrice = $builder.find('[data-saved-price]');
+  var $packageType = $builder.find('[data-package-type]');
+  var $simpleTitle = $builder.find('[data-simple-title]');
+  var $packagePresentation = $builder.find('[data-package-presentation]');
+  var $productTitle = $builder.find('[data-product-title]');
+  var $productQuantityHeadline = $builder.find('[data-product-quantity-headline]');
+  var $productBullets = $builder.find('.first-features');
+  var $productMoreBullets = $builder.find('.more-features');
+  var $totalPrice = $builder.find('[data-total-price]');
+  var $totalQuantity = $builder.find('[data-total-quantity]');
+  var $selectedProductTitle = $builder.find('[data-selected-product-title]');
+  var $packageDescription = $builder.find('[data-package-description]');
+  var $productSubtitle = $builder.find('[data-offering-subtitle]');
+
+  var $quantityOptions = $builder.find('[data-quantity-options]');
+  var $frequencyOptions = $builder.find('[data-frequency-options]');
+  
+  var $wantEpilogue = $builder.find('[data-option-want-epilogue]');
+
+  var $percentPrice = $builder.find('[data-option-percent-price]');
+  var $percentPriceTotal = $builder.find('[data-option-percent-price-total]');
+  var $percentPriceTotalOnetime = $builder.find('[data-option-percent-price-total-onetime]');
+  
+  var $selectedFrequencyTitle = $builder.find('[data-frequency-title]');
+  var $selectedFrequencyNumber = $builder.find('[data-frequency-number]');
+  
+  //url params
+  var $getDiscountCode = query.utm_content;
+  var $getCouponCode = query.utm_coupon;
+
+  
+      
+//FIXED PRICE DISCOUNT
+  
+  var fixedPrice = query.fixed_price ? query.fixed_price : 0;
+  
+  var fixed_discount = query.fixed_discount ? query.fixed_discount : false;
+  
+  var discount = (query.utm_content > 0) ? query.utm_content : (query.fixed_discount ? query.fixed_discount : 50);
+  
+  var customerEmail = '';
+  
+  var $getCouponCode = query.utm_coupon;
+  
+  var couponCode = 'FRESH';
+  
+  
+  if (query.utm_coupon){
+  	var multiple_coupons = query.utm_coupon.includes("-") ? query.utm_coupon.split("-") : '';
+  }
+
+  var $getID = query.klaviyo_user;
+  
+  var k_id = '';
+    
+  if (typeof $getID !== "undefined"){
+        var k_id = $getID;
+  }
+  
+  debug('Klaviyo ID: ' + k_id);
+  debug('Coupon Code: ' + couponCode);
+  
+  var radio = document.getElementsByName('onetime');
+
+  
+    for (var i = 0; i < radio.length; i++) {
+          radio[i].addEventListener('change', function() {
+
+
+            state.onetime = (this.value == 'subscribe') ? false : true;
+            //console.log(onetime_product[state.product]);
+
+            forceUpdate();
+
+          });
+
+    }
+
+  
+  
+// MYSTERY GIFT / FREE PRODUCT
+function addFreeProduct(){
+  	var freeProductID = parseInt(query.gift);
+  
+      var cartItem = {
+        id: freeProductID,
+        quantity: 1
+      };
+
+
+$.get('/cart.json').done(function (cart) {
+  
+    
+          
+        var cartItemVariants = [];
+          
+        cart.items.forEach(function(item) {
+          var i = item.variant_id
+          cartItemVariants.push(i);
+        });
+
+    	if (cartItemVariants.indexOf(cartItem.id) > -1){
+
+        } else{              
+          
+          $.post('/cart/add.json', cartItem)
+          .done(function () {
+            
+            debug('Successfully added item to the cart');
+
+          });
+    	}
+  
+  });
+}
+
+  
+if (query.gift){
+   addFreeProduct();
+}
+
+  
+  function hideFixedPrice(){
+     $(".builderOptions").show();
+     $(".fixedPriceOptions").removeClass("showFixedPrices");
+     $(".order_summary_contain").show();
+  }
+
+  function showFixedPrice(){
+     $(".builderOptions").hide();
+     $(".fixedPriceOptions").addClass("showFixedPrices");
+     $(".order_summary_contain").hide();
+  }
+
+
+    
+  if (fixedPrice > 0 && state.onetime != true){
+  
+  	showFixedPrice();
+    
+  }
+  
+  function asPercentage(value) {
+    return (value * 100).toFixed(0) + '%';
+  }
+  
+
+
+  function asMoney(value, rounded) {
+    var floatValue = (value / 100);
+    return '$' + ( rounded ? Math.ceil(floatValue).toFixed(0) : floatValue.toFixed(2).replace('.00', '') );
+  }
+
+
+  function sortByPrice(productsOrVariants, direction) {
+    return productsOrVariants.sort(function (a, b) {
+      return direction == 'desc' ? b.price - a.price : a.price - b.price;
+    });
+  }
+
+
+  function mostExpensive(productsOrVariants) {
+    return sortByPrice(productsOrVariants, 'desc')[0];
+  }
+
+
+  function cheapest(productsOrVariants) {
+    return sortByPrice(productsOrVariants)[0];
+  }
+
+  function singular(word) {
+    return word.replace(/[sS]$/g, '');
+  }
+  
+  
+
+  
+  function getCheckoutUrl(cart) {
+    var token = cart ? cart.token : state.cartToken;
+
+    if (token) {
+      
+      var params = [
+        'cart_token=' + state.cartToken,
+        'myshopify_domain=' + options.shopify_domain,
+        'discount=' + couponCode
+      ];
+      
+      //RECHARGE URL
+      return 'https://checkout.rechargeapps.com/r/checkout?' + params.join('&');
+      
+    } else {
+      return '/checkout';
+    }
+    
+  }
+  
+
+  
+
+  
+
+  function getUnitVariant() {
+    var product = options.products[state.product];
+    var unitVariantTitles = product.unit_variant;
+    var unitVariantTitle;
+
+    if (state.product == 'beans') {
+      unitVariantTitle = unitVariantTitles[state.wantsEpilogue ? 'epilogue' : 'prologue'];
+    } else {
+      unitVariantTitle = unitVariantTitles.default;
+    }
+
+       return product.variants.find(function (v) { 
+         
+         return v.title == unitVariantTitle;
+   
+       });
+
+
+  }
+
+  function quantityWithUnit(quantity, unit) {
+    var singular = unit.replace(/s$/, '');
+    var plural = singular + 's';
+    return quantity + ' ' + (quantity == 1 ? singular : plural);
+  }
+
+ 
+  
+  
+  function forceUpdate() {
+
+    debug('Update', state);
+
+    $builder.attr('action', getCheckoutUrl());
+    $builder.find('[data-onetime-discount]').text(( state.product == 'beans' ? '22%' : '17%' ));
+
+    
+    
+    //FOR ONETIMES SWITCH
+    if (state.onetime){
+		$builder.find('.quantity__options').addClass("onetime_selected");
+    	$builder.find('.frequency__options').hide();
+        $builder.find('.summary_col1 .sub_text').hide();
+        $builder.find('.summary_subscribe').hide();
+        $builder.find('.summary_onetime').show();
+
+		hideFixedPrice();
+      
+      
+    } else {
+        $builder.find('.quantity__options').removeClass("onetime_selected");
+    	$builder.find('.frequency__options').show();
+        $builder.find('.summary_col1 .sub_text').show();
+        $builder.find('.summary_subscribe').show();
+        $builder.find('.summary_onetime').hide();
+      	
+      
+      if (fixedPrice > 0){
+        
+        //reset to default quantity
+        options.defaultQuantity = parseInt(query.default_quantity);
+        $quantityOptions.val(options.defaultQuantity).prop('selected', true); 
+        state.selectedQuantity = parseInt(query.default_quantity);
+
+      	showFixedPrice();
+      }
+      
+    }
+
+    
+    
+    
+    
+    
+    $steps.each(function (i) {
+      var $step = $(this);
+      var $navStep = $($navSteps.get(i));
+
+      $.merge($step, $navStep).toggleClass('fulfilled', i < state.step);
+      $.merge($step, $navStep).toggleClass('current', i == state.step);
+      
+    });
+
+    $builder.find('[data-disclaimer]:not(:visible)').fadeIn();
+
+    $('[data-visible-on-builder-step]').each(function () {
+      var step = $(this).data('visible-on-builder-step');
+      if (step == state.step) {
+        if (!$(this).is(':visible')) {
+          $(this).show();
+        }
+      } else {
+        if ($(this).is(':visible')) {
+          $(this).hide();
+        }
+      }
+    });
+    
+    
+    
+    $('[data-visible-on-builder-product]').each(function () {
+      var beans_btf = $(this).find('[data-beans-btf]');
+      var capsules_btf = $(this).find('[data-capsules-btf]');
+      var pods_btf = $(this).find('[data-pods-btf]');
+      
+      if (state.product == 'beans') {
+			$(beans_btf).fadeIn();} 
+      else{
+           $(beans_btf).fadeOut();}
+      
+      
+      if (state.product == 'capsules') {
+			$(capsules_btf).fadeIn();} 
+      else{
+           $(capsules_btf).fadeOut();}
+      
+      
+      if (state.product == 'pods') {
+			$(pods_btf).fadeIn();} 
+      else{
+           $(pods_btf).fadeOut();}
+      
+      
+    });
+    
+    
+
+    var product = options.products[state.product];
+    var unitVariant = getUnitVariant();
+
+    
+    $builder.find('[data-option]').removeClass('selected');
+    $builder.find([
+        '[data-options-set-type="product"]   [data-option][data-value="' + state.product + '"]',
+        '[data-options-set-type="quantity"]  [data-option][data-value="' + state.selectedQuantity + '"]',
+        '[data-options-set-type="frequency"] [data-option][data-value="' + state.selectedFrequency + '"]',
+      ].join(','))
+      .addClass('selected')
+    ;
+    
+      
+    //Selected Option Test 
+      
+      
+      //Testing Pushing Gathering data per-step
+      
+      if (state.product == 'beans') {
+      		dataLayer.push({'Product': 'Whole Bean'});
+
+            if (state.selectedQuantity == 0) {
+      			  dataLayer.push({'Quantity': '1'});
+            } else if (state.selectedQuantity == 1) {
+      			  dataLayer.push({'Quantity': '2'});
+            } else {
+      			  dataLayer.push({'Quantity': '3'});
+            }
+      
+            if (state.selectedFrequency == 0) {
+      			  dataLayer.push({'Frequency': '2 Weeks'});
+            } else if (state.selectedFrequency == 1) {
+      			  dataLayer.push({'Frequency': '3 Weeks'});
+            } else {
+      			  dataLayer.push({'Frequency': '4 Weeks'});
+            }
+      
+
+	  } else if (state.product == 'pods') {
+      		dataLayer.push({'Product': 'Keurig® Pods'});
+      
+            if (state.selectedQuantity == 0) {
+      			  dataLayer.push({'Quantity': '16'});
+            } else if (state.selectedQuantity == 1) {
+      			  dataLayer.push({'Quantity': '32'});
+            } else {
+      			  dataLayer.push({'Quantity': '48'});
+            }
+      
+            if (state.selectedFrequency == 0) {
+      			  dataLayer.push({'Frequency': '2 Weeks'});
+            } else if (state.selectedFrequency == 1) {
+      			  dataLayer.push({'Frequency': '3 Weeks'});
+            } else {
+      			  dataLayer.push({'Frequency': '4 Weeks'});
+            }
+
+	  } else {
+      		dataLayer.push({'Product': 'Nespresso® Capsules'});
+      
+            if (state.selectedQuantity == 0) {
+      			  dataLayer.push({'Quantity': '16'});
+            } else if (state.selectedQuantity == 1) {
+      			  dataLayer.push({'Quantity': '32'});
+            } else {
+      			  dataLayer.push({'Quantity': '48'});
+            }
+      
+            if (state.selectedFrequency == 0) {
+      			  dataLayer.push({'Frequency': '2 Weeks'});
+            } else if (state.selectedFrequency == 1) {
+      			  dataLayer.push({'Frequency': '3 Weeks'});
+            } else {
+      			  dataLayer.push({'Frequency': '4 Weeks'});
+            }
+
+	  }
+
+      
+
+
+
+    $wantEpilogue.parent().toggle(state.product == 'beans')
+
+    if (options.show_starting_compare_at_price && product.compare_at_price) {
+      $startingCompareAtPrice.show();
+      $startingCompareAtPrice.text(asMoney(product.compare_at_price));
+    } else {
+      $startingCompareAtPrice.hide();
+    }
+
+
+    if (!options.show_the_math){
+      $startingPrice.hide();
+      $priceUnit.hide();
+      $builder.find('[data-option-price-each]').hide();
+    }
+
+
+    if (!options.show_coupon_discount){
+      $builder.find('[data-percent-off]').hide();
+      $builder.find('[data-option-percent-price]').hide();
+    } else {
+
+
+    }
+
+
+    if (!options.show_save_money_line) {
+      $builder.find('[data-money-saved]').hide();
+      $builder.find('[data-package-type]').hide();
+    }
+
+
+    $simpleTitle.text(state.product);  
+    $startingPrice.text(asMoney(product.starting_price));
+    $priceUnit.text(product.price_unit ?  '/ ' + singular(product.price_unit) : '');
+
+    var sorted = sortByPrice(state.productOptions);
+    if (sorted.length > 1) {
+      var saveAmount = sorted[1].price * sorted[1].saved_percent;
+      $savedPrice.text(asMoney(saveAmount, true) + ' ');
+    } else {
+      $savedPrice.text(' ');
+    }
+
+
+  
+  	var product_bullets = product.product_bullets;
+  	var product_more_bullets = product.product_more_bullets;
+  
+  	if ($productBullets.length){  
+      $productBullets.find('li').html(
+        product_bullets.map(i => $('<li>').text(i))
+      );
+
+      $productMoreBullets.find('li').html(
+        product_more_bullets.map(i => $('<li>').text(i))
+      );
+  	}
+  
+  
+    $packagePresentation.text(product.package_presentation);
+  	$productTitle.html(product.product_title);
+    $productQuantityHeadline.html(product.product_quantity_headline);
+    $packageType.text('PER ' + product.package_type);
+    $packageDescription.text(product.package_description);
+    $productSubtitle.text(product.product_subtitle);
+
+    $moneySaved.text('SAVE ' + product.money_saved);
+
+    var $quantities = $('[data-options-set][data-options-set-type="quantity"]');
+	
+  
+  	
+
+ 
+  
+    $quantities.find('[data-option]').each(function (i) {
+      var $option = $(this);
+      var productOption = state.productOptions[i];
+
+      if (productOption) {
+        $option.find('[data-option-price-each]')
+          .text(asMoney(unitVariant.price) + ' ' + (state.product == 'beans' ? '/ bag' : 'Each'))
+        ;
+
+        $option.find('[data-option-product-type]')
+          .text((productOption.type) + ' ' + (productOption.size))
+        ;
+
+
+        $option.find('[data-option-compare-at-price]')
+          .text(asMoney(productOption.compare_at_price))
+          .toggle(options.show_product_discounts && productOption.compare_at_price > 0)
+        ;
+
+        $option.find('[data-option-price]')
+          .text(asMoney(unitVariant.price * productOption.quantity))
+        ;
+
+
+        $option.find('[data-option-save-percentage]')
+          .text('SAVE ' + asPercentage(productOption.saved_percent))
+          .toggle(options.show_product_discounts && productOption.saved_percent > 0)
+        ;
+
+        if(discount > 0 && fixedPrice == 0){
+          var total_discount = '';
+          
+          if (!fixed_discount){
+          	total_discount = (asMoney((unitVariant.price * productOption.quantity) * (1 - (discount / 100))));
+          } else {
+			  total_discount = (asMoney((unitVariant.price * productOption.quantity) - (discount * 100)));
+          }
+          $option.find('[data-option-percent-price]')
+		  .text('YOUR FIRST SHIPMENT IS ONLY ' + total_discount + '')
+          .toggle(options.show_coupon_discount == true);
+          
+
+        
+        } else{
+          $option.find('[data-option-percent-price]').hide();
+        }
+
+        $option.find('[data-option-product-image]')
+          .removeAttr('src')
+          .attr('src', productOption.image)
+        ;
+
+        $option.find('[data-option-product-title]')
+          .text(productOption.title)
+        ;
+
+
+
+
+        $option.show();
+      } else {
+        $option.hide();
+      }
+    });
+  
+ 
+  
+  
+
+  
+  
+  var productOptionSelected = state.productOptions[state.selectedQuantity];
+  var productOptionSelectedFrequency = state.productOptions[state.selectedFrequency];
+  
+  if(discount > 0){
+    
+    $(".builder-option").on( "click", function() {
+    	$('.action__above').addClass("action-change");
+      
+      	setTimeout(
+        function() {
+                $('.action__above').removeClass("action-change");
+        }, 200);
+      
+    });
+    
+    if (!fixed_discount){
+    	$percentPriceTotal.text((asMoney((unitVariant.price * productOptionSelected.quantity) * (1 - (discount / 100)))) + '');
+    } else {
+    	$percentPriceTotal.text((asMoney((unitVariant.price * productOptionSelected.quantity) - (discount * 100))) + '');
+    }
+    
+    $percentPriceTotalOnetime.text((asMoney(((state.product == 'beans' ? 18 : 1.5) * productOptionSelected.quantity) * (100))) + '');
+    
+  }
+
+  
+
+  
+  //UPDATE TOTAL VARIABLE (no discounts)
+
+  $totalPrice.text((asMoney((unitVariant.price * productOptionSelected.quantity) * 1)));
+  $totalQuantity.text(productOptionSelected.quantity);
+  
+  
+  
+  //UPDATE SELECTED TITLE
+  $selectedProductTitle.text(productOptionSelected.type);
+  
+  
+  
+  //UPDATE SELECTED FREQUENCY TITLE
+  
+  var currentFrequency = product.shipping_interval_frequency[state.selectedFrequency];
+  
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  
+  var today = new Date();
+  
+    var numberOfDaysToAdd = (currentFrequency * 7);
+    today.setDate(today.getDate() + numberOfDaysToAdd);
+
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1;
+
+
+    function getMonth(n) {
+      return months[mm - 1];
+    }
+
+    var month = getMonth(1);
+  
+  	var nextShipmentDate = month + '. ' + dd + (dd == 1 ? 'st' : dd == 2 ? 'nd' : dd == 3 ? 'rd' : 'th' );
+  
+  
+  $selectedFrequencyTitle.text(nextShipmentDate);
+  
+  
+  // EVERY WEEK REMOVED 
+  // $selectedFrequencyTitle.text(currentFrequency > 1 ? 'Every ' + currentFrequency + ' ' + 'Weeks' : 'Every ' + 'Week');
+  
+
+  $selectedFrequencyNumber.text((currentFrequency != 2) ? currentFrequency + ((currentFrequency == 1) ? " Week" : " Weeks") : "Every Other Week");
+  
+  
+  
+  
+  
+  //MODIFIED QUANTITIES
+  
+  var $quantitiesSelect = $('[data-quantity-options][data-options-set-type="quantity"]');
+  
+  $quantitiesSelect.find('.builder-option').each(function (i) {
+      var $option = $(this);
+      var productOption = state.productOptions[i];
+      var priceEach = parseFloat(product.price_each);
+      
+	  
+      if (productOption) {
+      	$option.html(productOption.type);
+
+        
+      	$option.show();
+        
+      } else {      
+      	$option.hide();
+      }
+  });
+  
+ 
+ 
+  
+  
+  
+  //MODIFIED FREQUENCIES
+  var $frequencySelect = $('[data-frequency-options][data-options-set-type="frequency"]');
+  
+  $frequencySelect.find('.builder-option').each(function (i) {
+      var $option = $(this);
+      
+      var frequency = product.shipping_interval_frequency[i];
+      var unitType = product.shipping_interval_unit_type.toLowerCase();
+	  
+      if (product) {
+		
+      	$option.html(frequency > 1 ? 'Every ' + frequency + ' ' + unitType : 'Every ' + singular(unitType));
+
+        
+      	$option.show();
+        
+      } else {      
+      	$option.hide();
+      }
+  });
+  
+  
+  
+  
+  
+
+
+
+if (product) {
+
+
+      if (product.sample_image) {
+        var $preview = $('[data-preview-image]');
+        
+        $preview.attr({
+              'src': product.sample_image.src,
+              'data-src': product.sample_image.src,
+              'srcset': product.sample_image.srcset,
+              'data-srcset': product.sample_image.srcset
+         });
+
+
+      }
+      
+      
+      if (product.quantity_image) {
+        var $previewQuantity = $('[data-quantity-image]');
+        
+        $previewQuantity.attr({
+              'src': product.quantity_image.src,
+              'data-src': product.quantity_image.src,
+              'srcset': product.quantity_image.srcset,
+              'data-srcset': product.quantity_image.srcset
+        });
+       
+      }
+      
+      if (product.frequency_image) {
+        var $previewFrequency = $('[data-frequency-image]');
+        
+        $previewFrequency.attr({
+              'src': product.frequency_image.src,
+              'data-src': product.frequency_image.src,
+              'srcset': product.frequency_image.srcset,
+              'data-srcset': product.frequency_image.srcset
+        });
+       
+      }
+      
+
+      var $frequencies = $('[data-options-set][data-options-set-type="frequency"] [data-option]');
+
+      $frequencies.each(function (i) {
+        var $frequency = $(this);
+        var frequency = product.shipping_interval_frequency[i];
+        var unitType = product.shipping_interval_unit_type;
+        var $image = $frequency.find('[data-frequency-image]');
+
+        var fileVariant = [unitType, frequency].join('-').toLowerCase();
+        
+		if ( $image.length ) {
+        	$image.attr('src', $image.attr('src').replace(/weeks\-[0-9]/, fileVariant));
+        }
+
+      })
+
+      $builder.find('[data-ships-every]').each(function (i) {
+        var frequency = product.shipping_interval_frequency[i];
+        var unitType = product.shipping_interval_unit_type.toLowerCase();
+
+
+        $(this).text(frequency > 1 ? frequency + ' ' + unitType : singular(unitType));
+      });
+      
+     
+      
+      
+      
+	// TOTAL PRICE UPDATE
+      
+      if ( $quantityOptions.length ) {
+        var $quantityTotal = $quantityOptions.find(':selected').val();
+        var quantityOption = state.productOptions[$quantityTotal];
+        var frequencyOption = state.selectedFrequency;
+        var priceEach = parseFloat(product.price_each);
+
+        //Per Week Variable
+        var pricePerWeek = parseFloat((quantityOption.quantity * priceEach) / (frequencyOption + 2)).toFixed(0);
+        
+        //Simple total variable
+        var priceTotal = quantityOption.quantity * priceEach;
+
+        //Final output
+        $totalPrice.text(" $" + priceTotal + "");
+        
+        //Final output for discount
+        var percentPriceTotal = (asMoney((quantityOption.quantity * priceEach) * (1 - (discount / 100)) * 100)) + '';
+        var fixedPriceTotal = (asMoney(fixedPrice * 100)) + '';
+        
+        if (fixed_discount){
+        	percentPriceTotal = (asMoney(((quantityOption.quantity * priceEach) * 100) - (discount * 100))) + '';
+        }
+        
+        $percentPriceTotal.text((fixedPrice > 0) ? fixedPriceTotal : percentPriceTotal);
+
+      }
+      
+
+      
+    }
+  
+  
+    $builder.find('[data-sas-price-onetime]').text((asMoney(((state.product == 'beans' ? 18 : 1.5) * productOptionSelected.quantity) * (100))) + '');
+    $builder.find('[data-sas-price-subscribe]').text((asMoney(((state.product == 'beans' ? 14 : 1.25) * productOptionSelected.quantity) * (100))) + '');
+    $builder.find('[data-additional-discount]').text((fixed_discount ? 'Additional $' + discount + ' off' : 'Additional ' + discount + '% off'));
+  
+  
+  
+  }
+
+  
+  
+  var update = theme.debounce(forceUpdate, 20);
+
+
+  function setState(newState) {
+    Object.assign(state, newState);
+    update();
+  }
+
+
+
+//Update builder based on URL HASH
+/*
+var $currentStep = window.location.hash;
+
+if ($currentStep == "#frequency"){
+      setState({ step: 2 });
+  	  debug('Loaded Frequency Step...');
+}
+
+if ($currentStep == "#quantity"){
+      setState({ step: 1 }); 
+      debug('Loaded Quantity Step...');
+}
+*/
+
+
+
+
+//Cart attributes update
+function updateAttributes(){
+  
+      var cart_discount = fixed_discount ? '' : discount;
+
+      var cartAttributes = {
+             attributes: {
+               'email': customerEmail,
+               'content': cart_discount,
+               'coupon': couponCode
+       		 }
+       };
+
+      $.post('/cart/update.json', cartAttributes).done(function () {   
+        debug('Updated Cart Attributes: ' + couponCode + ' and ' + customerEmail + ' and ' + discount);
+      });  
+  
+}
+
+
+
+
+
+
+
+
+function addToCartCarthook(){
+
+      var product = options.products[state.product];
+      var productOption = state.productOptions[state.selectedQuantity];
+	  
+      var unitVariant = getUnitVariant();
+      var unitVariant_id = state.onetime ? ( state.wantsEpilogue ? onetime_product["epilogue"] : onetime_product[state.product]) : unitVariant.id;
+
+  
+  		if (state.onetime){
+          
+          var cartItem = {
+            id: unitVariant_id,
+            quantity: productOption.quantity
+          };
+          
+  		} else{
+          
+          var cartItem = {
+            id: unitVariant_id,
+            quantity: productOption.quantity,
+            note: "freeshop - order number 0",
+            properties: {
+              'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
+              'shipping_interval_unit_type': product.shipping_interval_unit_type,
+              'subscription_id': product.subscription_id
+            }
+          };
+  	  	}
+
+  
+
+      $.get('/cart.json').done(function (cart) {
+        
+        var email_attribute = cart.attributes.email ? cart.attributes.email : '';
+        var coupon_attribute = cart.attributes.coupon ? cart.attributes.coupon : couponCode;
+        var source = query.utm_source ? ('utm_source=' + query.utm_source) : '';
+        var campaign = query.utm_campaign ? ('utm_campaign=' + query.utm_campaign) : '';
+        var content = cart.attributes.content ? ("utm_content=" + cart.attributes.content) : (query.utm_content ? ("utm_content=" + query.utm_content) : ("utm_content=" + discount));
+        
+        
+        if (fixed_discount){
+        	content = '';
+        }
+        
+        
+        
+        var medium = query.utm_medium ? ('utm_medium=' + query.utm_medium) : '';
+
+        
+        
+        var ch_params = [
+                  'email=' + email_attribute,
+                  'coupon=' + coupon_attribute,
+          		  'utm_coupon=' + coupon_attribute,
+          		  source,
+          		  content, 
+          		  medium,
+          		  campaign
+        ];
+
+        window.ch_cust_param = ch_params.join('&');
+        
+      	
+        debug('Initializing checkout for: ' + cartItem.id);
+
+        
+        var cartItemVariants = [];
+          
+        cart.items.forEach(function(item) {
+          var i = item.variant_id
+          cartItemVariants.push(i);
+        });
+        
+        var lineNumber = (cartItemVariants.indexOf(cartItem.id) + 1);
+        
+          if (state.onetime){
+            
+            var cartUpdate = {
+              line: lineNumber,
+              quantity: productOption.quantity
+            };
+            
+          } else {
+            
+            var cartUpdate = {
+              line: lineNumber,
+              quantity: productOption.quantity,
+              properties: {
+                'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
+                'shipping_interval_unit_type': product.shipping_interval_unit_type,
+                'subscription_id': product.subscription_id
+              }
+            };
+            
+          }
+        
+        debug('Current items in cart: ' + cartItemVariants);
+        debug('Line Item Number: ' + lineNumber);
+        
+		$.post('/cart/clear.json').done(function () {
+        
+          $.post('/cart/add.json', cartItem)
+          .done(function () {
+            
+            debug('Successfully added item to the cart');
+
+            window.testGlobalBeforeReact(0);
+          });
+        
+        });
+        
+      });
+	}
+
+
+
+
+
+  var simpleAdd = document.getElementById('add-to-cart');
+  simpleAdd && simpleAdd.addEventListener('click', function (evt) {
+      evt.preventDefault();
+        
+      debug('Adding to cart... ');
+    
+      addToCartCarthook();
+
+
+  });
+
+
+
+
+
+
+
+
+  function checkout() {
+
+    if (typeof state.selectedQuantity == "number") {
+      debug('Checkout');
+
+	  addToCart();      
+   
+
+    } else {
+      debug('Quantity not selected or invalid.');
+
+    }
+  }
+
+
+
+
+
+
+  function getImageForQuantity(images, quantity) {
+    var defaultImage = images.find(function (image) { return image.alt.indexOf('quantity=any') != -1 });
+    var imageForThisQuantity = images.find(function (image) { return image.alt.indexOf('quantity=' + quantity) != -1 });
+    return imageForThisQuantity ? imageForThisQuantity : defaultImage;
+  }
+
+
+  function getProductOptions(productId) {
+    var product = options.products[productId];
+
+    var unitVariant = getUnitVariant();
+
+    var variants = _.slice(product.variants,0, 3);
+
+    return product.package_sizes.map(function (size) {
+      var quantity = size;
+      var priceEach = unitVariant.price;
+      var compareAtPriceEach = unitVariant.compare_at_price || priceEach;
+
+      return {
+        priceEach: priceEach,
+        size : productId == 'beans' ? '' : '', //(' + quantity * 8 + 'oz) FOR OUNCES OF COFFEE
+        type: quantityWithUnit(quantity, productId == 'beans' ? 'Bags' : productId == 'pods' ? 'Pods' : productId == 'capsules' ? 'Capsules' : productId),
+        title: quantity + ' x Storyville ' + product.title,
+        price: unitVariant.price * quantity,
+        quantity: quantity,
+        compare_at_price: priceEach != compareAtPriceEach ? compareAtPriceEach * quantity : null,
+        saved_percent: Math.max(0, 1 - (priceEach / compareAtPriceEach)),
+        image: getImageForQuantity(product.images, quantity).src
+      };
+    });
+  }
+
+  function selectProduct(productId) {
+    debug('Select product', productId);
+    
+    setState({
+      product: productId,
+      productOptions: getProductOptions(productId)
+    });
+  }
+
+
+  function selectQuantity(quantity) {
+    debug('Select quantity', quantity);
+    setState({
+      selectedQuantity: parseInt(quantity)
+    });
+  }
+
+
+
+
+// Update coupon code inside product state
+
+function selectCoupon(){
+  
+
+   if (multiple_coupons){
+		  
+      couponCode = ((state.product == "beans") ? multiple_coupons[0] : ((state.product == "pods") ? multiple_coupons[1] : multiple_coupons[2]));
+     
+   } else {
+   	  
+   	  couponCode = $getCouponCode;
+     
+   }
+  
+  debug("Coupon code " + couponCode);
+  
+  setState({
+    coupon: couponCode
+  });
+
+    
+  var cartAttributes = {
+    attributes: {
+      'coupon': state.coupon
+ 	}
+  };
+
+  $.post('/cart/update.json', cartAttributes).done(function () {   
+      debug('Updated Cart Attribute: ' + state.coupon);
+  });
+  
+  
+}
+
+
+
+//Quantity Option Selector Only
+
+  $quantityOptions.on('change', function() {
+    
+    var value = $quantityOptions.find(':selected').val();
+    
+    setState({ 
+      selectedQuantity: parseInt(value) 
+    });
+    
+    debug('Select quantity', parseInt(value));
+  });
+
+
+
+
+// SELECTED DROPDOWN DEFAULTS
+    
+  $quantityOptions.val(options.defaultQuantity).prop('selected', true); 
+  $frequencyOptions.val(options.defaultFrequency).prop('selected', true); 
+    
+
+
+
+
+  function selectFrequency(frequency) {
+    debug('Select frequency', frequency);
+    setState({
+      selectedFrequency: parseInt(frequency)
+    });
+  }
+
+
+
+
+
+//Frequency Option Selector Only
+
+  $frequencyOptions.on('change', function() {
+    
+    var value = $frequencyOptions.find(':selected').val();
+    
+    setState({ 
+      selectedFrequency: parseInt(value) 
+    });
+    
+    debug('Select frequency', parseInt(value));
+  });
+
+
+
+
+
+
+  function nextStepHandler() {
+    debug('Next step', this);
+    var $step = $(this).closest('[data-step]');
+    
+    if (!$step.is(':last-child')) {
+      setState({ step: $step.index() + 1 });     
+      
+    } else {
+
+      checkout();
+ 
+    }
+    
+  }
+
+
+  function navStepClickHandler() {
+    var $navStep = $(this);
+    if ($navStep.is('.fulfilled')) {
+      setState({ step: $navStep.index() });
+      
+    }
+  }
+
+
+  function optionClickHandler($optionSet) {
+    return function () {
+      var $options = $optionSet.find('[data-option]');
+      var $option = $(this);
+
+      var optionSetType = $optionSet.data('options-set-type');
+      var optionValue = $option.data('value') || $option.index();
+
+      if (optionSetType == 'product') {
+        selectProduct(optionValue);
+        if ($getCouponCode){selectCoupon();}
+      } else if (optionSetType == 'quantity') {
+        selectQuantity(optionValue);
+      } else if (optionSetType == 'frequency') {
+        selectFrequency(optionValue);
+      } else {
+        debug('Option set has no behavior');
+      }
+    };
+  }
+
+
+
+  function initialize() {
+
+    $.getJSON('/cart.json').done(function (data) {
+      setState({ 
+        cartToken : data.token,
+        coupon : (couponCode != 'undefined') ? couponCode : data.attributes.coupon
+      });
+    });
+
+    $navSteps.click(navStepClickHandler);
+
+    $builder.find('[data-next-step]').click(nextStepHandler);
+
+    $optionSets.each(function () {
+      var $optionSet = $(this);
+      var $options = $optionSet.find('[data-option]');
+      
+      //Change Builder on Click
+      $options.click(optionClickHandler($optionSet));
+    });
+    
+    
+    $wantEpilogue.on('change', function() {
+      var value = $wantEpilogue.is(':checked');
+      debug('Epilogue checkbox changed:', value);
+      setState({ wantsEpilogue: value });
+    });
+
+    selectProduct(options.defaultProduct);
+    selectQuantity(options.defaultQuantity);
+    selectFrequency(options.defaultFrequency);
+    
+    if ($getCouponCode){selectCoupon();}
+
+    window.SubscriptionBuilder = {
+      $builder: $builder,
+      state: state,
+      options: options
+    };
+    
+  }
+
+
+  initialize();
+
+
+
+
+
+
+// GET EMAIL AND KLAVIYO DATA
+
+$.ajax({
+  url         : "https://meraki.storyville.com/klaviyo-apps/id-lookup.php",
+  data        : { "klaviyo_id": k_id },
+  dataType    : 'json',
+  type        : 'GET',
+  crossDomain : true,
+  contentType : "application/json; charset=utf-8",
+  error       : function(err) {
+    
+    console.log("Could not reach meraki.storyville.com for ID retrival");
+	updateAttributes();
+  },
+  
+  success : function(data) {
+    
+    if (data.result == "failure") {
+      
+       debug("Could not sync with Klaviyo.", false);
+       debug("Error message: " + data.message, false);
+       updateAttributes();
+      
+    } else {
+      
+      debug("Success! Retrieved email from Klaviyo ID: " + data.email, true);
+				
+      customerEmail = (data.email.indexOf('+') > -1) ? (data.email.replace(/\+/g,'%2B')) : data.email;
+	
+      updateAttributes();
+   }
+
+
+    
+    
+    
+  }});
+
+
+
+
+
+
+
+
+});

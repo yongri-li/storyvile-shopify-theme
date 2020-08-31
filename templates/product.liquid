@@ -2,15 +2,653 @@
 {% comment %}
   The contents of the product.liquid template can be found in /sections/product-template.liquid
 {% endcomment %}
+<link rel='stylesheet' id='fontawesome-css' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css' type='text/css' media='all' />
 
-{% section 'product-template' %}
-<!-- brontoBrowseObject:start -->
+<style>
+  @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,600&display=swap');
+  
+  body{
+    background: #fff;
+    font-family: 'Montserrat', sans-serif;
+  }
+  h1{
+	font-family: 'Montserrat', sans-serif;
+    text-transform: capitalize !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.01em !important;
+    font-size: 30px !important;
+  }
+  .wrapper{
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+  }
+  .wrapper .product-single{
+    width: 90%;
+    max-width: 1080px !important;
+    margin: 0 auto;
+  }
+  
+  .product-single__thumbnails{
+    display:block !important;
+  }
+  
+  .product-single__photo--container{
+    max-width: 100% !important;
+  }
+  .product-single__thumbnails li{
+    height: 90px;
+    width: auto;
+    position: relative;
+  }
+  .product-single__thumbnails img{
+    margin: 0;
+    max-height: 100%;
+    width: auto;
+    border-radius: 15px;
+  }
+  
+  .product-single__photos .slick-dots{
+    background: rgba(0,0,0,0);
+  }
+  
+  .product-single__photos a{
+    height: 90px;
+  }
+  
+  
+  .product-single__thumbnail.active-thumb img{
+    border-color: #ebe9e4;
+    background-color: #ebe9e4 !important;
+  }
+  
+  .product-single__description {
+      margin-top: 20px;
+      text-align: left;
+      width: 100%;
+      margin: 0 auto;
+      margin-right: 0;
+      padding-top: 0px;
+      clear: both;
+      font-size: 15px;
+  }
+  
+  .product-single__meta--wrapper{
+    padding:0 !important;
+    margin: 0 !important;
+  }
+  
+  .product-single__meta{
+    padding-top:0;
+  }
+  
+  .template-product h1{
+    font-weight: 400 !important;
+    font-size: 27px !important;
+  }
+  
+  .product-single__description{
+    padding: 12px 0;
+  }
+  
+  .grid__item.large--seven-twelfths{
+    padding: 0 30px;
+  }
+  
+  /***** REVIEWS CUSTOMIZATION *****/
+  
+  .spr-badge{
+    margin-top: -10px;
+    margin-bottom: 10px;
+    text-align: left;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  
+  .spr-review-footer,.spr-form-label{
+    display:none;
+  }
+  
+  .spr-container{
+    border:none;
+    max-width: 1080px;
+    width: 90%;
+    margin: 0 auto;
+  }
+  
+  #shopify-product-reviews{
+    margin:0 !important;
+  	background: rgba(234,233,231,0.5);
+    padding: 35px 0;
+  }
+  
+  .spr-review{
+    background: #fff;
+    padding: 30px 40px;
+  }
+  
+  .spr-form-input-text, .spr-form-input-email, .spr-form-input-textarea{
+    background: #fff;
+  }
+  
+  .spr-form-input-textarea{
+    height: 130px;
+  }
+  
+  .spr-review-header-title, .spr-review-header-byline, .spr-review-content-body{
+    font-size: 15px !important;
+  }
+  
+  .spr-review-header-title{
+    text-transform: none;
+    font-weight: bold;
+    letter-spacing:0.01em;
+  }
+  
+  .spr-pagination-page {
+    padding: 0px 10px;
+  }
+  
+  .spr-summary{
+    display: inline-block;
+    float: right;
+    font-size: 15px;
+    margin-top: 10px;
+  }
+
+  
+  h2.spr-header-title{
+    text-transform: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300 !important;
+    display:inline-block;
+    width: 40%;
+    vertical-align: middle;
+    font-size: 30px;
+    margin-top: 40px;
+  }
+  
+  .spr-summary-actions-newreview{
+    text-decoration: underline;
+    font-weight: 600;
+  }
+  
+  /***** INDIVIDUAL MINI BUILDER ********/
+  
+
+  .onetimes-contain{
+    margin-top: 20px;
+  }
+  
+  .onetime-prices {
+    float: right;
+    letter-spacing:0.1em;
+  }
+  
+  .onetime-prices s{
+    opacity:0.5;
+    font-weight: 100;
+  }
+  
+  .product-onetime-select{
+    width: 100%;
+    padding: 15px 20px;
+    box-shadow: 0 0 0 2px #ebe9e4;
+    display: block;
+    margin-top: 2px;
+    position: relative;
+    text-align: left;
+    cursor:pointer;
+    transition:0.25s ease;
+    font-size: 15px;
+    opacity:0.75;
+  }
+  .product-onetime-select:before{
+    content: '\f058';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    opacity: 0;
+    font-size: 17px;
+    color: #ba8748;
+    transition: 0.15s ease-out;
+    margin-right: 5px;
+    margin-left: -15px;
+  }
+  
+  .product-onetime-select.selected:before{
+    opacity:1;
+  }
+  
+  .product-onetime-select.selected{
+    padding-left: 35px;
+  }
+  .product-onetime-select:hover{
+    background:#f1f0ee;
+  }
+  
+  .product-onetime-select.selected{
+    background: #f7f5f3;
+    opacity:1;
+    box-shadow: 0 0 0 2px #ba8748;
+    z-index:1;
+  }
+  
+   .onetimes-contain a.product-onetime-select:first-child{
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  
+  .onetimes-contain a.product-onetime-select:last-child{
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+  
+  
+  .variants-contain{
+    margin-top: 0px;
+  }
+  
+  .product-variant-select{
+    width: 100%;
+    padding: 15px 20px;
+    box-shadow: 0 0 0 2px #ebe9e4;
+    display: block;
+    margin-top: 2px;
+    position: relative;
+    text-align: left;
+    cursor:pointer;
+    transition:0.25s ease;
+    font-size: 15px;
+    opacity:0.75;
+  }
+  .product-variant-select:hover{
+    background:#f1f0ee;
+  }
+  
+  .product-variant-select.selected{
+    background: #f7f5f3;
+    opacity:1;
+    box-shadow: 0 0 0 2px #ba8748;
+    z-index:1;
+  }
+  
+  .variants-contain a.product-variant-select:first-child{
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  
+  .variants-contain a.product-variant-select:last-child{
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+  
+  .product-variant-select .variant-money{
+    text-align: right;
+    float:right;
+  }
+  
+  .quantites-contain{
+  	width: 100%;
+    display:flex;
+    justify-content: space-between;
+  }
+  
+  
+  .product-quantity-select{
+    width: 100%;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 0 0 2px #ebe9e4;
+    display: inline-block;
+    margin-top: -2px;
+    position: relative;
+    cursor: pointer;
+    transition: 0.25s ease;
+    font-size: 15px;
+    flex-basis: 34%;
+    margin-left:2px;
+    opacity:0.75;
+  }
+  
+  
+  .quantites-contain a.product-quantity-select:first-child{
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    margin-left:0;
+  }
+  
+  .quantites-contain a.product-quantity-select:last-child{
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+  
+  .product-quantity-select span{
+    
+    display:block;
+  
+  }
+  
+  .product-quantity-select:hover{
+  	background: #f1f0ee;
+  }
+  
+  .product-quantity-select.selected{
+    background: #f7f5f3;
+    opacity:1;
+    box-shadow: 0 0 0 2px #ba8748;
+    z-index:1;
+  }
+  
+  .product-frequency-select{
+    margin-top: 0px;
+  	border-radius: 10px;
+    font-size: 15px;
+    background: #fff;
+    position: relative;
+    width: 100%;
+    font-style: normal;
+    padding: 15px 20px;
+    text-transform: capitalize;
+    background-image: url('https://cdn.shopify.com/s/files/1/0090/2135/8137/files/arrow_e717880f-3a88-4f6e-8d1e-2ef55b1339d1.png');
+    background-position: center right 20px;
+    background-size: 10px;
+    background-repeat:no-repeat;
+    outline: 0 !important;
+    box-shadow: 0 0 0 2px #ebe9e4;
+  }
+  
+  .option-desc {
+    text-align: left;
+    margin-bottom: 5px;
+    font-weight: 600;
+    margin-top: 20px;
+    font-size: 15px;
+    letter-spacing:0.06em;
+  }
+  
+  #add-to-cart{
+    font-size: 15px !important;
+    font-weight: 600;
+    padding: 15px 20px;
+    width: 100%;
+    margin-top: 20px;
+    border-radius: 10px;
+    opacity:1;
+    transition:0.25s;
+  }
+  
+  .hidden-cart{
+    opacity:0 !important;
+  }
+  
+  
+  .learn_more{
+    text-decoration: underline;
+    cursor:pointer;
+  }
+  .more-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100000000000;
+    vertical-align: middle;
+    text-align: center;
+    display: none;
+  }
+  
+  .more-overlay_info {
+    padding: 30px 3%;
+    z-index: 100;
+    width: 90%;
+    max-width: 550px;
+    text-align: left;
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    background: #fff;
+    border-radius: 15px;
+    height: 75%;
+    max-height: 650px;
+    font-size: 15px;
+}
+  .more-overlay_contain {
+    height: 100%;
+    overflow: scroll;
+    vertical-align: middle;
+    padding-right: 10px;
+  }
+  
+  .close_learn-more {
+    font-weight: 900;
+    opacity: 1;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+    font-size: 15px;
+    color: #0c0800;
+  }
+  
+  .visible_overlay{
+    display:block !important;
+  }
+  
+  .dark_bg {
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.75);
+    transition: 0.25s ease;
+  }
+  
+  /*** ADJUST VARIATN SELECTORS ****/
+  
+  
+  .variant_select{
+    display:none;
+  }
+  
+  .want-decaf{
+    text-align: center;
+    padding: 20px 0;
+    cursor:pointer;
+    font-size: 15px;
+   }
+  
+  .want-decaf:before{
+    content: '\f111';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 400;
+    font-size: 15px;
+    color: #000;
+    margin-right: 7px;
+  }
+  
+  .want-decaf.active-decaf:before{
+    content: '\f192';
+  }
+  
+  .product_section-blocks{
+    margin-top: 50px;
+  }
+  
+  
+  /*** oRDER SUMMARY SECTION ****/
+  
+  
+  .order_summary{
+    margin-top: 20px;
+    font-size: 20px;
+    padding: 15px 0;
+    padding-bottom:5px;
+    text-align: center;
+    margin-bottom: 15px;
+    width: 100%;
+    float:left;
+  }
+  
+  .order_summary .sub_text{
+  	font-size: 14px;
+    line-height: 105%;
+  }
+  
+  .summary_col1, .summary_col2{
+    display: inline-block;
+    float: left;
+    
+  }
+  
+  .summary_col1{
+    width: 69%;
+  	text-align: left;
+  }
+  
+  .summary_col2{
+    width: 29%;
+  	text-align: right;
+  }
+  
+  .order_summary p{
+  margin:0;
+  }
+  
+  .strike-out{
+  	opacity:0.4;
+    text-decoration: line-through;
+  }
+  
+  .inactive_sub .strike-out{
+  	opacity:1;
+    text-decoration:none;
+  }
+  
+  .inactive_sub .sub_text, .inactive_sub .sub_price_discount{
+    display:none;
+  }
+  
+
+  
+  @media screen and (max-width: 590px){
+    
+    .product-single__thumbnails{
+      display:none !important;
+    }
+    
+    .spr-summary, h2.spr-header-title{
+      float:left;
+      width: 100%;
+      display:block;
+    }
+    
+    .spr-container{
+      padding:0;
+    }
+    
+    .summary_col1, .summary_col2{
+      width: 50%;
+      padding: 5px 0;
+    }
+  }
+  
+  
+</style>
+
+
+{% assign hide_products = settings.products_to_hide | split: ", " %}
+
+{% if hide_products contains product.handle %}
+<head><meta name="robots" content="noindex"></head>
+
 <script>
-  (function(window) {
-    var BROWSE_PRODUCT = "brontoBrowseObject";
-    window[BROWSE_PRODUCT] = {
-      product: {{ product | json }}
-    };
-  })(window);
+  window.location.replace("https://storyville.com/");  
 </script>
-<!-- brontoBrowseObject:end -->
+{% endif %}
+
+
+
+{% assign forward_to_capsule_subscription = "extra-pods, one-time-pods" | split: ", " %}
+{% if forward_to_capsule_subscription contains product.handle %}
+<head><meta name="robots" content="noindex"></head>
+
+<script>
+  window.location.replace("https://storyville.com/products/keurig-k-cup-subscription");  
+</script>
+{% endif %}
+
+
+
+{% assign forward_to_capsule_subscription = "extra-capsules, one-time-capsules" | split: ", " %}
+{% if forward_to_capsule_subscription contains product.handle %}
+<head><meta name="robots" content="noindex"></head>
+
+<script>
+  window.location.replace("https://storyville.com/products/nespresso-capsule-subscription");  
+</script>
+{% endif %}
+
+
+
+
+{% assign forward_to_coffee_subscription = "extra-whole-bean, one-time-whole-bean" | split: ", " %}
+{% if forward_to_coffee_subscription contains product.handle %}
+<head><meta name="robots" content="noindex"></head>
+
+<script>
+  window.location.replace("https://storyville.com/products/coffee-subscription");  
+</script>
+{% endif %}
+
+<script type="text/javascript">
+  $(function() {
+    $('body').on('click', '.spr-badge', function(e){
+      $('html,body').animate({
+        scrollTop: $("#shopify-product-reviews").offset().top},
+        'slow');
+    });
+  });
+</script>
+  
+
+
+
+{% assign custom_products = "gift-subscription, coffee-subscription, nespresso-capsule-subscription, keurig-k-cup-subscription" | split: ", " %}
+
+
+{% if product.handle == 'gift-subscription' %}
+  {{ 'theme.gift-subscription-builder.js' | asset_url | script_tag }}
+  {% section 'page-gift-subscription-template' %}
+  <br>
+  <div class="builder__disclaimer" style="width:90%;margin:0 auto;">
+        Nespresso&#xAE; is a registered trademark of Societe des Produits Nestle S.A.
+        Keurig&#xAE; is a registered trademark of Keurig Green Mountain, Inc. Storyville
+        Coffee products are not endorsed, sponsored, licensed, or approved by Nespresso
+        USA Inc., Societe des Produits Nestle S.A., Keurig Green Mountain, Inc., or any
+        of their respective affiliates.
+  </div>
+{% endif %}
+
+
+
+{% if product.handle == 'coffee-subscription' %}
+	{% section 'product-wholebean-template' %}
+{% endif %}
+
+
+{% if product.handle == 'nespresso-capsule-subscription' %}
+	{% section 'product-capsules-template' %}
+{% endif %}
+
+{% if product.handle == 'keurig-k-cup-subscription' %}
+	{% section 'product-pods-template' %}
+{% endif %}
+
+
+{% if custom_products contains product.handle %}
+{% else %}
+	{% section 'product-template' %}
+{% endif %}

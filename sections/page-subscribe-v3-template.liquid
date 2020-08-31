@@ -1,8 +1,8 @@
 {%- assign collection = collections.subscription-v2-products -%}
 
-{%- assign product_beans_handle    = 'private-reserve-pro-epi' -%}
-{%- assign product_pods_handle     = 'k-cups' -%}
-{%- assign product_capsules_handle = 'nespresso-pods' -%}
+{%- assign product_beans_handle    = 'coffee-subscription' -%}
+{%- assign product_pods_handle     = 'keurig-k-cup-subscription' -%}
+{%- assign product_capsules_handle = 'nespresso-capsule-subscription' -%}
 
 {%- assign product_beans = all_products[product_beans_handle] -%}
 {%- assign product_pods = all_products[product_pods_handle] -%}
@@ -24,19 +24,19 @@
 {% if product_builder_id == 'beans' %}
 		{% assign product_title = 'Whole Bean Coffee' %}
 		{% assign product_subtitle = 'Fresh roasted whole bean.' %}
-		{% assign product_bullets = 'Sourced from the top 2% of beans in the world•8oz resealable pressurized bag•Our one and only signature blend•Roasted and shipped to you same day' | split: '•' %}
+		{% assign product_bullets = 'Sourced from the top 2% of beans in the world•8oz resealable pressurized bag•Our one and only signature blend•Roasted fresh and shipped to your door' | split: '•' %}
       	{% assign product_more_bullets = 'Roasted-to-Order for peak flavor and freshness•Each bean varietal medium-roasted separately before blending•One-way degassing valve keeps moisture out and freshness in•Low-acidity, full-body, exceptional smoothness' | split: '•' %}
 
 {% elsif product_builder_id == 'pods' %}
 		{% assign product_title = 'Keurig® Compatible Pods' %}
 		{% assign product_subtitle = 'Fresh roasted pods.' %}
-		{% assign product_bullets = 'Sourced from the top 2% of beans in the world•Available in packages of 16, 32, 48•Keurig® compatible pods•Roasted and shipped to you same day' | split: '•' %}
+		{% assign product_bullets = 'Sourced from the top 2% of beans in the world•Available in packages of 16, 32, 48•Keurig® compatible pods•Roasted fresh and shipped to your door' | split: '•' %}
 		{% assign product_more_bullets = 'Full-body, low-acidity, exceptional smoothness•Roasted-to-order so your pod is at peak freshness•The finest green coffee ensures the smoothest, richest taste•Compatible with Keurig® and Keurig 2.0® machines' | split: '•' %}
 
 {% elsif product_builder_id == 'capsules' %}
 		{% assign product_title = 'Nespresso® Compatible Capsules' %}
 		{% assign product_subtitle = 'Fresh roasted capsules.' %}
-		{% assign product_bullets = 'Sourced from the top 2% of beans in the world•Available in packages of 16, 32, 48•For Nespresso® original line machines only•Roasted and shipped to you same day' | split: '•' %}
+		{% assign product_bullets = 'Sourced from the top 2% of beans in the world•Available in packages of 16, 32, 48•For Nespresso® original line machines only•Roasted fresh and shipped to your door' | split: '•' %}
       	{% assign product_more_bullets = 'Rich, creamy flavor with notes of decadent caramel•Roasted-to-order so your capsule is always fresh•The finest green coffee ensures the smoothest, richest taste•Suitable for Nespresso® original line and compatible machines' | split: '•' %}
 
 {% endif %}
@@ -79,17 +79,52 @@
       {%- assign sample_image_field = 'image_for_' | append: product_builder_id -%}
       {%- assign sample_image = section.settings[sample_image_field] -%}
 
-      {%- capture product_images -%}
-        [
-          {%- for image in prod.images -%}
-            {%- unless forloop.first -%},{%- endunless -%}
+	  {%- capture product_images -%}
+		[
+		{% if product_builder_id == 'beans' %}
             {
-              "src": {{ image.src | json }},
-              "alt": {{ image.alt | json }}
+              "src": "{{ section.settings.w_quantity_1 | img_url: 'original' }}",
+              "alt": "quantity=1"
+            },
+            {
+              "src": "{{ section.settings.w_quantity_2 | img_url: 'original' }}",
+              "alt": "quantity=2"
+            },
+            {
+              "src": "{{ section.settings.w_quantity_3 | img_url: 'original' }}",
+              "alt": "quantity=3"
             }
-          {%- endfor -%}
-        ]
-      {%- endcapture -%}
+		{% endif %}
+		{% if product_builder_id == 'pods' %}
+            {
+              "src": "{{ section.settings.p_quantity_1 | img_url: 'original' }}",
+              "alt": "quantity=16"
+            },
+            {
+              "src": "{{ section.settings.p_quantity_2 | img_url: 'original' }}",
+              "alt": "quantity=32"
+            },
+            {
+              "src": "{{ section.settings.p_quantity_3 | img_url: 'original' }}",
+              "alt": "quantity=48"
+            }
+		{% endif %}
+		{% if product_builder_id == 'capsules' %}
+            {
+              "src": "{{ section.settings.c_quantity_1 | img_url: 'original' }}",
+              "alt": "quantity=16"
+            },
+            {
+              "src": "{{ section.settings.c_quantity_2 | img_url: 'original' }}",
+              "alt": "quantity=32"
+            },
+            {
+              "src": "{{ section.settings.c_quantity_3 | img_url: 'original' }}",
+              "alt": "quantity=48"
+            }
+		{% endif %}
+		]
+	  {%- endcapture -%}
 
       "{{ product_builder_id }}": {
         "sample_image": {
@@ -356,17 +391,18 @@
   }
   
   .summary_col1, .summary_col2{
-  	width: 49%;
     display: inline-block;
     float: left;
     
   }
   
   .summary_col1{
+    width: 69%;
   	text-align: left;
   }
   
   .summary_col2{
+    width: 29%;
   	text-align: right;
   }
   
@@ -412,7 +448,7 @@
   }
   
   .builder-product-offering__preview img{
-    max-width: 100%;
+    max-width: 650px;
   }
   
   .builder__steps{
@@ -510,7 +546,7 @@
 
 }
 
-.selectOption input[type="checkbox"] {
+.selectOption input[type="checkbox"], .selectOption input[type="radio"] {
 	visibility: hidden;
 }
 
@@ -568,7 +604,7 @@
     box-shadow:0 0 20px rgba(0,0,0,0);
     transition: 0.3s ease;
     max-width: 100%;
-    width: 100%;
+    width: 100% !important;
     cursor: pointer;
     text-align: center;
     color: #fff;
@@ -588,8 +624,193 @@
     transition: 0.3s ease;
     box-shadow:10px 10px 30px rgba(0,0,0,0.2);
   }
+  
+  
+  
+  /****** FIXED PRICE OPTIONS ****/
+  
+  
+  .fixedPriceActive .select__options{
+  	display:none;
+  }
+  
+  .fixedPriceOptions{
+  	display:none;
+  }
+  
+  .showFixedPriceOptions{display:none;}
+  
+  .fixedPriceOptions.showFixedPrices{
+  	display:block;
+  }
+  
+    
+  .next_shipment_date{
+    font-size: 17px;
+    display: block;
+    position: relative;
+    margin-top: 10px !important;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 20px !important;
+  }
+  
+  .recurring__icon{
+    width: 20px;
+    margin-bottom: -4px;
+    margin-right: 3px;
+    display: inline-block;
+  }
+  
+  .fixedPriceQuantity{
+    font-weight:bold;
+    margin-bottom: 16px;
+  }
+  
+  .fixed_price_headline{
+  font-size: 25px !important;
+    font-weight: 600;
+    text-align: left;
+    margin-bottom:10px !important;
+  }
+  
+  .fixedPriceOptions p{
+  	font-size: 16px;
+    text-align:left;
+    margin: 5px 0;
+  }
+  
+  .fixed_price_quantity, .fixed_price_frequency{
+    width: 50%;
+    display: inline-block;
+    float: left;
+    font-size: 19px !important;
+  }
+  
+  .fixedPriceOptions p.sub_text{
+    margin-top: 0 !important;
+  }
+  
+  .fixedPriceOptions p b{
+  	font-size: 14px;
+  }
+  
+  .fixedPriceOptions .order_summary{
+    margin-top: 0px;
+    padding: 5px 0;
+    padding-bottom: 5px;
+    border-top: 0px solid #e5e1da;
+    margin-bottom: 5px;
+  }
+  
+  .fixed_price_nextDate{
+    border-bottom: 1px solid {{ section.settings.secondary_color }};
+    border-top: 1px solid {{ section.settings.secondary_color }};
+    padding: 10px 0;
+    display: inline-block;
+    width: 100%;
+    margin: 10px 0 !important;
+  }
+  
+  
+  
+  /***** SUBSCRIBE AND SAVEEE *******/
+
+  .subscribe_and_save label {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid {{ section.settings.secondary_color }};
+    display: block;
+    margin-top: -2px;
+	position:relative;
+    overflow:hidden;
+  }
+  
+  .subscribe_and_save .high_z{
+    position: relative;
+  	z-index: 2;
+    font-style: normal;
+  }
+  
+  .subscribe_and_save .select_box {
+	z-index: 3;
+    position: absolute;
+    width: 20px;
+    border: 6px solid {{ section.settings.secondary_color }};
+    border-radius: 100px;
+    height: 20px;
+    background: rgba(0,0,0,0);
+    transition: 0.25s;
+    left: 15px;
+    top: 18px;
+	}
+  .subscribe_and_save input[type="radio"]{
+  
+  	opacity:0;
+  }
+  
 
   
+  .subscribe_and_save {
+    position: relative;
+    margin: 30px 0;
+    display: block;
+}
+  
+  .background_save{
+	width: 100%;
+    height: 100%;
+    transition: 0.25s;
+    background: rgba(255,255,255,0);
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: block;
+    z-index:0;
+  }
+  
+  input[type="radio"]:checked ~ .background_save{
+  background:#fff !important;
+  }
+  
+  input[type="radio"]:checked ~ .select_box{
+    border-color: #efeeed !important;
+    background: {{ section.settings.dark_color }};
+  }
+  
+  input[type="radio"]:checked ~ .sas-price{
+/*  color: {{ section.settings.highlight_color }};  */
+  }
+  /*
+  label > input[type="radio"]:checked{
+  border: 2px solid #ba8748;
+  }*/
+
+  
+  .sas-price {
+    position: absolute;
+    z-index: 2;
+    font-style: normal;
+    right: 20px;
+    
+	}
+  
+  .subscriber_label{
+  color: #ba8748 !important;
+    font-weight:bold;
+  }
+  
+  .subscriber_label input[type="radio"]:checked ~ .select_box{
+    background:#ba8748;
+  }
+  
+  .subscribe_and_save label:first-child {border-top-left-radius: 10px;border-top-right-radius:10px;}
+  .subscribe_and_save label:last-child {border-bottom-left-radius: 10px;border-bottom-right-radius:10px;}
+  
+  
+  .onetime_selected .builder__options, .onetime_selected{
+  width: 100%;
+  }
   @media screen and (max-width: 1268px){
   .builder-product-offering__info{
     -ms-flex-preferred-size: 50%;
@@ -624,7 +845,7 @@
     }
     
     .headling__container h1{
-    	font-size: 30px;
+    	font-size: 25px;
       margin-top: 25px;
     }
     
@@ -662,8 +883,7 @@
     	margin-top:0;
     }
     .summary_col1, .summary_col2{
-      text-align: left;
-      width: 100%;
+      width: 50%;
       padding: 5px 0;
     }
     
@@ -704,7 +924,7 @@
 
 
 <form class="builder" data-subscription-builder='{{ builder_config }}'
-      action="/cart" method="post" enctype="multipart/form-data" novalidate>
+      action="/cart" method="post" enctype="multipart/form-data" name="builder" novalidate>
 
 
           
@@ -716,7 +936,7 @@
 
 <div class="builder__steps" data-steps>
 
-<img class="top-logo" src="https://cdn.shopify.com/s/files/1/0090/2135/8137/files/Logo_7286f712-5026-4406-95c2-217ac26080f3.png" width="150px"/>
+<img class="top-logo lazyload" src="https://cdn.shopify.com/s/files/1/0090/2135/8137/files/Logo_7286f712-5026-4406-95c2-217ac26080f3.png" width="150px"/>
   
   
 <div class="builder__step" data-step>
@@ -753,10 +973,39 @@
   		{% capture order_summary %}
           <div class="order_summary">
             <div class="summary_col1">Your Order Total<br>
-              <p class="sub_text">Discount applies to first order</p>
+              <p class="sub_text"><span data-additional-discount>Discount</span> applies to first order</p>
+            </div>
+            <div class="summary_col2 summary_subscribe"><span data-total-price class="strike-out">$14</span> <span data-option-percent-price-total></span></div>
+            <div class="summary_col2 summary_onetime" style="display:none"><span data-option-percent-price-total-onetime></span></div>
+          </div>
+  		{% endcapture %}
+  
+  
+  
+  
+  		{% capture fixed_price_summary %}
+  			  
+ 		  <div class="order_summary">
+            <p class="fixed_price_headline">Order Summary</p>
+            
+            <p class="fixed_price_quantity"><b>QUANTITY</b> <br><span data-selected-product-title>16 Pods</span></p>
+            
+            <p class="fixed_price_frequency"><b>DELIVERY SCHEDULE</b> <br><!--Your <span data-simple-title></span> will ship --><span data-frequency-number></span></p>
+            
+            <p class="fixed_price_nextDate" style="display:none !important;">
+                <img src="https://cdn.shopify.com/s/files/1/0090/2135/8137/files/recurring.png" class="recurring__icon lazyload">
+                Your next order ships <span data-frequency-title>Aug. 11th</span>
+            </p>
+            <br><br><br>
+            <div class="summary_col1">Today's Total<br>
+              <p class="sub_text">Additional discount applies to first order</p>
             </div>
             <div class="summary_col2"><span data-total-price class="strike-out">$14</span> <span data-option-percent-price-total></span></div>
           </div>
+  
+  
+
+  			  
   		{% endcapture %}
   
 
@@ -764,7 +1013,7 @@
   
   <div class="headling__container">
     <h1>A Special Offer Just For You</h1>
-    <h3 class="builder-product-offering__subtitle" style="text-align: center;text-transform: uppercase !important;">Free Priority Shipping</h3>
+    <h3 class="builder-product-offering__subtitle" style="text-align: center;text-transform: uppercase !important;">Free Shipping</h3>
   </div>
   
    <div class="builder__product-offering builder-product-offering">
@@ -807,21 +1056,21 @@
                 <div class="builder-product-offering__option selected"
                      data-option
                      data-value="beans">
-                  <img src="https://cdn.shopify.com/s/files/1/0090/2135/8137/files/wholeBeans.png" width="60"/>
+                  <img src="https://cdn.shopify.com/s/files/1/0090/2135/8137/files/wholeBeans_4cc45d11-6d97-469e-b352-ea2745f527ba.png?v=1586482823" class="lazyload" width="60"/>
                   <span class="builder-product-offering__option-text">Whole Bean</span>
                 </div>
 
                 <div class="builder-product-offering__option"
                      data-option
                      data-value="pods">
-                  <img src="https://cdn.shopify.com/s/files/1/0090/2135/8137/files/kCups.png" width="60"/>
+                  <img src="https://cdn.shopify.com/s/files/1/0090/2135/8137/files/kCups_1c15257a-993d-4dbf-b8ab-6b21d76d0134.png?v=1586482823" class="lazyload" width="60"/>
                   <span class="builder-product-offering__option-text">Pods</span>
                 </div>
 
                 <div class="builder-product-offering__option"
                      data-option
                      data-value="capsules" style="margin-right: 0;">
-                  <img src="https://cdn.shopify.com/s/files/1/0090/2135/8137/files/nespresso.png" width="60"/>
+                  <img src="https://cdn.shopify.com/s/files/1/0090/2135/8137/files/nespresso_b431c186-6529-4f33-9144-a9590c43e47c.png?v=1586482823" class="lazyload" width="60"/>
                   <span class="builder-product-offering__option-text">Capsules</span>
                 </div>
 
@@ -833,13 +1082,29 @@
           {{ offering_description }}
 
         </div>
+              
+              
+              
+        <span class="subscribe_and_save">
+            <label><input type="radio" name="onetime" value="onetime" data-option-onetime class="onetime_default">
+              <span class="select_box"></span>
+              <span class="high_z">One-Time Purchase</span>
+              <span class="sas-price" data-sas-price-onetime>$18</span>
+              <span class="background_save"></span>
+          	</label>
+            <label class="subscriber_label"><input type="radio" name="onetime" value="subscribe" checked data-option-onetime>
+              <span class="select_box"></span>
+              <span class="high_z">Subscribe & Save <span data-onetime-discount>22%</span></span>
+              <span class="sas-price" data-sas-price-subscribe>$14</span>
+              <span class="background_save"></span>
+          	</label>
+        </span>
+              
 
-
-        
-        
+<div class="builderOptions">
 <!-- SELECT YOUR QUANTITY-->
       
-      <div class="select__options">  
+      <div class="select__options quantity__options">  
           <h3 class="builder__option-title">Quantity</h3>
           <select class="builder__options"
               data-options-set 
@@ -873,7 +1138,7 @@
 <!-- SELECT YOUR FREQUENCY -->
               
               
-      <div class="select__options">     
+      <div class="select__options frequency__options">     
           <h3 class="builder__option-title">Delivery Schedule</h3>
           <select class="builder__options"
                   data-options-set 
@@ -898,8 +1163,8 @@
                     data-value="2" value="2"></option>
 
           </select>
-      </div>           
-              
+      </div>  
+    </div> 
               
                     
         <span class="selectOption builder__note">
@@ -907,29 +1172,23 @@
             <label for="blend">Epilogue Blend (Decaf)</label>
         </span>
                 
-              
-          
-		  {{ order_summary }}
+                
+        <div class="fixedPriceOptions">
 
+         {{ fixed_price_summary }}
+
+        </div>
+  	  
+        <div class="order_summary_contain">  
+		{{ order_summary }}
+        </div>
               
           <!-- Carthook hidden checkout button -->
 		  <a href="/checkout" name="checkout" style="display: none;" id="ch-checkout-enabled"></a> 
               
               
-     <!-- DEBUG BUTTONS 
-          <div class="builder__step-actions">
-            <div class="builder__step-action checkoutButton" data-next-step>
-              RECHARGE CHECKOUT
-            </div>
-          </div>
-
-              		  
-
- 
-              
-          <a class="btn" id="ch-checkout-btn">CARTHOOK CHECKOUT</a>-->
           <a id="add-to-cart" class="btn cart__checkout">REVIEW ORDER</a>
-
+		  
 
               
               
@@ -942,8 +1201,8 @@
               
           <p class="builder__note">
             <br>
-            <span style="margin-bottom: 7px !important; display:inline-block;">You're The Boss – Pause or Cancel Anytime</span><br>
-            <img class="icon" src="{{ 'icon--banner.svg' | asset_url }}" /> <span>3 Sip Guarantee <span class="questionHover">?</span></span>
+            <!--<span style="margin-bottom: 7px !important; display:inline-block;">You're The Boss – Pause or Cancel Anytime</span><br>-->
+            <img class="icon lazyload" src="{{ 'icon--banner.svg' | asset_url }}" /> <span>3 Sip Guarantee <span class="questionHover">?</span></span>
 
           </p>              
               
@@ -967,7 +1226,7 @@
 
         
     <!--CARTHOOK ORDER NOTE -->            
-<textarea id="cartSpecialInstructions" style="opacity:0 !important;">order number 1</textarea>      
+<textarea id="cartSpecialInstructions" style="opacity:0 !important;">order number 0</textarea>      
         
         
         
@@ -1019,6 +1278,63 @@
         "type": "image_picker",
         "id": "image_for_capsules",
         "label": "Sample Image for capsules"
+      },
+      {
+        "type": "header",
+        "content": "Whole Bean Quantity Images"
+      },
+      {
+        "type": "image_picker",
+        "id": "w_quantity_1",
+        "label": "Quantity Image 1"
+      },
+      {
+        "type": "image_picker",
+        "id": "w_quantity_2",
+        "label": "Quantity Image 2"
+      },
+      {
+        "type": "image_picker",
+        "id": "w_quantity_3",
+        "label": "Quantity Image 3"
+      },
+      {
+        "type": "header",
+        "content": "Pods Quantity Images"
+      },
+      {
+        "type": "image_picker",
+        "id": "p_quantity_1",
+        "label": "Quantity Image 16"
+      },
+      {
+        "type": "image_picker",
+        "id": "p_quantity_2",
+        "label": "Quantity Image 32"
+      },
+      {
+        "type": "image_picker",
+        "id": "p_quantity_3",
+        "label": "Quantity Image 48"
+      },
+      {
+        "type": "header",
+        "content": "Capsules Quantity Images"
+      },
+      {
+        "type": "image_picker",
+        "id": "c_quantity_1",
+        "label": "Quantity Image 16"
+      },
+      {
+        "type": "image_picker",
+        "id": "c_quantity_2",
+        "label": "Quantity Image 32"
+      },
+      {
+        "type": "image_picker",
+        "id": "c_quantity_3",
+        "label": "Quantity Image 48"
       },
       {
         "type": "header",

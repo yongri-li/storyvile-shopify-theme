@@ -1,0 +1,1713 @@
+
+{%- assign collection = collections.subscription-v2-products -%}
+
+{%- assign product_beans_handle    = 'private-reserve-pro-epi' -%}
+{%- assign product_pods_handle     = 'k-cups' -%}
+{%- assign product_capsules_handle = 'nespresso-pods' -%}
+
+{%- assign product_beans = all_products[product_beans_handle] -%}
+{%- assign product_pods = all_products[product_pods_handle] -%}
+{%- assign product_capsules = all_products[product_capsules_handle] -%}
+
+{%- assign product_handles = product_beans_handle | append: ',' | append: product_pods_handle | append: ',' | append: product_capsules_handle | split: ',' -%}
+{%- assign product_builder_ids = 'beans,pods,capsules' | split: ',' %}
+
+
+{%- capture builder_config -%}
+{
+  "shopify_domain" : {{ shop.permanent_domain | json }},
+  "defaultProduct" : "beans",
+  "products": {
+    {% for product_builder_id in product_builder_ids -%}
+      {%- assign product_handle = product_handles[forloop.index0] -%}
+      {%- assign prod = all_products[product_handle] -%}
+
+      {% if product_builder_id == 'beans' %}
+
+              {% assign product_title = section.settings.beans_title %}
+              {% assign product_description = section.settings.beans_description %}
+			  {% assign extra_description = section.settings.beans_extra_description %}
+              {% assign package_type = 'bag' %}
+              {% assign price_each = '14' %}
+              {% assign sizes = '1, 2, 3' %}
+
+              {% assign unit_variant_for_epilogue = prod.metafields.subscriptions.unit-variant--epilogue %}
+              {% assign unit_variant_for_prologue = prod.metafields.subscriptions.unit-variant--prologue %}
+
+      {% elsif product_builder_id == 'pods' %}
+
+              {% assign product_title = section.settings.pods_title %}
+              {% assign product_description = section.settings.pods_description %}
+		      {% assign extra_description = section.settings.pods_extra_description %}
+              {% assign package_type = 'cup' %}
+              {% assign price_each = '1.25' %}
+
+              {% assign unit_variant = prod.metafields.subscriptions.unit-variant %}
+			  {% assign sizes = '16, 32, 48' %}
+
+      {% elsif product_builder_id == 'capsules' %}
+
+              {% assign product_title = section.settings.capsules_title %}
+              {% assign product_description = section.settings.capsules_description %}
+			  {% assign extra_description = section.settings.capsules_extra_description %}
+              {% assign package_type = 'cup' %}
+              {% assign price_each = '1.25' %}
+
+              {% assign unit_variant = prod.metafields.subscriptions.unit-variant %}
+			  {% assign sizes = '16, 32, 48' %}
+
+      {% endif %}
+
+
+      {%- if prod.metafields.subscriptions.subscription_id -%}
+        {%- assign subscription_id = prod.metafields.subscriptions.subscription_id -%}
+      {%- else -%}
+        {%- assign subscription_id = 133650 -%}
+      {%- endif %}
+
+
+
+      {%- assign sample_image_field = 'image_for_' | append: product_builder_id -%}
+      {%- assign sample_image = section.settings[sample_image_field] -%}
+
+      {%- assign quantity_image_field = 'quantity_for_' | append: product_builder_id -%}
+      {%- assign quantity_image = section.settings[quantity_image_field] -%}
+
+      {%- assign product_image_field = 'product_for_' | append: product_builder_id -%}
+      {%- assign product_image = section.settings[product_image_field] -%}
+
+
+      {%- capture product_images -%}
+        [
+          {%- for image in prod.images -%}
+            {%- unless forloop.first -%},{%- endunless -%}
+            {
+              "src": {{ image.src | json }},
+              "alt": {{ image.alt | json }}
+            }
+          {%- endfor -%}
+        ]
+      {%- endcapture -%}
+
+      "{{ product_builder_id }}": {
+        "sample_image": {
+          "src": "{{ sample_image | img_url: 'original' }}",
+          "srcset": "{% include 'bgset' image: sample_image %}"
+        },
+        "quantity_image": {
+          "src": "{{ quantity_image | img_url: 'original' }}",
+          "srcset": "{% include 'bgset' image: quantity_image %}"
+        },
+        "product_image": {
+          "src": "{{ product_image | img_url: 'original' }}",
+          "srcset": "{% include 'bgset' image: product_image %}"
+        },
+        "description": {{ prod.description | strip_html | json }},
+        "title": {{ prod.title | json }},
+        "handle": {{ product_handle | json }},
+        "variants" : {{ prod.variants | json }},
+        "unit_variant": {
+          {% if product_builder_id == 'beans' %}
+            "epilogue": {{ unit_variant_for_epilogue | json }},
+            "prologue": {{ unit_variant_for_prologue | json }}
+          {% else %}
+            "default": {{ unit_variant | json }}
+          {% endif %}
+        },
+        "images": {{ product_images }},
+        "product_title": {{ product_title | json }},
+		"extra_description": {{ extra_description | json }},
+		"product_description": {{ product_description | json }},
+        "total_price": {{ total_price | json }},
+        "package_type": {{ package_type | json }},
+		"price_each": {{ price_each | json }},
+        "package_sizes": [{{ sizes }}],
+        "subscription_id": {{ prod.metafields.subscriptions.subscription_id | json }},
+        "shipping_interval_frequency": {{ prod.metafields.subscriptions.shipping_interval_frequency | replace: ' ', '' | split: ',' | json }},
+        "shipping_interval_unit_type": {{ prod.metafields.subscriptions.shipping_interval_unit_type | json }}
+
+      }
+
+      {%- unless forloop.last  -%}
+        ,
+      {%- endunless %}
+    {% endfor %}
+  }
+}
+{%- endcapture -%}
+<style>
+  
+  /******* GLOBALS *******/
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,600&display=swap');
+  
+  *{
+  font-family: 'Montserrat', sans-serif;
+  }
+  
+  .ju_Con{
+  	display:none !important;
+  }
+  
+  html, body{
+	height: 100%;
+    min-height: 100% !important;
+	margin: 0 !important;
+    background: {{ section.settings.background_color }};
+  }
+  
+  .wrapper{
+  	max-width: 100%;
+    padding:0;
+  }
+  
+  .main-content{
+  padding: 0 !important;
+  }
+  
+  #shopify-section-header, #shopify-section-footer{
+  	display:none;
+  }
+  
+  b, strong{
+  	font-weight: 600;
+  }
+  p{
+   font-weight: 300;
+  }
+  
+  input{
+    background: #fff;
+    border-radius: 200px;
+    margin: 5px 0;
+    font-size: 17px;
+    font-style: normal;
+    padding:13px 20px;
+    font-weight: 400;
+    outline: none;
+    box-shadow: 0 0 0 0px {{ section.settings.highlight_color }};
+    transition: 0.1s;
+  }
+  
+  input:focus{
+    box-shadow: 0 0 0 2px {{ section.settings.highlight_color }};
+    outline: none;
+  }
+  
+  /*** BUILDER GLOBALS ***/
+  
+  .b_step, .b_steps, .b_contain, .builder, .shopify-section, .wrapper, .main-content, .page-container{
+  height: 100%;
+  }
+  
+  
+  .page-container{
+  	overflow: visible;
+  }
+  
+  .builder__step-left{
+    height: 100%;
+    width: 58%;
+    vertical-align:middle;
+    display: inline-block;
+    min-height: 700px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .builder__step-right{
+  	width: 40%;
+    height: auto;
+    vertical-align:top;
+    margin-top: 100px;
+    display:inline-block;
+    padding: 0 3%;
+  }
+  
+ 
+  /**** Custom Hero Step Re-Styling ****/
+  
+  .hero_step{
+    margin-top: 50px;
+  }
+    
+  .hero_step .builder__step-left{
+  	background-position: center;
+    height: 50%;
+    min-height: 500px;
+    width: 50%;
+  }
+  
+  .hero_step .builder__step-right{
+  	text-align:center;
+    width: 49%;
+    vertical-align: middle;
+    margin-top: 0;
+  }
+  
+  .hero_step .builder__step-right p{
+    width: 60%;
+    margin: 0 auto;
+  }
+  
+  .hero_step .builder__action{
+	width: 50% !important;
+    margin: 0 auto;
+    margin-top: 40px;
+  }
+  
+  /**** Custom Review Step Re-Styling **/
+  
+  
+  .review_step .builder__step-right{
+    position: relative;
+    left: 58%;
+  	text-align: center;
+    margin-top: 70px;
+    width: 42%;
+  }
+  
+  .review_step .builder__step-left{
+    position: fixed;
+    left:0;
+    min-height: 100%;
+  }
+  
+  .order_review{
+  	width: 100%;
+    text-align: left;
+  }
+  
+  .order_total, .create_account{
+    border-bottom: 2px solid {{ section.settings.secondary_color }};
+    margin-bottom: 10px;
+  }
+  
+  .order_total p, .create_account p{
+  	margin-bottom:10px;
+  }
+  .order_info{
+  	margin-bottom: 30px;
+  }
+  .order_info p:nth-child(1){
+  	display:inline-block;
+    width: 70%;
+  }
+  
+  .order_info p:nth-child(2){
+  	display:inline-block;
+    width: 28%;
+    color: #ba8748;
+    text-align: right;
+    vertical-align: top;
+  }
+  
+   .order_info p:nth-child(2):before{
+    content:'\f02b';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    font-size: 15px;
+    color: #ba8748;
+     margin-right: 5px;
+   }
+  
+
+  .already_member{
+    text-align: right;
+    font-size: 13px;
+    margin-top: -14px;
+    margin-bottom: 20px;
+    margin-right: 5px; 
+  }
+  
+  .already_member a{
+    color: {{ section.settings.highlight_color }};
+    text-decoration: underline;
+    cursor:pointer;
+  }
+  
+  .account-error{
+    font-size: 13px;
+    color: {{ section.settings.highlight_color }};
+    font-weight: 600;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 14px;
+  }
+  
+  .product_image{
+    width: 200px;
+    height: 200px;
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 15px;
+ 
+  }
+  
+  .review_top-image{
+    width: 100%;
+    min-height: 400px;
+    height: 70%;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+  
+  .review_step .b_three_cols-contain{
+  	height: 100%;
+    color: #ba8748;
+  }
+  
+  .review_step .b_three_cols{
+  	height: 30%;
+  }
+  
+  
+  .benefits_icon{
+  	width: 50px;
+    height: 50px;
+    background-repeat:no-repeat;
+    background-position: center;
+    background-size: 100%;
+    margin: 0 auto;
+  }
+  
+  /*** Custom Frequency Calculator **/
+  
+  .frequency_calc {
+    background: {{ section.settings.secondary_color }};
+    border-radius: 15px;
+    padding: 15px 20px;
+    margin: 20px 0;
+    text-align: left;
+  }
+  
+  .frequency_calc p{
+    display:inline-block;
+    margin: 0;
+    font-size: 20px;
+  }
+  
+  .frequency_calc p:nth-child(2){
+    float: right;
+    font-weight: 600;
+  }
+  
+  /*** NAVIGATION STYLING ****/
+  
+  .b_nav{
+  	width: 100%;
+    background: #fff;
+    text-align: center;
+    position: fixed;
+    display:inline-block;
+    vertical-align: middle;
+    height: 50px;
+    top:0;
+    left:0;
+    z-index: 100;
+  }
+  
+  .nav_discount{
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    height: 25px;
+    position: absolute;
+    text-transform: uppercase;
+    font-size: 12px;
+    text-align: left;
+    width: 200px;
+    line-height: 110%;
+    opacity:1;
+    margin-left:0px;
+    transition:0.25s;
+  }
+  
+  .inactive_nav{
+    opacity:0;
+    margin-left:-20px;
+  }
+  
+  #navDiscountText{
+    font-weight: 600;
+    color: #ba8748;
+    font-size: 14px !important;
+  }
+ 
+  .b_nav img{
+    height: 40px;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right:0;
+    margin: auto;
+    position: absolute;
+  }
+  
+  .nav_discount:before{
+  	content:'\f02b';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    left:-23px;
+    top:8px;
+    font-size: 15px;
+    color: #ba8748;
+  }
+  
+  /******* STEP STYLING *******/
+  
+  .step_title{
+  	font-weight: 400;
+    color: {{ section.settings.dark_color }};
+    letter-spacing: 0.02em;
+    font-size: 30px;
+    margin-bottom:0;
+    text-transform: none;
+  }
+  
+  .capitalize_title{
+  	text-transform: capitalize;
+  }
+   
+  .product-desc_text{
+  	font-size: 15px;
+    padding: 10px 20px;
+  }
+  
+  .builder__action{
+  	width: 100% !important;
+    background: {{ section.settings.highlight_color }};
+    text-align: center;
+    border-radius: 200px;
+    text-transform: uppercase;
+    color: #fff;
+    padding: 10px 0 !important;
+    letter-spacing: 0.05em !important;
+    cursor: pointer !important;
+    font-weight: 400 !important;
+    font-size: 17px !important;
+    margin-bottom: 30px;
+    
+  }
+  
+  .builder__action:hover{
+    background: {{ section.settings.highlight_color }};
+  }
+  
+  .b_step{
+  	display:none;
+  }
+  
+  .b_step.current{
+  	display:block;
+  }
+  
+     
+  .product-frequency_text{
+  	font-size: 15px;
+    line-height: 180%;
+    padding: 10px 20px;
+  }
+  
+  .frequency_text-headline{
+  	font-size: 20px;
+    font-weight: 400;
+  }
+  
+  .frequency_info_button{
+  	font-size: 15px;
+    text-decoration: underline;
+    cursor:pointer;
+  }
+  
+  .frequency_info_button i{
+  	font-size: 13px;
+  }
+  
+  .shipping_info_button{
+  	font-size: 15px;
+    text-decoration: underline;
+    cursor:pointer;
+  }
+    
+  
+  .prev_step{
+    font-size: 13px;
+    position: absolute;
+    left: 5%;
+    top: 14px;
+    cursor: pointer;
+    transition: 0.15s ease-out;
+  }
+  
+  .prev_step i{
+    font-size: 11px;
+    margin-right: 10px;
+    transition: 0.15s ease-out;
+  }
+  
+  .prev_step:hover i{
+    margin-right: 15px;
+  }
+    
+
+  /******* CHECKED EPILOGUE *******/
+  
+  
+.selectOption {
+	display: block;
+	padding: 20px;
+	position: relative;
+	background:none;
+	width:100%;
+	border-radius: 15px;
+	font-size:17px;
+    font-weight: 600;
+  	margin-top:0;
+	letter-spacing:0.01em;
+	box-shadow: 0 0 0 2px {{ section.settings.secondary_color }};
+	transition:0.1s;
+    text-align: left;
+}
+
+.checkedOutline{
+
+	background:#fff;
+    box-shadow: 0 0 0 0px transparent;
+}
+
+  
+.selectOption label {
+	margin-left: 16px;
+	cursor: pointer;
+  opacity:0.5;
+	display: inline-block;
+
+}
+
+.selectOption input[type="checkbox"] {
+	visibility: hidden;
+}
+
+.selectOption label:before {
+	content: '';
+	width: 16px;
+	height: 16px;
+	border-radius:3px;
+	background:transparent;
+	position: absolute;
+	left:23px;
+	top:25px;
+	z-index: 2;
+}
+
+.selectOption label:after {
+    content: '';
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    background-color: #fff;
+    position: absolute;
+    left: 20px;
+    top: 22px;
+    border: 1px solid {{ section.settings.secondary_color }};
+}
+
+
+.selectOption input:checked + label:before {
+	background: {{ section.settings.highlight_color }};
+}
+
+
+.checkedOutline label{
+  opacity: 1;
+}
+
+  
+  
+  
+/****** MORE INFO ICON ****/
+  
+  .more_info_icon{
+    display:inline-block;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    right: 10px;top:0;bottom:0;
+    margin: auto;
+    background-image: url('https://cdn.shopify.com/s/files/1/0090/2135/8137/files/info_icon_fd501b67-45e5-4d29-81cf-726cc515ec8b.png?v=1583186882');
+    background-size: 100%;
+    background-repeat: no-repeat;
+    cursor:pointer;
+  }
+  
+  
+  
+  
+  /******* SELECTED HIGHLIGHTS *******/
+
+  
+  .product_select{
+    box-shadow: 0 0 0 2px {{ section.settings.secondary_color }};
+    margin: 20px 0;
+    padding:13px 20px;
+    border-radius: 15px;
+    background-color: #fff !important;
+    opacity:0.45;
+    cursor:pointer;
+    position: relative;
+    transition:0.15s ease-out;
+    font-weight:100;
+  }
+  
+  .product_text{
+    margin-left:0;
+    font-weight:600;
+  	transition:0.15s ease-out;
+  }
+  
+  .product_select:hover{
+  	opacity:1;
+  }
+  
+
+  .product_select.selected {
+  	box-shadow: 0 0 0 3px {{ section.settings.highlight_color }}; 
+    
+    opacity:1;
+  }
+
+  .product_select.selected .product_text:before{
+  	margin-right:10px;
+    opacity:1;
+  }
+  
+  .product_select .product_text:before{
+  	content:'\f058';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    opacity:0;
+    font-size: 17px;
+    color: {{ section.settings.highlight_color }};
+	transition:0.15s ease-out;
+    margin-right: -13px;
+    margin-left: -5px;
+  }
+  
+  .product_price{
+  	float:right;
+  }
+  
+  .action__above{
+    box-shadow: 0 0 0 2px {{ section.settings.secondary_color }};
+    margin: 20px 0;
+    padding:13px 20px;
+    border-radius: 15px;
+    position: relative;
+    transition:0.25s ease;
+    color: #ba8748;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    text-align: center;
+  }
+  
+  .action__above i{
+    margin-right: 4px;
+  }
+  
+  .discount_total-price{
+  	opacity:0.45;
+    font-weight: 400;
+    text-decoration: line-through;
+  }
+  
+  
+  
+  
+  /** BUILDER POPUP **/
+  
+  .b_overlay{
+  	position: fixed;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    z-index: 100000000000;
+    vertical-align: middle;
+    text-align: center;
+    display:none;
+  }
+  
+  .builder-overlay_info{
+  	padding: 30px 3%;
+    z-index: 100;
+    width: 90%;
+    max-width: 550px;
+    text-align: left;
+    position: absolute;
+    overflow: hidden;
+    top:0;left:0;right:0;bottom:0;
+    margin: auto;
+    background: #fff;
+    border-radius: 15px;
+    height: 75%;
+    max-height: 650px;
+    font-size: 15px;
+  }
+  
+  .overlay_contain{
+  	height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+    font-weight: 300;
+  }
+  
+  
+  .dark_bg{
+  	width: 100%;
+    height: 100%;
+ 	 background: rgba(0,0,0,0);
+    transition: 0.25s ease;
+  }
+  
+  .visible_overlay{
+  	display:block;
+  }
+  
+  .visible_overlay .dark_bg{
+  	background: rgba(0,0,0,0.75);
+  }
+  
+  .frequency_select_overlay .builder-overlay_info{
+    text-align: center;
+    max-height: 450px;
+  }
+  
+  .builder-overlay_info:before{
+     content:'\f00d';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    opacity:1;
+    position: absolute;
+    top:10px;
+    right:15px;
+    cursor:pointer;
+    font-size: 15px;
+    color: {{ section.settings.dark_color }};
+  }
+  
+  .builder-overlay_contain{
+    height: 100%;
+    overflow-y: scroll;
+    vertical-align: middle;
+    padding-right: 10px;
+    font-weight: 300;
+  }
+  
+  
+  
+  /*** REVIEWS *****/
+  
+  .reviews{
+    width: 94%;
+    max-width: 960px;
+    margin: 0 auto;
+    position: relative;
+    margin-bottom: 50px;
+  }
+  
+  .b_review{
+  	background: #fff;
+    border-radius: 15px;
+    padding: 40px 30px;
+  	margin: 30px 0;
+  }
+  
+  .component-review__quote{
+  	line-height: 170%;
+    font-weight: 400;
+  }
+  
+  svg polygon{
+    fill: #ba8748 !important;
+  }
+  
+  .component-review__stars{
+  	width: 85px;
+    position: relative;
+    top: 6px;
+    display:inline-block;
+    margin-right: 5px;
+  }
+  
+  .component-review__author{
+    color: #ba8748;
+    font-weight: 600;
+    margin:0;
+  }
+  
+  .reviews h3{
+  margin: 50px 0;
+    text-align: left;
+    text-transform: none;
+  }
+  
+  .total_reviews{
+    position: absolute;
+    top:0px;
+    right:0;
+    color: #ba8748;
+    font-weight: 600;
+    text-align: right;
+    font-size: 12px;
+  }
+  
+  .total_reviews .component-review__stars{
+  	margin:0;
+    width: 120px;
+  }
+  
+  
+  
+  
+  /*** COLUMN STYLING ***/
+  
+  .b_three_cols{
+  	background: #fff;
+    width: 100%;
+  }
+  
+  .b_three_cols-contain{
+    width: 94%;
+  	max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 0;
+  }
+  
+  .b_col{
+  	width: 32%;
+    padding: 40px 20px;
+    display:inline-block;
+    margin: 0 auto;
+    font-size: 15px !important;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .b_col:nth-child(2){
+    border-left: 1px solid {{ section.settings.secondary_color }};
+    border-right: 1px solid {{ section.settings.secondary_color }};
+  }
+  
+  #launcher{
+    display:none;
+  }
+  
+  @media all and (max-width: 768px){
+    
+    .step_title{
+      font-size: 26px;
+    }
+  
+    .builder__step-left{ 
+      width: 100% !important;
+      min-height: 300px !important;
+      height: 50% !important;
+    }
+    
+    .builder__step-right{
+      width: 100% !important;
+      padding: 30px 3%;
+      margin-top:0;
+    }
+    
+    .b_nav{
+      position:relative;
+    }
+    
+    .nav_discount{
+      width: 100%;
+      text-align: center;
+      bottom: -36px;
+      top: auto;
+      border-top: 2px solid {{ section.settings.secondary_color }};
+      background: #fff;
+      padding: 10px 0;
+      height: auto;
+      font-size: 13px !important;
+    }
+    .nav_discount:before{
+      position: relative;
+      left:0;
+      top:0;
+    }
+    .nav_discount br{
+      display: none;
+    }
+    
+    .review_step .builder__step-left{
+    	display: none;
+    }
+    
+    .b_col{
+    	width: 100%;
+      font-size: 17px;
+    }
+    
+    .b_col:nth-child(2){
+      border:none;
+      border-top: 1px solid {{ section.settings.secondary_color }};
+      border-bottom: 1px solid {{ section.settings.secondary_color }};
+    
+    }
+    
+    .review_step .mobile-only .b_three_cols{
+      background: transparent;
+    }
+    
+    .hero_step .builder__step-right p{
+      width: 94%;
+    }
+    .hero_step .builder__action{
+      width: auto !important;
+    }
+    .total_reviews{
+      position: relative;
+      text-align: left;
+    }
+    
+    .hero_step h3{
+      margin-bottom:0;
+    }
+    
+    .review_step .builder__step-right{
+      left:0;
+    }
+    
+    .frequency_calc p{
+      font-size: 15px;
+    }
+    
+    .hero_step{
+      margin-top: 30px;
+    }
+    .builder-overlay_info{
+      padding: 30px 20px;
+    }
+  }
+  
+</style>
+
+<form class="builder" name="builder" data-subscription-builder='{{ builder_config }}'
+      action="/checkout" method="post" enctype="multipart/form-data" novalidate>
+<a href="/checkout" name="checkout" style="display: none;" id="ch-checkout-enabled"></a> 
+  
+  <div class="b_nav">
+    <a data-prev-step class="prev_step" style="display:none;"><i class="fas fa-caret-left"></i>Back</a>
+    <a class="nav_logo" href="/"><img src="//cdn.shopify.com/s/files/1/0090/2135/8137/files/storyvilleLogo_only_280x.png?v=1547847058" class="lazyload"></a>
+    <div class="nav_discount inactive_nav">
+      <span id="navDiscountText" data-percent-off></span><br>
+      <span>Applied at checkout</span>
+    </div>
+  </div>
+  
+  <div class="b_contain">  
+    <div class="b_steps" data-steps>
+      
+      
+      
+     <!------- START OF STEP 1 ----->     
+      
+      <div class="b_step hero_step current" data-step>
+
+          <div class="builder__step-left" style="background-image: url('{{ section.settings.hero_image | img_url: 'original' }}')"></div>
+          <div class="builder__step-right">
+          	<h2 class="step_title">{{ section.settings.hero_title }}</h2>
+            <br>
+            <p>{{ section.settings.hero_desc }}</p>
+            <div class="builder__action" data-next-step>
+                Get Started
+            </div>
+          </div>
+        
+        <div class="b_three_cols">
+          <div class="b_three_cols-contain">
+            <div class="b_col">{{ section.settings.hero_col_one }}</div>
+            <div class="b_col">{{ section.settings.hero_col_two }}</div>
+            <div class="b_col">{{ section.settings.hero_col_three }}</div>
+          </div>
+        </div>
+        
+          <div class="reviews">
+            <h3 class="step_title h2">Storyville Reviews</h3>
+            <p class="total_reviews">
+              <span class="component-review__stars component-review__stars--score-5">
+                 {% include 'stars-score.svg' %}
+              </span><br>
+              523 Reviews
+            </p>
+          {% for block in section.blocks %}
+
+              {% case block.type %}
+
+              {% when 'review' %}
+                  <div class="b_review">
+
+ 
+
+                      <div class="component-review__quote">
+                        {{ block.settings.quote }}
+                      </div>
+
+                      
+                        <p class="component-review__author">
+                         <span class="component-review__stars component-review__stars--score-{{ block.settings.score }}">
+                          {% include 'stars-score.svg' %}
+                         </span>
+                        {% if block.settings.author != blank %}
+                          – <span>{{ block.settings.author }}</span>
+                        {% endif %}
+                        </p>
+                      
+
+                  </div>
+              {% endcase %}
+
+          {% endfor %}
+          
+        </div>
+      </div>
+      
+     <!------- END OF STEP 1 -----> 
+      
+      
+      
+  
+     <!------- START OF STEP 2 -----> 
+
+      <div class="b_step" data-step>
+        
+          <div class="b_overlay product_select_overlay">
+            <div class="builder-overlay_info">
+              <div class="builder-overlay_contain"></div>
+            </div>
+            <div class="dark_bg"></div>
+          </div>
+        
+
+		  <div class="builder__step-left" data-preview-image>
+            
+          </div>
+        
+        
+        
+          <div class="builder__step-right">
+            <div class="select_product-info">
+
+                <h2 class="step_title">Select How You Brew</h2>
+
+                <div class="step_products"
+                     data-options-set data-options-set-type="product">
+
+                  <div class="product_select"
+                       data-option
+                       data-value="beans">
+                    <span class="product_text">Whole Bean Coffee</span>
+                    <span class="more_info_icon activate_popup"></span>
+
+                  </div>
+
+                  <div class="product_select"
+                       data-option
+                       data-value="pods">
+                    <span class="product_text">Keurig® Compatible Pods</span>
+                    <span class="more_info_icon activate_popup"></span>
+
+                  </div>
+
+                  <div class="product_select"
+                       data-option
+                       data-value="capsules">
+                    <span class="product_text">Nespresso® Compatible Capsules</span>
+                    <span class="more_info_icon activate_popup"></span>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+
+          <span class="selectOption builder__note">
+              <input type="checkbox" id="blend" class="checkBlend" data-option-want-epilogue>
+              <label for="blend">Epilogue Blend (Decaf)</label>
+          </span>
+
+
+          <div class="product-contain">
+
+            <p class="product-desc_text"></p>
+
+          </div>
+
+
+          <div class="b_step_actions">
+            <div class="builder__action" data-next-step>
+                Next Step
+            </div>
+          </div>
+        
+        </div>
+      </div>
+      
+     <!------- END OF STEP 2 -----> 
+   
+      
+
+     <!------- START OF STEP 3 -----> 
+
+      <div class="b_step" data-step>
+
+		  <div class="builder__step-left" data-quantity-image>
+            
+          </div>
+        
+        
+          <div class="builder__step-right">
+            <div class="select_product-info">
+
+                <h2 class="step_title">Select Your Quantity</h2>
+                <p>You can change this quantity at any time.</p>
+
+                <div class="step_products"
+                     data-options-set data-options-set-type="quantity">
+
+                  <div class="product_select"
+                       data-option
+                       data-value="0">
+                    <span class="product_text" data-option-product-type></span>
+                    <span class="product_price" data-option-price></span>
+
+                  </div>
+
+                  <div class="product_select selected"
+                       data-option
+                       data-value="1">
+                    <span class="product_text" data-option-product-type></span>
+                    <span class="product_price" data-option-price></span>
+
+                  </div>
+
+                  <div class="product_select"
+                       data-option
+                       data-value="2">
+                    <span class="product_text" data-option-product-type></span>
+                    <span class="product_price" data-option-price></span>
+
+                  </div>
+             
+              	  <div class="action__above"><i class="fas fa-tag"></i> Your first order is <span class="discount_total-price" data-total-price></span> <span data-option-percent-price-total></span></div> 
+                  
+                </div>
+
+            </div>
+
+
+
+          <div class="b_step_actions">
+            <div class="builder__action" data-next-step>
+                Next Step
+            </div>
+          </div>
+        
+        </div>
+      </div>
+      
+     <!------- END OF STEP 3 -----> 
+      
+      
+
+     <!------- START OF STEP 4 -----> 
+
+      <div class="b_step" data-step>
+        
+          <div class="b_overlay frequency_select_overlay">
+            <div class="builder-overlay_info">
+              <div class="builder-overlay_contain">
+              	<h3 class="step_title">How often do you brew?</h3>
+
+                <div class="frequency_calc" data-option-calc>
+                  
+                  <p data-cups-per-day-calc></p>
+                  <p>Every <span data-ships-every-calc></span></p>
+                  
+                </div>
+                <div class="frequency_calc" data-option-calc>
+                  
+                  <p data-cups-per-day-calc></p>
+                  <p>Every <span data-ships-every-calc></span></p>
+                  
+                </div>
+                <div class="frequency_calc" data-option-calc>
+                  
+                  <p data-cups-per-day-calc></p>
+                  <p>Every <span data-ships-every-calc></span></p>
+                  
+                </div>
+                
+              	<p>Calculations based on <b><span data-selected-product-title></span></b>. Try adjusting your quantity for more options.</p>
+                
+              </div>
+            </div>
+            <div class="dark_bg"></div>
+          </div>
+        
+
+		  <div class="builder__step-left" style="background-image: url('{{ section.settings.frequency_image | img_url: 'original' }}')"></div>
+        
+        
+        
+          <div class="builder__step-right">
+            <div class="select_product-info">
+
+                <h2 class="step_title">Select How Often</h2>
+                <p class="frequency_info_button activate_popup"><i class="far fa-question-circle"></i> Don't know your frequency?</p>
+
+
+                <div class="step_products"
+                     data-options-set data-options-set-type="frequency">
+
+                  {% assign frequencies = 'fanatic,enthusiast,admirer' | split: ',' %}
+
+                  {% for frequency in frequencies %}
+
+                    <div class="product_select {% if forloop.index == 2 %}selected{% endif %}"
+                         data-option
+                         data-value="{{ forloop.index0 }}">
+						
+                      <span class="product_text">Ships every </span><span data-ships-every></span>
+
+                    </div>
+                  {% endfor %}
+
+                </div>
+            
+
+            </div>
+
+            
+          <div class="product-contain">
+			
+            <p class="product-frequency_text">
+                <span class="frequency_text-headline">{{ section.settings.frequency_title }}</span><br>
+            	{{ section.settings.frequency_text }}
+            </p>
+
+          </div>
+
+
+          <div class="b_step_actions">
+            <div class="builder__action" data-next-step>
+                Review Order
+            </div>
+          </div>
+        
+        </div>
+      </div>
+      
+     <!------- END OF STEP 4 -----> 
+   
+   
+     <!------- START OF STEP 5 -----> 
+
+      <div class="b_step review_step" data-step>
+
+        
+		  <div class="builder__step-left">
+            <div class="review_top-image" style="background-image: url('{{ section.settings.review_image | img_url: 'original' }}')"></div>
+			{% capture benefits_cols %}
+            <div class="b_three_cols">
+              <div class="b_three_cols-contain">
+                <div class="b_col"><div class="benefits_icon" style="background-image: url('{{ section.settings.benefits_col_one_image | img_url: 'original' }}')"></div>{{ section.settings.benefits_col_one }}</div>
+                <div class="b_col"><div class="benefits_icon" style="background-image: url('{{ section.settings.benefits_col_two_image | img_url: 'original' }}')"></div>{{ section.settings.benefits_col_two }}</div>
+                <div class="b_col"><div class="benefits_icon" style="background-image: url('{{ section.settings.benefits_col_three_image | img_url: 'original' }}')"></div>{{ section.settings.benefits_col_three }}</div>
+              </div>
+            </div>
+            {% endcapture %}
+            {{ benefits_cols }}
+          </div>
+        
+        
+        
+          <div class="builder__step-right">
+            <div class="select_product-info">
+			
+              <div class="product_image" data-product-image></div>
+              
+              <h2 class="step_title capitalize_title">Your Storyville <span data-simple-title></span></h2>
+              <p class="shipping_info_button">Ship Within 1 Business Day</p>
+              
+              
+              <div class="order_review">
+                <div class="order_total">
+                  <p><b>Order Total</b></p>
+                </div>
+                <div class="order_info">
+                  <p><span data-total-quantity></span> x <span data-product-title></span><br><br>
+                    Your 2nd box will ship <span data-frequency-title></span> <b>(not charged today)</b>
+                  
+                  </p>
+                  <p><span class="discount_total-price" data-total-price></span> <span data-option-percent-price-total></span></p>
+                </div>
+                
+                {%comment%}
+                {% unless customer %}
+                <div class="create_account">
+                  <p><b>Create Account</b></p>
+                </div>
+                
+                
+                <div class="create_account-form">
+                  
+                {% form 'create_customer' %}
+				  {{ form.errors| default_errors }}
+                  <input type="hidden" name="return_to" value="/checkout">
+				  <!--<p style="display:none;" class="account-error"></p>-->
+                  
+                  <label for="Email" class="hidden-label">{{ 'customer.register.email' | t }}</label>
+                  <input type="email" name="customer[email]" id="Email"  class="input-full" placeholder="Your Email" {% if form.email %} value="{{ form.email }}"{% else %}{% endif %} autocorrect="off" autocapitalize="off">
+                  <label for="CreatePassword" class="hidden-label">{{ 'customer.register.password' | t }}</label>
+                  <input type="password" name="customer[password]" id="CreatePassword" class="input-full" placeholder="Create Password">
+
+                  <p>
+
+                    <button type="submit" id="createAccountButton" value="{{ 'customer.register.submit' | t }}" class="btn btn--full carthook_checkout" style="display:none;"></button>
+                  </p>
+
+                {% endform %}
+                  <p class="already_member">Already a member? <a href="/account">Login</a></p>
+                </div>
+                {% endunless %}
+                {% endcomment %}
+                
+                
+              </div>
+            </div>
+
+            
+          <div class="product-contain">
+			
+          </div>
+
+            
+          <div class="b_step_actions">
+             <a id="add-to-cart" class="builder__action btn cart__checkout" data-next-step>
+                  CONTINUE
+              </a> 
+			<!--{% if customer %}
+    	
+            {% else %}
+            <div class="builder__action" id="continue-btn" data-next-step>
+                CONTINUE
+            </div>
+            {% endif %}-->
+          </div>
+            <span class="mobile-only">{{ benefits_cols }}</span>
+        
+        </div>
+      </div>
+      
+     <!------- END OF STEP 5 -----> 
+
+      
+     
+      
+  </div>
+</div>
+  
+  
+  
+
+</form>
+
+
+{% schema %}
+  {
+    "name": "Subscription Steps",
+	"blocks": [
+      {
+        "type": "review",
+        "name": "Review",
+        "settings": [
+          {
+            "type": "range",
+            "id": "score",
+            "min": 1,
+            "max": 5,
+            "step": 1,
+            "label": "Stars",
+            "default": 5
+          },
+          {
+            "type": "textarea",
+            "id": "quote",
+            "label": "Quote"
+          },
+          {
+            "type": "text",
+            "id": "author",
+            "label": "Author"
+          }
+        ]
+      }
+	],
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "hero_image",
+        "label": "Hero Image"
+      },
+	  {
+        "type": "text",
+        "id": "hero_title",
+        "label": "Hero Title",
+		"default": "Upgrade your morning."
+      },
+	  {
+        "type": "textarea",
+        "id": "hero_desc",
+        "label": "Hero Descriptor",
+		"default": "Drink the perfect cup of coffee every day, on your schedule."
+      },
+	  {
+        "type": "richtext",
+        "id": "hero_col_one",
+        "label": "Hero Column 1"
+      },
+	  {
+        "type": "richtext",
+        "id": "hero_col_two",
+        "label": "Hero Column 2"
+      },
+	  {
+        "type": "richtext",
+        "id": "hero_col_three",
+        "label": "Hero Column 3"
+      },
+      {
+        "type": "header",
+        "content": "Whole Bean Text"
+      },
+      {
+        "type": "text",
+        "id": "beans_title",
+        "label": "Title",
+		"default": "Whole Bean Coffee"
+      },
+      {
+        "type": "textarea",
+        "id": "beans_description",
+        "label": "Description",
+		"default": "Sourced from the top 2% of beans in the world. Packaged in 8oz resealable pressurized bags, our one and only signature blend is roasted fresh and shipped to your door."
+      },
+      {
+        "type": "textarea",
+        "id": "beans_extra_description",
+        "label": "Extra Description Popup"
+      },
+      {
+        "type": "header",
+        "content": "Pods Text"
+      },
+      {
+        "type": "text",
+        "id": "pods_title",
+        "label": "Title",
+		"default": "Keurig® Compatible Pods"
+      },
+      {
+        "type": "textarea",
+        "id": "pods_description",
+        "label": "Description",
+		"default": "Sourced from the top 2% of beans in the world. Packaged in 8oz resealable pressurized bags, our one and only signature blend is roasted fresh and shipped to your door."
+      },
+      {
+        "type": "textarea",
+        "id": "pods_extra_description",
+        "label": "Extra Description Popup"
+      },
+      {
+        "type": "header",
+        "content": "Capsules Text"
+      },
+      {
+        "type": "text",
+        "id": "capsules_title",
+        "label": "Title",
+		"default": "Nespresso® Compatible Capsules"
+      },
+      {
+        "type": "textarea",
+        "id": "capsules_description",
+        "label": "Description",
+		"default": "Sourced from the top 2% of beans in the world. Packaged in 8oz resealable pressurized bags, our one and only signature blend is roasted fresh and shipped to your door."
+      },
+      {
+        "type": "textarea",
+        "id": "capsules_extra_description",
+        "label": "Extra Description Popup"
+      },
+      {
+        "type": "text",
+        "id": "frequency_title",
+        "label": "Frequency Description Title",
+		"default": "Your Benefits: "
+      },
+      {
+        "type": "textarea",
+        "id": "frequency_text",
+        "label": "Frequency Description Text",
+		"default": "• Free shipping, always • Pause or cancel anytime • Storyville Freshness Guarantee • Always save up to 22% off all coffee • Your own coffee assistant"
+      },
+      {
+        "type": "image_picker",
+        "id": "benefits_col_one_image",
+        "label": "Benefits Column 1 Icon"
+      },
+	  {
+        "type": "richtext",
+        "id": "benefits_col_one",
+        "label": "Benefits Column 1"
+      },
+	  {
+        "type": "image_picker",
+        "id": "benefits_col_two_image",
+        "label": "Benefits Column 2 Icon"
+      },
+	  {
+        "type": "richtext",
+        "id": "benefits_col_two",
+        "label": "Benefits Column 2"
+      },
+	  {
+        "type": "image_picker",
+        "id": "benefits_col_three_image",
+        "label": "Benefits Column 3 Icon"
+      },
+	  {
+        "type": "richtext",
+        "id": "benefits_col_three",
+        "label": "Benefits Column 3"
+      },
+      {
+        "type": "header",
+        "content": "Product Step Images"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_for_beans",
+        "label": "Sample Image for beans"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_for_pods",
+        "label": "Sample Image for pods"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_for_capsules",
+        "label": "Sample Image for capsules"
+      },
+      {
+        "type": "header",
+        "content": "Quantity Step Images"
+      },
+      {
+        "type": "image_picker",
+        "id": "quantity_for_beans",
+        "label": "Sample Image for beans"
+      },
+      {
+        "type": "image_picker",
+        "id": "quantity_for_pods",
+        "label": "Sample Image for pods"
+      },
+      {
+        "type": "image_picker",
+        "id": "quantity_for_capsules",
+        "label": "Sample Image for capsules"
+      },
+      {
+        "type": "header",
+        "content": "Frequency Step Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "frequency_image",
+        "label": "Sample Frequency Image"
+      },
+      {
+        "type": "header",
+        "content": "Review Step Images"
+      },
+      {
+        "type": "image_picker",
+        "id": "review_image",
+        "label": "Sample Review Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "product_for_beans",
+        "label": "Product Image for beans"
+      },
+      {
+        "type": "image_picker",
+        "id": "product_for_pods",
+        "label": "Product Image for pods"
+      },
+      {
+        "type": "image_picker",
+        "id": "product_for_capsules",
+        "label": "Product Image for capsules"
+      },
+      {
+        "type": "header",
+        "content": "Color Scheme"
+      },
+      {
+        "type": "color",
+        "id": "highlight_color",
+        "label": "Highlight Color",
+		"default": "#a2111a"
+      }, 
+      {
+        "type": "color",
+        "id": "secondary_color",
+        "label": "Secondary Color",
+		"default": "#ebe9e4"
+      },
+      {
+        "type": "color",
+        "id": "dark_color",
+        "label": "Dark Color",
+		"default": "#0c0800"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background Color",
+		"default": "#ebe9e4"
+      },
+      {
+        "type": "header",
+        "content": "Step Settings"
+      }
+    ]
+  }
+{% endschema %}

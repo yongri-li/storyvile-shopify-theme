@@ -5,8 +5,7 @@
 {% paginate collection.products by 12 %}
 
 <header class="section-header text-center">
-  <h1>{{ collection.title }}</h1>
-  <hr class="hr--small">
+  <h1 style="font-size: 40px;text-transform:uppercase;">{{ collection.title }}</h1>
   {% if collection.description != blank %}
     <div class="grid">
       <div class="grid__item">

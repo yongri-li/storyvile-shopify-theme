@@ -265,7 +265,7 @@
   },
   "products": {
     "general": {
-      "save_html": "Save<br \/>{{ saved_amount }}",
+      "save_html": "Save {{ saved_amount }}",
       "collection_return": "Back to {{ collection }}",
       "sale_price": "Sale price",
       "regular_price": "Regular price"
@@ -307,6 +307,111 @@
           "accessible_separator": "|"
         }
       }
+    },
+    "notices": {
+      "customer": {
+        "no_account_found_html": "Either your account needs activation <a href=\"\/account\/register\">here<\/a> or there is no account found with that email."
+      }
+    }
+  },
+  "giftship": {
+    "global": {
+      "continue_button_text": "Continue",
+      "close_text": "Close",
+      "back_button_text": "Back",
+      "no_thanks_text": "No thanks",
+      "cancel_button_text": "Cancel",
+      "remove_button_text": "Remove",
+      "submit_button_text": "Submit",
+      "additional_details_text": "Additional Details",
+      "apply_discount_text": "Apply",
+      "shipping_text": "Shipping",
+      "free_shipping_text": "Free Shipping",
+      "checkout_text": "Checkout",
+      "savings_text": "Savings",
+      "subtotal_text": "Subtotal",
+      "edit_text": "Edit",
+      "product_text": "Product",
+      "price_text": "Price",
+      "total_text": "Total",
+      "change_text": "change",
+      "cart_incomplete_text": "Some items are incomplete. Please review messages.",
+      "error_select_shipping": "",
+      "error_select_date": "",
+      "error_select_shipping_rate": "",
+      "error_add_message": "",
+      "error_minimum_price": "",
+      "error_no_discount_found": "",
+      "discount_applied_text": "",
+      "discount_not_active_text": "",
+      "valid_discount_text": "",
+      "enter_discount_text": "",
+      "checkout_error_text": "",
+      "discount_placeholder_text": "Discount"
+    },
+    "upsell": {
+      "modal_header_text": "Add Ons"
+    },
+    "multishipping": {
+      "start_typing_text": "Start typing to search...",
+      "error_zip_text": "",
+      "error_shipping": "",
+      "error_shipping_rates": "",
+      "no_rates_found": "",
+      "please_complete_required": "Please complete the required fields",
+      "please_select_one": "",
+      "button_text": "",
+      "note_label": "Delivery Details",
+      "ship_another_text": "+ Ship Another",
+      "toggle_text": "Ship to multiple addresses",
+      "saved_addresses_text": "Saved Addresses",
+      "select_from_text": "Select from saved address...",
+      "new_address_text": "New Address",
+      "first_name_text": "First Name",
+      "last_name_text": "Last Name",
+      "company_label_text": "Company",
+      "address_label_text": "Address",
+      "city_label_text": "City",
+      "country_label_text": "Country",
+      "province_label_text": "State\/Province",
+      "zip_label_text": "Zip\/Postal Code",
+      "phone_label_text": "Phone",
+      "optional_label_text": "Optional",
+      "save_address_text": "Save this address?",
+      "items_heading_text": "Items",
+      "delivery_heading_text": "Delivery",
+      "shipping_address_heading": "Shipping Address",
+      "select_items_heading_text": "Select items to ship",
+      "delivery_address_heading_text": "Delivery Address",
+      "shipping_not_set_text": "Shipping address not set",
+      "delivery_method_heading": "Delivery Method",
+      "new_rate_heading": "Please select a new delivery rate",
+      "tax_checkout_text": "Tax calculated at checkout",
+      "addresses_text": "Addresses",
+      "show_products_text": "Show products",
+      "show_order_summary_text": "",
+      "hide_order_summary_text": "",
+      "ship_to_text": "Ship to",
+      "shipping_method_text": "Shipping Method",
+      "shipping_not_required_text": "These items do not require shipping"
+    },
+    "message": {
+      "is_this_a_gift_text": "Is this a gift?",
+      "button_text": "Add Message",
+      "edit_button_text": "Edit Message",
+      "to_label": "To",
+      "from_label": "From",
+      "message_label": "Message",
+      "message_placeholder_text": "We’ll write your note. Tell us what to say...",
+      "add_button_text": "Add Message",
+      "placeholder_text": "We’ll write your note. Tell us what to say..."
+    },
+    "datepicker": {
+      "button_text": "Delivery Date",
+      "edit_button_text": "Edit Delivery Date"
+    },
+    "product_upsell": {
+      "button_text": "Add Ons"
     }
   }
 }

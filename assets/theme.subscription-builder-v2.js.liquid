@@ -111,20 +111,50 @@ $(function () {
   var $getCouponCode = getUrlParams()["utm_coupon"];
   
   
- 
-  var couponCode = 'FRESH';
-  
   if ($getDiscountCode > 0){
   	  var discount = getUrlParams()["utm_content"];
   } else {
       var discount = 50;
   }
   
-  if ($getCouponCode){
-  	  var couponCode = getUrlParams()["utm_coupon"];
+  var $getCouponCode = getUrlParams()["utm_coupon"];
+  
+  var couponCode = '';
+  
+  if (typeof $getCouponCode !== "undefined"){
+  	  couponCode = getUrlParams()["utm_coupon"];
   }
   
+  
+  var $getID = getUrlParams()["klaviyo_user"];
+  
+  var k_id = '';
+    
+  if (typeof $getID !== "undefined"){
+        var k_id = $getID;
+  }
+  
+  debug('Klaviyo ID: ' + k_id);
+  debug('Coupon Code: ' + couponCode);
 
+  
+  
+  
+  
+  
+  /******* Email delete after 08/30 *******/
+  
+  var $getEmail = getUrlParams()["utm_email"];
+  
+  var utm_email = '';
+    
+  if (typeof $getEmail !== "undefined"){
+        var utm_email = $getEmail.replace(/%40/i, '@');
+  }
+  
+  /******/
+  
+  
   
   
 
@@ -735,10 +765,6 @@ if ($currentStep == "#quantity"){
 
 
 
-
-
-
-
 function addToCartCarthook(){
 
       var product = options.products[state.product];
@@ -748,7 +774,7 @@ function addToCartCarthook(){
       var cartItem = {
         id: unitVariant.id,
         quantity: productOption.quantity,
-        note: "order number 1",
+        note: "order number 0",
         properties: {
           'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
           'shipping_interval_unit_type': product.shipping_interval_unit_type,
@@ -758,6 +784,30 @@ function addToCartCarthook(){
       
 
       $.get('/cart.json').done(function (cart) {
+        
+        var email_attribute = '';
+        var coupon_attribute = '';
+        
+        if (cart.attributes.email){
+        	email_attribute = cart.attributes.email;
+        }
+        
+        if (cart.attributes.coupon){
+        	coupon_attribute = cart.attributes.coupon;
+        }
+        
+
+        debug('Added Cart Attribute: ' + email_attribute + ' and ' + coupon_attribute);
+
+        var ch_params = [
+                  'email=' + email_attribute,
+                  'coupon=' + coupon_attribute,
+                  'utm_coupon=' + coupon_attribute,
+                  'utm_content=' + discount
+        ];
+
+        window.ch_cust_param = ch_params.join('&');
+        
       	
         debug('Initializing checkout for: ' + cartItem.id);
 
@@ -803,153 +853,9 @@ function addToCartCarthook(){
 
 
 
-
-
-
-function addToCart(){
-
-      var product = options.products[state.product];
-      var productOption = state.productOptions[state.selectedQuantity];
-      var unitVariant = getUnitVariant();
-
-      var cartItem = {
-        id: unitVariant.id,
-        quantity: productOption.quantity,
-        properties: {
-          'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
-          'shipping_interval_unit_type': product.shipping_interval_unit_type,
-          'subscription_id': product.subscription_id
-        }
-      };
-      
-        
-
-      
-      $.get('/cart.json').done(function (cart) {
-      	
-        debug('Initializing checkout for: ' + cartItem.id);
-        
-// GET VALUE OF CART
-        
-        var cartItemVariants = [];
-          
-        cart.items.forEach(function(item) {
-          var i = item.variant_id;
-          cartItemVariants.push(i);
-        });
-        
-        
-        debug('Current items in cart: ' + cartItemVariants);
-
-// IF CART CONTAINS SAME ITEM
-        
-        if (cartItemVariants.indexOf(cartItem.id) > -1){
-
-// UPDATE EXISTING CART ITEM
-          
-        $.post('/cart/change.json', cartItem)
-          .done(function () {
-          
-            debug('Successfully changed the quantity of ' + cartItem.id);
-
-            $.get('/cart.json').done(function (cart) {
-              debug('Obtained new cart token');
-              setState({ cartToken: cart.token });
-              forceUpdate();
-              $builder.submit();
-            }) 
-          });
-          
-        } else {
-        
-// ADD NEW ITEM TO CART
-          
-          $.post('/cart/add.json', cartItem)
-          .done(function () {
-            
-            debug('Successfully added item to the cart');
-
-            $.get('/cart.json').done(function (cart) {
-              debug('Obtained new cart token');
-              setState({ cartToken: cart.token });
-              forceUpdate();
-              $builder.submit();
-            }) 
-            
-          });
-        }
-        
-      });
-	}
-
-
-
-
-
-
-/** OLD CHECKOUT BUTTON
-
-//CARTHOOK CHECKOUT  BUTTON WITH URL PARAMS
-
-  var chBtn = document.getElementById('ch-checkout-btn');
-  chBtn && chBtn.addEventListener('click', function (evt) {
-      evt.preventDefault();
-      
-      var $getEmail = getUrlParams()["utm_email"];
-      var email = '';
-    
-      if (typeof $getEmail !== "undefined"){
-        var email = $getEmail.replace(/%40/i, '@');
-      }
-    
-      var ch_params = [
-      	'email=' + email,
-      	'coupon=' + couponCode,
-        'utm_coupon=' + couponCode,
-        'utm_content=' + discount
-      ];
-    
-      debug('Customer Email: ', email);
-       
-       
-      window.ch_cust_param = ch_params.join('&');
-        
-      debug('Adding to cart... ');
-    
-      addToCartCarthook();
-       
-    
-      window.testGlobalBeforeReact(0);
-  
-    });
-
-// END EXTRA CHECKOUT BUTTON
-
-***/
-
-
-
   var simpleAdd = document.getElementById('add-to-cart');
   simpleAdd && simpleAdd.addEventListener('click', function (evt) {
       evt.preventDefault();
-      
-      var $getEmail = getUrlParams()["utm_email"];
-      var email = '';
-    
-      if (typeof $getEmail !== "undefined"){
-        var email = $getEmail.replace(/%40/i, '@');
-      }
-    
-      var ch_params = [
-      	'email=' + email,
-      	'coupon=' + couponCode,
-        'utm_coupon=' + couponCode,
-        'utm_content=' + discount
-      ];
-    
-      debug('Customer Email: ', email);
-       
-      window.ch_cust_param = ch_params.join('&');
         
       debug('Adding to cart... ');
     
@@ -957,7 +863,6 @@ function addToCart(){
 
 
   });
-
 
 
 
@@ -1172,5 +1077,100 @@ function addToCart(){
 
 
   initialize();
+
+
+
+
+
+
+
+// GET EMAIL AND KLAVIYO DATA
+
+
+$.ajax({
+  url         : "https://meraki.storyville.com/klaviyo-apps/id-lookup.php",
+  data        : { "klaviyo_id": k_id},
+  dataType    : 'json',
+  type        : 'GET',
+  crossDomain : true,
+  contentType : "application/json; charset=utf-8",
+  error       : function(err) { 
+    
+    console.log("Could not reach meraki.storyville.com for ID retrival");
+
+    if ($getID){
+      var klaviyo_email = '';
+
+      var cartAttributes = {
+             attributes: {
+                'email': klaviyo_email,
+                'coupon': couponCode
+       		 }
+       };
+
+      $.post('/cart/update.json', cartAttributes).done(function () {   
+        debug('Updated Cart Attributes: coupon and email.');
+      });  
+    }
+    
+    if ($getCouponCode){
+      
+      if ($getEmail){
+        
+      	 var cartAttributes = {
+             attributes: {
+               'email': utm_email,
+               'coupon': couponCode
+       		 }
+       	};
+      } else{
+
+      var cartAttributes = {
+             attributes: {
+                'coupon': couponCode
+       		 }
+       };
+      }
+
+      $.post('/cart/update.json', cartAttributes).done(function () {   
+        debug('Updated Cart Attributes: coupon');
+      });  
+    }
+  
+  },
+  success     : function(data) {
+    if (data.result == "failure") {
+      
+       debug("Could not sync with Klaviyo.", false);
+       debug("Error message: "+data.message, false);
+      
+      
+    } else {
+       debug("Success! Retrieved email from Klaviyo ID: "+data.email, true);
+				
+      klaviyo_email = data.email;
+    
+      var cartAttributes = {
+           attributes: {
+              'email': klaviyo_email,
+              'coupon': couponCode
+      }
+	 };
+      
+        
+      $.post('/cart/update.json', cartAttributes).done(function () {   
+                debug('Updated Cart Attributes');
+      });  
+               
+    }
+    
+    
+    
+    
+  }
+});
+
+
+
 
 });

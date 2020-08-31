@@ -9,7 +9,7 @@
 
         <div class="grid__item large--one-half signup-form__image-container">
           <img
-            class="signup-form__image"
+            class="signup-form__image lazyload"
             src="{{ section.settings.form_image | img_url: '1x1' }}"
             data-src="{{ section.settings.form_image | img_url: '1x1' }}"
             srcset="{% include 'bgset' image: section.settings.form_image %}"

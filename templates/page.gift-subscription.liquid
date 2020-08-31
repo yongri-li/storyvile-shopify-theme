@@ -1,0 +1,24 @@
+{{ 'theme.gift-subscription-builder.js' | asset_url | script_tag }}
+
+
+{% section 'page-gift-subscription-template' %}
+
+
+<br>
+
+<div class="builder__disclaimer" style="width:90%;margin:0 auto;">
+      Nespresso&#xAE; is a registered trademark of Societe des Produits Nestle S.A.
+      Keurig&#xAE; is a registered trademark of Keurig Green Mountain, Inc. Storyville
+      Coffee products are not endorsed, sponsored, licensed, or approved by Nespresso
+      USA Inc., Societe des Produits Nestle S.A., Keurig Green Mountain, Inc., or any
+      of their respective affiliates.
+</div>
+
+  
+{% comment %}
+
+<!-- Warning: Do not remove.This is used for CartHook Checkout Replacement -->
+{% capture the_snippet_content %}{% include 'carthook-checkout' %} {% endcapture %} {% unless the_snippet_content contains "Liquid error" %} {% include 'carthook-checkout' %} {% endunless %}
+<!-- Warning: Do not remove.This is used for CartHook Checkout Replacement -->
+    
+{% endcomment %}

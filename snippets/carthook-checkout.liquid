@@ -1,6 +1,7 @@
 {% if customer %}
 	<script  type="text/javascript">
-		window.ch_cust_param = 'customer_id={{customer.id}}&customer_email={{customer.email}}&email={{customer.email}}';
+		window.ch_cust_param = 
+          'email={{customer.email}}&coupon={{ cart.attributes.coupon }}&additionalNote=order%20number%200';
 		var ch_sd = btoa(JSON.stringify({
 			"id": {{customer.id | json}},
 			"email": {{customer.email | json}},

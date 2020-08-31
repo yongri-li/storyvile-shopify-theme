@@ -1,0 +1,5 @@
+{% if nav != blank and linklists[nav].links.size > 0 %}
+  {% for link in linklists[nav].links %}
+  	<p><a href="{{ link.url }}"{% if link.title == 'Send Message' %} class="zendesk-opener"{% endif %}>{{ link.title }}</a></p>
+  {% endfor %}
+{% endif %}

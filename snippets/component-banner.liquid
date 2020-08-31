@@ -12,28 +12,104 @@
   {% assign text_color = 'light' %}
 {% endif %}
 
+{% if use_large_text %}
+  {% assign text_size = 'large' %}
+{% else %}
+  {% assign text_size = 'small' %}
+{% endif %}
+
+{% if url %}
+  {% assign button_visible = 'on' %}
+{% else %}
+  {% assign button_visible = 'off' %}
+{% endif %}
+
 {% unless text_position %}
   {% assign text_position = 'left' %}
 {% endunless %}
 
-<div class="component-banner">
+
+{% if mobile_bump %}
+  {% assign bannerMobile = '' %}
+  {% assign bannerMobileContainer = '' %}
+  {% assign bannerMobilePriority = '' %}
+{% else %}
+  {% assign bannerMobile = 'mobileTextInside' %}
+  {% assign bannerMobileContainer = 'containMobileBanner' %}
+  {% assign bannerMobilePriority = '!important' %}
+  {% assign banner_text_offset = '0' %}
+{% endif %}
+
+{% if fixed_position == 'top' %}
+  {% assign backgroundPosition = 'banner-topPosition' %}
+{% endif %}
+
+{% if fixed_position == 'bottom' %}
+  {% assign backgroundPosition = 'banner-bottomPosition' %} 
+{% endif %}
+
+{% if fixed_position == 'center' %}
+  {% assign backgroundPosition = 'banner-centerPosition' %} 
+{% endif %}
+
+{% if fixed_position == 'top_right' %}
+  {% assign backgroundPosition = 'banner-topRightPosition' %} 
+{% endif %}
+
+{% if fixed_position == 'bottom_right' %}
+  {% assign backgroundPosition = 'banner-bottomRightPosition' %} 
+{% endif %}
+
+{% if fixed_position == 'bottom_left' %}
+  {% assign backgroundPosition = 'banner-bottomLeftPosition' %} 
+{% endif %}
+
+{% if fixed_position == 'top_left' %}
+  {% assign backgroundPosition = 'banner-topLeftPosition' %} 
+{% endif %}
+
+{% if banner_max_width == 0 %}
+  {% assign bannerMaxWidth = '' %} 
+{% else %}
+  {% assign bannerMaxWidth = 'bannerMaxWidth' %} 
+{% endif %}
+
+<div class="component-banner {{ bannerMobileContainer }}" style="
+                                                                 height: {{ banner_height }}px {{ bannerMobilePriority }};
+                                                                 background-color: {{ banner_bg }};
+                                                                 {% if pattern_image != blank %}background-image: url('{% include 'bgset' image: pattern_image %}');background-size:cover;background-repeat: no-repeat;background-position: center;{% endif %}">
 
   <img
-    class="component-banner__background lazyload"
+    class="component-banner__background lazyload {{ bannerMobile }} {{ backgroundPosition }} {{ bannerMaxWidth }}"
     src="{{ background_image | img_url: '1x1' }}"
     data-src="{{ background_image | img_url: '1x1' }}"
     data-sizes="auto"
     data-srcset="{% include 'bgset' image: background_image %}"
+    style="{% if background_image == blank %}display: none !important;{% endif %}
+           {% if banner_max_width == 0 %}{% else %}max-width: {{ banner_max_width }}px;{% endif %}
+           {% if banner_full_width %}object-fit: cover !important;{% endif %}"
   />
+{% if title != blank or description != blank %}
+  <div class="component-banner__text component-banner__text--{{ text_position }} component-banner__text--{{ text_color }} component-banner__text--{{ text_size }}"
+       style="{% if full_width_text %}width: 90%;{% endif %}">
 
-  <div class="component-banner__text component-banner__text--{{ text_position }} component-banner__text--{{ text_color }}">
-
-    <h2 class="component-banner__title">{{ title }}</h2>
-
-    <div class="component-banner__description">
+    
+    {% if title != blank %}
+    {% if feature_headline == 'h4' %}<h4 class="h3 component-banner__title" style="font-size:{{ title_size }}px;margin-top: {{ banner_text_offset }}px;">{{ title }}</h4>{% endif %}
+    {% if feature_headline == 'h3' %}<h3 class="h3 component-banner__title" style="font-size:{{ title_size }}px;margin-top: {{ banner_text_offset }}px;">{{ title }}</h3>{% endif %}
+    {% if feature_headline == 'h2' %}<h2 class="h3 component-banner__title" style="font-size:{{ title_size }}px;margin-top: {{ banner_text_offset }}px;">{{ title }}</h2>{% endif %}
+    {% if feature_headline == 'h1' %}<h1 class="h3 component-banner__title" style="font-size:{{ title_size }}px;margin-top: {{ banner_text_offset }}px;">{{ title }}</h1>{% endif %}
+    {% if feature_headline %} {% else %}<h2 class="component-banner__title" style="font-size:{{ title_size }}px;margin-top: {{ banner_text_offset }}px;">{{ title }}</h2>{% endif %}
+ 	{% endif %}
+    
+    
+    <p class="component-banner__description" style="font-size:{{ desc_size }}px;{% if mobile_bump %}margin-bottom: 20px;{% endif %}">
       {{ description }}
-    </div>
+    </p>
+    
+    <a href="{{ url }}" class="component-banner__button-{{ button_visible }}">{{ button }}</a>
 
   </div>
+{% endif %}
 
 </div>

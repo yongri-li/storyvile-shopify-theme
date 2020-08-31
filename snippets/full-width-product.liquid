@@ -1,0 +1,293 @@
+{% comment %}
+  @param two_image_01, two_image_02
+  @param two_image_size
+  @param two_top_bottom_padding
+  @param two_top_bottom_section
+  @param two_title_01, title_02
+  @param two_link_01, link_02
+  @param two_description_01, two_description_02
+  @param two_background_color
+  @param two_full_width
+  @param two_section_background_color
+{% endcomment %}
+
+{%- assign product = all_products[fwp_featured_product] -%}
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+
+{% if fwp_image_size == 0 %}
+  {% assign image_visible = 'image-visible_off' %}
+{% else %}
+  {% assign image_visible = 'image-visible_on' %}
+{% endif %}
+
+
+{% if fwp_dark_text %}
+  {% assign dark_text = 'fwp_dark_text' %}
+
+{% else %}
+  {% assign dark_text = '' %}
+{% endif %}
+
+
+<div itemscope itemtype="http://schema.org/Product" id="FeaturedProductSection--{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="product-template" data-image-zoom-type="true" data-enable-history-state="false">
+
+
+<span class="component-fwp-bg" style="background: {{ fwp_background_color }};">
+<div class="component-fwp-cols component-fwp-contain" style="padding: {{ fwp_top_bottom_padding }}px {{ fwp_left_right_padding }}px; background: {{ fwp_background_color }};">
+  
+    
+  <div class="component-fwp mobile-only" style="{% if fwp_image_01 == blank %}text-align: left;{% endif %}">
+ 	<a href="{{ product.url }}?variant={{ current_variant.id }}" class="{{ link_hover_one }}">
+
+      <img
+        class="component-fwp-cols_image lazyload {{ image_visible }} {{ imageToBackground }}"
+        src="{{ fwp_image_01 | img_url: '1x1' }}"
+        data-src="{{ fwp_image_01 | img_url: '1x1' }}"
+        data-sizes="auto"
+        data-srcset="{% include 'bgset' image: fwp_image_01 %}"
+        style="width:90%; {% if fwp_image_01 == blank %}display: none !important;{% endif %}"
+      />
+      
+
+    </a>
+  </div> 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="component-fwp component-fwp__text--{{ text_position }}" style="{% if fwp_right_text %}display:none;{% endif %}">
+    <span class="{{ link_hover_one }}" style="{% if fwp_image_01 == blank %}{% else %}padding:{{ fwp_block_height }}px 0;{% endif %}">
+      
+
+      <h3 class="component-fwp-cols__title">
+        <span class="fwp_topTitle {{ dark_text }}">{{ fwp_top_title }}</span>
+        {{ fwp_title_01 }}</h3>
+      {% if fwp_description_01 != blank %}<hr>{% else %}<br><br>{% endif %}
+      <img
+        class="component-fwp-cols_image lazyload fwp_secondary-image {{ image_visible }} {{ imageToBackground }}"
+        src="{{ fwp_image_02 | img_url: '1x1' }}"
+        data-src="{{ fwp_image_02 | img_url: '1x1' }}"
+        data-sizes="auto"
+        data-srcset="{% include 'bgset' image: fwp_image_02 %}"
+        style="width:{{ fwp_image_size_02 }}px; {% if fwp_image_02 == blank %}display: none !important;{% endif %}"
+      />
+      
+      <p class="component-fwp-cols__description {{ dark_text }}">
+        {{ fwp_description_01 }}
+        {% if fwp_view_more %}<a href="{{ product.url }}" class="view_more">More Info</a>{% endif %}
+      </p>
+ 
+
+        {% if fwp_price != blank %}<p class="fwp_price {{ dark_text }}">{{ fwp_price }}</p>{% endif %}
+      
+        {% if fwp_compare_price != blank %}<p class="fwp_price fwp_price-compare {{ dark_text }}">{{ fwp_compare_price }} </p>{% endif %}
+  
+      
+      
+      
+      
+      
+      <!-- PRODUCT BUTTON -->
+      {% if fwp_featured_product != blank %}
+
+      {% capture "form_classes" %}
+        product-single__form{% if product.has_only_default_variant %} product-single__form--no-variants{% endif %}
+      {%- endcapture %}
+      {% capture "form_id" %}AddToCartForm--{{ section.id }}{%- endcapture %}
+
+      {% form 'product', product, data-productid: product.id, class:form_classes, id:form_id %} 
+      
+      		{% if fwp_alt_link != blank %}
+      
+            	<a class="btn fwp_btn{% if section.settings.enable_payment_button %} btn--secondary-accent{% endif %}" href="{{ fwp_alt_link }}">
+                    <span class="btn__text">
+                        {{ fwp_btn_text }}
+                    </span>
+                </a>
+      		
+      		{% else %}
+                <button type="submit" name="add" id="AddToCart--{{ section.id }}" class="btn btn--add-to-cart fwp_btn{% if section.settings.enable_payment_button %} btn--secondary-accent{% endif %}"{% unless current_variant.available %} disabled="disabled"{% endunless %}>
+                  <span class="btn__text">
+                    {% if current_variant.available %}
+                      {{ fwp_btn_text }}
+                    {% else %}
+                      {{ 'products.product.sold_out' | t }}
+                    {% endif %}
+                  </span>
+                </button>
+                {% if section.settings.enable_payment_button %}
+                  {{ form | payment_button }}
+                {% endif %}
+      		{% endif %}
+      
+
+              <select name="id" data-productid="{{product.id }}" id="ProductSelect" class="product-single__variants no-js" style="{% if product.has_only_default_variant %}{% else %}display:block !important;{% endif %}{% if fwp_disable_variants == true %}display:none !important{%endif%}">
+                {% for variant in product.variants %}
+                  {% if variant.available %}
+                    <option {% if variant == product.selected_or_first_available_variant %}
+                      selected="selected" {% endif %}
+                      data-sku="{{ variant.sku }}"
+                      value="{{ variant.id }}">
+                      {{ variant.title }}<!--- {{ variant.price | money_with_currency }}-->
+                    </option>
+                  {% else %}
+                    <option disabled="disabled">
+                      {{ variant.title }} - {{ 'products.product.sold_out' | t }}
+                    </option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+      
+            {% endform %}
+		{% endif %}
+      
+      <!--- END OF PRODUCT BUTTON -->
+      
+
+      
+    </span>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  <div class="component-fwp desktop-only" style="{% if fwp_image_01 == blank %}text-align: left;{% endif %}">
+ 	<a href="{{ product.url }}?variant={{ current_variant.id }}" class="{{ link_hover_one }}">
+
+      <img
+        class="component-fwp-cols_image lazyload {{ image_visible }} {{ imageToBackground }}"
+        src="{{ fwp_image_01 | img_url: '1x1' }}"
+        data-src="{{ fwp_image_01 | img_url: '1x1' }}"
+        data-sizes="auto"
+        data-srcset="{% include 'bgset' image: fwp_image_01 %}"
+        style="width:{{ fwp_image_size }}%; {% if fwp_image_01 == blank %}display: none !important;{% endif %} bottom: {{ fwp_offset_product_image }}px;"
+      />
+      
+
+    </a>
+  </div> 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  {% if fwp_right_text %}
+    
+  <div class="component-fwp component-fwp__text--{{ text_position }}">
+    <span class="{{ link_hover_one }}" style="{% if fwp_image_01 == blank %}{% else %}padding:{{ fwp_block_height }}px 0;{% endif %}">
+      
+
+      <h3 class="component-fwp-cols__title">
+        <span class="fwp_topTitle {{ dark_text }}">{{ fwp_top_title }}</span>
+        {{ fwp_title_01 }}</h3>
+      {% if fwp_description_01 != blank %}<hr>{% else %}<br><br>{% endif %}
+      <img
+        class="component-fwp-cols_image lazyload fwp_secondary-image {{ image_visible }} {{ imageToBackground }}"
+        src="{{ fwp_image_02 | img_url: '1x1' }}"
+        data-src="{{ fwp_image_02 | img_url: '1x1' }}"
+        data-sizes="auto"
+        data-srcset="{% include 'bgset' image: fwp_image_02 %}"
+        style="width:{{ fwp_image_size_02 }}px; {% if fwp_image_02 == blank %}display: none !important;{% endif %}"
+      />
+      
+      <p class="component-fwp-cols__description {{ dark_text }}">
+        {{ fwp_description_01 }}
+        {% if fwp_view_more %}<a href="{{ product.url }}" class="view_more">More Info</a>{% endif %}
+      </p>
+ 
+
+        {% if fwp_price != blank %}<p class="fwp_price {{ dark_text }}">{{ fwp_price }}</p>{% endif %}
+      
+        {% if fwp_compare_price != blank %}<p class="fwp_price fwp_price-compare {{ dark_text }}">{{ fwp_compare_price }} </p>{% endif %}
+  
+
+      {% if fwp_featured_product != blank %}
+      
+      <!-- PRODUCT BUTTON -->
+      {% capture "form_classes" %}
+        product-single__form{% if product.has_only_default_variant %} product-single__form--no-variants{% endif %}
+      {%- endcapture %}
+      {% capture "form_id" %}AddToCartForm--{{ section.id }}{%- endcapture %}
+
+      {% form 'product', product, data-productid: product.id, class:form_classes, id:form_id %} 
+      
+      
+      			{% if fwp_alt_link != blank %}
+      
+      			   <a class="btn fwp_btn{% if section.settings.enable_payment_button %} btn--secondary-accent{% endif %}" href="{{ fwp_alt_link }}">
+                    <span class="btn__text">
+                        {{ fwp_btn_text }}
+                    </span>
+                  </a>
+      
+      			{% else %}
+                  <button type="submit" name="add" id="AddToCart--{{ section.id }}" class="btn fwp_btn{% if section.settings.enable_payment_button %} btn--secondary-accent{% endif %}"{% unless current_variant.available %} disabled="disabled"{% endunless %}>
+                    <span class="btn__text">
+                      {% if current_variant.available %}
+                        {{ fwp_btn_text }}
+                      {% else %}
+                        {{ 'products.product.sold_out' | t }}
+                      {% endif %}
+                    </span>
+                  </button>
+                  {% if section.settings.enable_payment_button %}
+                    {{ form | payment_button }}
+                  {% endif %}
+                {% endif %}
+      
+				<select name="id" data-productid="{{product.id }}" id="ProductSelect" class="product-single__variants no-js" style="{% if product.has_only_default_variant %}{% else %}display:block !important;{% endif %}{% if fwp_disable_variants == true %}display:none !important{%endif%}">
+                {% for variant in product.variants %}
+                  {% if variant.available %}
+                    <option {% if variant == product.selected_or_first_available_variant %}
+                      selected="selected" {% endif %}
+                      data-sku="{{ variant.sku }}"
+                      value="{{ variant.id }}">
+                      {{ variant.title }}<!--- {{ variant.price | money_with_currency }}-->
+                    </option>
+                  {% else %}
+                    <option disabled="disabled">
+                      {{ variant.title }} - {{ 'products.product.sold_out' | t }}
+                    </option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+    
+
+            {% endform %}
+		{% endif %}
+      
+      <!--- END OF PRODUCT BUTTON -->
+      
+
+      
+    </span>
+  </div>
+  
+  {% endif %}
+  
+  
+  
+  
+  
+</div>
+</span>
+</div>
+
+{% unless product.empty == empty %}
+  <script type="application/json" id="ProductJson-{{ section.id }}">
+    {{ product | json }}
+  </script>
+{% endunless %}

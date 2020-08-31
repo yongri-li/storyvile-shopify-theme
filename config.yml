@@ -1,9 +1,0 @@
-development:
-  password: 9dd60556d20293552a638a7855fe9cac
-  store: storyvillecoffee.myshopify.com
-  theme_id: "32507691065"
-  timeout: 90s
-live:
-  password: 9dd60556d20293552a638a7855fe9cac
-  store: storyvillecoffee.myshopify.com
-  theme_id: live

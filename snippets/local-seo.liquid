@@ -1,0 +1,72 @@
+
+{% if use_custom_json %}
+
+  {{ custom_json }}
+
+{% else %}
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "image": "https:{{ shop_image_01 | img_url: 'master' }}",
+      "photos": [
+      	{
+        	"image": "https:{{ shop_image_02 | img_url: 'master' }}"
+        },
+      	{
+        	"image": "https:{{ shop_image_03 | img_url: 'master' }}"
+        }
+       ],
+      "@id": "https://storyville.com{{ page.url }}",
+      "name": "{{ shop_name }}",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "{{ seo_street_address }}",
+        "addressLocality": "{{ seo_city }}",
+        "addressRegion": "{{ seo_state }}",
+        "postalCode": "{{ seo_zip }}",
+        "addressCountry": "US"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": {{ geo_lat }},
+        "longitude": {{ geo_long }}
+      },
+      "url": "https://storyville.com{{ page.url }}",
+      "menu": "https://storyville.com/pages/menu",
+      "priceRange": "$$",
+      "telephone": "206-780-5777",
+      "servesCuisine": [
+    	"Coffee",
+    	"Espresso",
+        "Tea",
+        "Bakery"
+  	  ],
+      {% if same_time %}
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday"
+          ],
+          "opens": "{{ opening_time }}",
+          "closes": "{{ closing_time }}"
+        }
+      ]
+      {% else %}
+      
+      	{{ abnormal_hours }}
+        
+      {% endif %}
+    }
+  </script>
+
+{% endif %}

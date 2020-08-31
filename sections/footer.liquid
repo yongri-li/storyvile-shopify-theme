@@ -61,7 +61,7 @@
         {% assign num_footer_columns = num_footer_columns | plus: 1 %}
       {% endif %}
 
-      {% case num_footer_columns %}
+      {% case section.blocks.size %}
         {% when 0 %}
         {% when 1 %}
           {% assign footer_column_width = '' %}
@@ -74,54 +74,15 @@
       {% endcase %}
 
 
-
-
-        <div class="grid__item {{ footer_column_width }}">
-		  <h4><a href="https://storyville.com/anywhere">COFFEE</a></h4>
-          <p><a href="https://storyville.com/anywhere">Subscribe</a></p>
-          <p><a href="/products/prologue-blend">Prologue Blend</a></p>
-          <p><a href="/products/epilogue-blend-decaf">Epilogue Blend</a></p>
-        </div>
-
-
-      	<div class="grid__item {{ footer_column_width }}">
-          <h4><a href="/pages/hardware">HARDWARE</a></h4>
-          <p><a href="/collections/brewing-equipment/products/storyville-freedom-i">Freedom i</a></p>
-          <p><a href="/collections/brewing-equipment/products/electric-water-kettle">Electric Water Kettle</a></p>
-          <p><a href="/collections/brewing-equipment/products/conical-burr-grinder">Conical Burr Grinder</a></p>
-          <p><a href="/collections/brewing-equipment/products/stainless-steel-coffee-press">Coffee Press</a></p>
-          <p><a href="/collections/brewing-equipment/products/the-essentials-pair">The Essentials</a></p>
-          <p><a href="/collections/brewing-equipment/products/porcelain-coffee-mug">Porcelain Mug</a></p>
-          <p><a href="/collections/brewing-equipment/products/accessory-kit">Accessory Kit</a></p>
-
-        </div>
-
-
-
-        <div class="grid__item {{ footer_column_width }}">
-          <h4><a href="/pages/locations">LOCATIONS</a></h4>
-          <p><a href="/pages/pike-place-market">Pike Place</a></p>
-          <p><a href="/pages/queen-anne">Queen Anne</a></p>
-          <p><a href="/pages/downtown-seattle">1st & Madison</a></p>
-          <p><a href="/pages/roasting-studio">Roasting Studio</a></p>
-
-        </div>
-
-        <div class="grid__item {{ footer_column_width }}">
-          <h4><a href="/pages/contact-us">CONTACT US</a></h4>
-          <p><a href="/pages/contact-us">Send Message</a></p>
-          <p>206-780-5777</p>
-          <p><a href="mailto:info@storyville.com">info@storyville.com</a></p>
-          <p><a href="/pages/employment">Employment</a></p>
-          <p><a href="/pages/terms-of-service">Terms of Service</a></p>
-          <p><a href="/pages/privacy-policy">Privacy Policy</a></p>
-        </div>
-
-
-
-
-
-
+        {% for block in section.blocks %}
+          <div class="grid__item {{ footer_column_width }}">
+            {% if block.settings.title != blank and block.settings.url != blank %}
+    			<h4><a href="{{ block.settings.url }}">{{ block.settings.title }}</a></h4>
+            {% endif %}
+            {% include 'footer-navigation', nav: block.settings.menu %}
+          </div>
+        {% endfor %}
+        
       {% comment %}FULL WIDTH SOCIAL ICONS SECTION {% endcomment %}
 
       <div class="grid__item fullWidthSocial">
@@ -213,11 +174,6 @@
         <p style="text-align: center !important;">&copy; {{ 'now' | date: '%Y' }}, {{ shop.name | link_to: '/' }}<br></p>
       </div>
 
-
-
-
-
-
     </div>
 
   </div>
@@ -239,6 +195,29 @@
         "label": "Show payment icons",
         "default": true
       }
-    ]
+    ],
+	"blocks": [
+      {
+		"name": "Navigation",
+		"type": "nav",
+		"settings": [
+            {
+              "id": "title",
+              "type": "text",
+              "label": "Title"
+            },
+            {
+              "id": "url",
+              "type": "url",
+              "label": "Link"
+            },
+			{
+				"id": "menu",
+				"type": "link_list",
+				"label": "Menu"
+			}
+		]
+      }
+	]
   }
 {% endschema %}

@@ -1,0 +1,66 @@
+{% comment %}
+  @param one_image_01
+  @param one_image_size
+  @param one_top_bottom_padding
+  @param one_top_bottom_section
+  @param one_title_01
+  @param one_link_01
+  @param one_description_01
+  @param one_background_color
+  @param one_full_width
+  @param one_section_background_color
+{% endcomment %}
+
+{% if one_link_01 %}
+{% else %}
+  {% assign link_hover_one = 'no_link_hover_effect' %}
+{% endif %}
+
+{% if one_link_01 %}
+{% else %}
+  {% assign link_hover_one = 'no_link_hover_effect' %}
+{% endif %}
+
+{% if one_full_width %}
+  {% assign full_width_container = '' %}
+{% else %}
+  {% assign full_width_container = 'component-one-contain' %}
+{% endif %}
+
+
+{% if one_background_image %}
+  {% assign imageToBackground = 'component-one-bg-image' %}
+{% else %}
+  {% assign imageToBackground = '' %}
+{% endif %}
+
+<span class="component-one-bg" style="background: {{ one_background_color }};">
+<div class="component-one-cols {{ full_width_container }}" style="padding: {{ one_top_bottom_padding }}px 0;">
+  <div class="component-one">
+    <{%if one_link_01 != blank%}a href="{{ one_link_01 }}"{% else %}div{% endif %} class="{{ link_hover_one }}">
+      <img
+        class="component-one-cols_image lazyload {{ image_visible }} {{ imageToBackground }}"
+        src="{{ one_image_01 | img_url: '1x1' }}"
+        data-src="{{ one_image_01 | img_url: '1x1' }}"
+        data-sizes="auto"
+        data-srcset="{% include 'bgset' image: one_image_01 %}"
+        style="max-width:{{ one_image_width }}px; {% if one_image_01 %}{% else %}display: none !important;{% endif %}"
+      />
+      
+      
+      {% if one_title_01 != blank %}
+        {% if one_headline == 'h4' %}<h4 class="h3 component-one-cols__title" style="font-size: {{ one_title_size }}px;{% if use_light_text %}color:#fff !important;{% endif %}">{{ one_title_01 }}</h4>{% endif %} 
+        {% if one_headline == 'h3' %}<h3 class="h3 component-one-cols__title" style="font-size: {{ one_title_size }}px;{% if use_light_text %}color:#fff !important;{% endif %}">{{ one_title_01 }}</h3>{% endif %}
+        {% if one_headline == 'h2' %}<h2 class="h3 component-one-cols__title" style="font-size: {{ one_title_size }}px;{% if use_light_text %}color:#fff !important;{% endif %}">{{ one_title_01 }}</h2>{% endif %}
+        {% if one_headline == 'h1' %}<h1 class="h3 component-one-cols__title" style="font-size: {{ one_title_size }}px;{% if use_light_text %}color:#fff !important;{% endif %}">{{ one_title_01 }}</h1>{% endif %}
+        {% if one_headline %}{%else%}<h3 class="h3 component-one-cols__title" style="font-size: {{ one_title_size }}px;{% if use_light_text %}color:#fff !important;{% endif %}">{{ one_title_01 }}</h3>{% endif %}
+      {% endif %} 
+      
+      
+      
+      <p class="component-one-cols__description" style="{% if use_light_text %}color:#fff !important;{% endif %}">{{ one_description_01 }}</p>
+    </{%if one_link_01 != blank%}a{% else %}div{% endif %}>
+  </div>
+  
+</div>
+</span>

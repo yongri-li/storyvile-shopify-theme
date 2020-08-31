@@ -1,0 +1,110 @@
+{% comment %}
+  @param two_image_01, two_image_02
+  @param two_image_size
+  @param two_top_bottom_padding
+  @param two_top_bottom_section
+  @param two_title_01, title_02
+  @param two_link_01, link_02
+  @param two_description_01, two_description_02
+  @param two_background_color
+  @param two_full_width
+  @param two_section_background_color
+{% endcomment %}
+
+{% if two_image_size == 0 %}
+  {% assign image_visible = 'image-visible_off' %}
+{% else %}
+  {% assign image_visible = 'image-visible_on' %}
+{% endif %}
+
+{% if two_link_01 %}
+{% else %}
+  {% assign link_hover_one = 'no_link_hover_effect' %}
+{% endif %}
+
+{% if two_link_02 %}
+{% else %}
+  {% assign link_hover_two = 'no_link_hover_effect' %}
+{% endif %}
+
+{% if two_link_01 %}
+{% else %}
+  {% assign link_hover_one = 'no_link_hover_effect' %}
+{% endif %}
+
+{% if two_full_width %}
+  {% assign full_width_container = '' %}
+{% else %}
+  {% assign full_width_container = 'component-two-contain' %}
+{% endif %}
+
+
+{% if two_box_shadow %}
+  {% assign box_shadow = 'component-two-shadow' %}
+{% else %}
+  {% assign box_shadow = '' %}
+{% endif %}
+
+
+{% if two_background_image %}
+  {% assign imageToBackground = 'component-two-bg-image' %}
+{% else %}
+  {% assign imageToBackground = '' %}
+{% endif %}
+
+
+<span class="component-two-bg" style="background: {{ two_background_color }};">
+<div class="component-two-cols {{ full_width_container }}" style="padding: {{ two_top_bottom_padding }}px 0;">
+  <div class="component-two {{ box_shadow }}" style="{% if two_image_01 == blank %}text-align: left;{% if two_full_width %}padding-left:7%;{% endif %}{% endif %}">
+    <{%if two_link_01 != blank%}a href="{{ two_link_01 }}"{% else %}div{% endif %} class="{{ link_hover_one }}" style="background: {{ two_section_background_color_01 }};
+                                                                    {% if two_image_01 == blank %}{% else %}padding:{{ two_block_height }}px 0;{% endif %}">
+      
+      {% if two_title_01 != blank %}
+      {% if two_headline_01 == 'h4' %}<h4 class="h3 component-two-cols__title">{{ two_title_01 }}</h4>{% endif %}
+      {% if two_headline_01 == 'h3' %}<h3 class="h3 component-two-cols__title">{{ two_title_01 }}</h3>{% endif %}
+      {% if two_headline_01 == 'h2' %}<h2 class="h3 component-two-cols__title">{{ two_title_01 }}</h2>{% endif %}
+      {% if two_headline_01 %}{% else %}<h3 class="h3 component-two-cols__title">{{ two_title_01 }}</h3>{% endif %}
+      {% endif %}
+      
+      <p class="component-two-cols__description">{{ two_description_01 }}</p>
+      
+      
+      <img
+        class="component-two-cols_image lazyload {{ image_visible }} {{ imageToBackground }}"
+        src="{{ two_image_01 | img_url: '1x1' }}"
+        data-src="{{ two_image_01 | img_url: '1x1' }}"
+        data-sizes="auto"
+        data-srcset="{% include 'bgset' image: two_image_01 %}"
+        style="width:{{ two_image_size }}%; {% if two_image_01 == blank %}display: none !important;{% endif %}"
+      />
+      
+    </{%if two_link_01 != blank%}a{% else %}div{% endif %}>
+  </div>
+  
+  <div class="component-two {{ box_shadow }}" style="{% if two_image_02 == blank %}text-align: left;{% if two_full_width %}padding-right:7%;{% endif %}{% endif %}">
+ 	<{%if two_link_02 != blank%}a href="{{ two_link_02 }}"{% else %}div{% endif %} class="{{ link_hover_two }}" style="background: {{ two_section_background_color_02 }};
+                                                                    {% if two_image_02 == blank %}{% else %}padding:{{ two_block_height }}px 0;{% endif %}">
+      
+      {% if two_title_02 != blank %}
+      {% if two_headline_02 == 'h4' %}<h4 class="h3 component-two-cols__title">{{ two_title_02 }}</h4>{% endif %}
+      {% if two_headline_02 == 'h3' %}<h3 class="h3 component-two-cols__title">{{ two_title_02 }}</h3>{% endif %}
+      {% if two_headline_02 == 'h2' %}<h2 class="h3 component-two-cols__title">{{ two_title_02 }}</h2>{% endif %}
+      {% if two_headline_02 %}{% else %}<h3 class="h3 component-two-cols__title">{{ two_title_02 }}</h3>{% endif %}
+      {% endif %}
+      
+      <p class="component-two-cols__description">{{ two_description_02 }}</p>
+      
+      <img
+        class="component-two-cols_image lazyload {{ image_visible }} {{ imageToBackground }}"
+        src="{{ two_image_02 | img_url: '1x1' }}"
+        data-src="{{ two_image_02 | img_url: '1x1' }}"
+        data-sizes="auto"
+        data-srcset="{% include 'bgset' image: two_image_02 %}"
+        style="width:{{ two_image_size }}%; {% if two_image_02 == blank %}display: none !important;{% endif %}"
+      />
+
+    </{%if two_link_02 != blank%}a{% else %}div{% endif %}>
+  </div> 
+  
+</div>
+</span>

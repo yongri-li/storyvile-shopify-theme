@@ -1,4 +1,4 @@
-{{ 'theme.subscription-builder-v2.js' | asset_url | script_tag }}
+{{ 'theme.subscription-builder-v3.js' | asset_url | script_tag }}
 
 
 {% section 'page-subscribe-v3-template' %}
@@ -22,9 +22,10 @@
 </div>
 
   
-
+{% comment %}
 
 <!-- Warning: Do not remove.This is used for CartHook Checkout Replacement -->
 {% capture the_snippet_content %}{% include 'carthook-checkout' %} {% endcapture %} {% unless the_snippet_content contains "Liquid error" %} {% include 'carthook-checkout' %} {% endunless %}
 <!-- Warning: Do not remove.This is used for CartHook Checkout Replacement -->
     
+{% endcomment %}

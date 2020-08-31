@@ -1,0 +1,60 @@
+<style>
+@import url('https://fonts.googleapis.com/css?family=Archivo+Narrow:400,600,700');
+
+  .site-header{max-width: 1050px; margin: 0 auto;}
+  .site-header .grid--table>.grid__item{padding-top: 30px;}
+  
+  
+  .site-header{padding: 0 30px !important;}
+  
+  .main-content{padding-bottom: 0 !important; padding-top: 0px !important;margin-top: -100px;}
+  
+  .wrapper{
+  	max-width: 100%;
+  	padding:0 !important;
+  }
+  
+  h3, h2,p{
+	text-align: left;
+  }
+  h2{
+    color:#222323 !important;
+    font-size: 50px;
+    letter-spacing: 0.01em !important;
+    margin-top: 35px !important;
+  }
+  
+  h3{
+    margin:0;
+    margin-top: 20px;
+    font-size: 17px;
+	font-weight: bold;
+  }
+  
+  .menu-contain #shopify-section-sections-menu-list{
+  	width: 95%;
+    max-width: 1080px;
+    display:flex;
+    justify-content:  space-between;
+    margin: 0 auto;
+    margin-bottom: 80px;
+  }
+  
+  .menu_category{
+  	flex-basis: 45%;
+  }
+  
+  @media all and (max-width:768px){
+    .menu-contain #shopify-section-sections-menu-list{
+    	display:block;
+    }
+  }
+  
+  
+</style>
+
+{% section 'sections-menu' %}
+
+<div class="menu-contain">
+{% section 'sections-menu-list' %}
+</div>

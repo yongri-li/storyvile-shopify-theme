@@ -3,4 +3,28 @@
   The contents of the collection.liquid template can be found in /sections/collection-template.liquid
 {% endcomment %}
 
-{% section 'collection-template' %}
+
+<!------------->
+
+{% if collection.handle == "brewing-equipment" %}
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Archivo+Narrow:400,600,700');
+       .site-header{max-width: 1050px; margin: 0 auto;}
+
+
+      .site-header{padding: 0 30px !important;}
+
+      .main-content{padding-bottom: 0 !important; padding-top: 0px !important;margin-top: -110px;}
+
+      .wrapper{max-width: 100%;width: 100%;padding:0;}
+
+
+    </style>
+	{% section 'hardware-sections' %}
+{% endif %}
+
+<!------------->
+
+{% if collection.handle != "brewing-equipment" %}
+	{% section 'collection-template' %}
+{% endif %}

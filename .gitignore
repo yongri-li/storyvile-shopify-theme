@@ -2,3 +2,4 @@ yarn-error.log
 node_modules/
 .DS_Store
 config/settings_data.json
+config.yml

@@ -37,6 +37,7 @@
           Loop through products in the cart
         {% endcomment %}
         {% for item in cart.items %}
+		{% unless item.product.title contains 'Mystery Gift' %}
 		 <div class="cart__row">
             <div class="grid--full cart__row--table-large">
 
@@ -73,7 +74,7 @@
                     {% if property_size > 0 %}
                       {% for p in item.properties %}
                         {% assign first_character_in_key = p.first | truncate: 1, '' %}
-                        {% unless p.last == blank or p.first == "subscription_id" or p.first == "shipping_interval_frequency" or p.first == "shipping_interval_unit_type" or first_character_in_key == '_' %}
+                        {% unless p.last == blank or p.first == "subscription_id" or p.first == "shipping_interval_frequency" or p.first == "shipping_interval_unit_type"  or p.first == "charge_interval_unit_type" or p.first == "charge_interval_frequency" or first_character_in_key == '_' or p.first == "gift"%}
                           {{ p.first }}:
 
                           {% if p.last contains '/uploads/' %}
@@ -131,8 +132,11 @@
                       %}
 
                     {% else %}
-                      <input type="number" name="updates[]" id="updates_{{ item.key }}" class="cart__product-qty" value="{{ item.quantity }}" min="0" data-id="{{ item.key }}">
-
+                    
+                      
+                      	<input type="number" name="updates[]" id="updates_{{ item.key }}" class="cart__product-qty" value="{{ item.quantity }}" min="0" data-id="{{ item.key }}" >
+					  
+                    
                     {% endif %}
                     
                     
@@ -176,8 +180,49 @@
 
             </div>
           </div>
+        {% endunless %}
+        
+        
  {% endfor %}
 
+{% assign gift_items = cart.items | where: "title", "Mystery Gift Item" %}
+        
+{% for item in gift_items %}
+
+   <div class="cart__row">
+    <div class="grid--full cart__row--table-large">
+
+     <div class="grid__item large--four-fifths">
+      <div class="grid">
+                  
+        <div class="grid__item one-third">
+            <a class="cart__image">
+              <img src="{{ item | img_url: 'medium' }}" alt="{{ item.title | escape }}">
+            </a>
+        </div>
+        
+        <div class="grid__item two-thirds">
+        <a class="h4 cart__product-name">{{ item.product.title }}<br><br></a>
+        </div>
+        </div>
+       </div>
+        
+      <div class="grid__item large--one-fifth">
+        <div class="grid--full cart__row--table">
+        <div class="grid__item text-right cartProductPrices">
+             <p class="cart__product-meta">
+              <a href="/cart/change?line={{ forloop.index }}&amp;quantity=0" class="cartRemoveProduct">
+                 {{ 'cart.general.remove' | t }}
+              </a>
+            </p>
+        </div>
+        </div>
+       </div>
+      </div>
+    </div>
+
+{% endfor %}
+        
 
 
         <div class="cart__row cartCheckoutButtons text-right">
@@ -201,13 +246,9 @@
             <div class="grid__item checkoutButtons{% unless settings.cart_notes_enable %} {% endunless %}">
               <div class="grid--full cart__row--table">
                   <p class="cart__subtotal subtotalLabel">{{ 'cart.general.subtotal' | t }}</p>
-                  <p class="cart__subtotal productPriceTotal"><span class="wh-original-cart-total"><span class='wh-original-price'>{{ cart.total_price | money | remove: '.00'}}</span></span><span class="wh-cart-total"></span><div class="additional-notes"><span class="wh-minimums-note"></span><span class="wh-extra-note"></span></div></p>
+                  <p class="cart__subtotal productPriceTotal"><span class="wh-original-cart-total"><span class='wh-original-price'>{{ cart.total_price | money | remove: '.00'}}</span></span><span class="wh-cart-total"></span></p>
               </div>
 
-              {% if cart.total_discounts > 0 %}
-                {% assign cartTotalDiscounts = cart.total_discounts | money%}
-                <p class="cart__savings">{{ 'cart.general.savings_html' | t: savings: cartTotalDiscounts }}</p>
-              {% endif %}
              <!-- <p><em>{{ 'cart.general.shipping_at_checkout' | t }}</em></p>-->
 
               <button type="submit" name="checkout" class="btn cart__checkout">
@@ -215,16 +256,29 @@
               </button>
 
               {% if additional_checkout_buttons and settings.cart_type != 'drawer' %}
-                <div class="additional_checkout_buttons"><span class="additional-checkout-buttons">{{ content_for_additional_checkout_buttons }}</span></div>
+                <!--<div class="additional_checkout_buttons"><span class="additional-checkout-buttons">{{ content_for_additional_checkout_buttons }}</span></div>-->
               {% endif %}
             
-            
-            <p class="ourPromiseToYou">Our promise: If you don't love your coffee, it's on us. Give us a call at 206-780-5777 and we'll take care of you.</p>
-            
+              
+            <p class="ourPromiseToYou">
+              {% if cart.total_discounts > 0 %}
+                {% assign cartTotalDiscounts = cart.total_discounts | money%}
+                <span class="cart__savings">{{ 'cart.general.savings_html' | t: savings: cartTotalDiscounts }}</span>
+              <br> <br>
+               <span class="cartCheckoutButtons">
+              	<hr>
+              </span>
+              {% endif %}
+              Our promise: If you don't love your coffee, it's on us. Give us a call at 206-780-5777 and we'll take care of you.</p>
+            <!--
+			FOR DEBUGGING PURPOSES ONLY
+			{{ cart.attributes.email }}
+            {{ cart.attributes.coupon }}
+			-->
             </div>
           
           </div>
-
+          <!--<a href="/a/gs/cart/">Want to shop to multiple addresses?</a>-->
         </div>
 
       </form>
@@ -242,3 +296,119 @@
     {% endif %}
   </div>
 </div>
+
+
+
+
+
+
+<script>
+  
+function getQueryStringAsObject() {
+  var search = location.search.substring(1);
+  return search ? JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}') : {};
+}
+  
+	var query = getQueryStringAsObject();
+  
+    var $getID = query.klaviyo_user;
+  
+    var k_id = '';
+  	var customerEmail = '';
+  
+    if (typeof $getID !== "undefined"){
+          var k_id = $getID;
+    }
+  
+
+          
+ 	var $getCouponCode = query.utm_coupon;
+  	var couponCode = '';
+    
+    if (typeof $getCouponCode !== "undefined"){
+          couponCode = $getCouponCode;
+    }
+  
+  
+	function updateAttributes(){
+
+      var cartAttributes = {
+             attributes: {
+               'email': customerEmail,
+               'coupon': couponCode
+       		 }
+       };
+
+      $.post('/cart/update.json', cartAttributes).done(function () {   
+        console.log('Updated Cart Attributes: ' + couponCode + ' and ' + customerEmail);
+      });  
+  
+	}
+
+  
+  
+  
+// GET EMAIL AND KLAVIYO DATA
+
+  $.ajax({
+    url         : "https://meraki.storyville.com/klaviyo-apps/id-lookup.php",
+    data        : { "klaviyo_id": k_id },
+    dataType    : 'json',
+    type        : 'GET',
+    crossDomain : true,
+    contentType : "application/json; charset=utf-8",
+    error       : function(err) {
+
+      console.log("Could not reach meraki.storyville.com for ID retrival");
+
+    },
+
+    success : function(data) {
+
+      if (data.result == "failure") {
+
+         console.log("Could not sync with Klaviyo.", false);
+         console.log("Error message: " + data.message, false);
+
+
+      } else {
+
+        console.log("Success! Retrieved email from Klaviyo ID: " + data.email, true);
+
+        customerEmail = (data.email.indexOf('+') > -1) ? (data.email.replace(/\+/g,'%2B')) : data.email;
+
+
+        updateAttributes();
+
+     }
+
+
+
+
+    }});
+
+</script>
+
+
+
+
+
+<script>
+  var content = '';
+	 
+  {% if cart.attributes.content %}
+  	content = 'utm_content=' + "{{ cart.attributes.content }}";
+  {% endif %}
+    
+      var ch_params = [
+      	'email=' + "{{ cart.attributes.email }}",
+      	'coupon=' + "{{ cart.attributes.coupon }}",
+        'utm_coupon=' + "{{ cart.attributes.coupon }}",
+        'additionalNote=' + "order number 0",
+        content
+      ];
+    
+      window.ch_cust_param = ch_params.join('&');
+  
+
+</script>

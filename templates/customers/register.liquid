@@ -4,64 +4,221 @@
 
   <div class="grid__item large--one-third push--large--one-third text-center accountGridItem">
 
-    <header class="section-header">
-      <h1>{{ 'customer.register.title' | t }}</h1>
-    </header>
+{% capture register_here %}
+  <a href="/account/register">{{ 'shopify.notices.customer.register_link' | t }}</a>
+{% endcapture %}
 
-    <div class="form-vertical">
-      {% form 'create_customer' %}
+    {% comment %}
+      If a user has successfully requested a new password, the form.posted_successfully? variable
+      is set to true within the 'recover_customer_password' form only. Within that form you'll see
+      the variable 'resetPassword' set to true, which is used to initialize timber.resetPasswordSuccess().
+    {% endcomment %}
+    <div class="note form-success" id="ResetSuccess" style="display:none;">
+      {{ 'customer.recover_password.success' | t }}
+    </div>
 
-        {{ form.errors | default_errors }}
-<!--
-        <label for="FirstName" class="hidden-label">{{ 'customer.register.first_name' | t }}</label>
-        <input type="text" name="customer[first_name]" id="FirstName" class="input-full" placeholder="{{ 'customer.register.first_name' | t }}" {% if form.first_name %}value="{{ form.first_name }}"{% endif %} autocapitalize="words" autofocus>
+    <div id="CustomerLoginForm" class="form-vertical">
+      <h1>MY ACCOUNT</h1>
+      <p>To log in, please enter your account credentials below. To register a new account, enter your email and desired password below.</p>
+      
+      <br>
+      
+           
 
-        <label for="LastName" class="hidden-label">{{ 'customer.register.last_name' | t }}</label>
-        <input type="text" name="customer[last_name]" id="LastName" class="input-full" placeholder="{{ 'customer.register.last_name' | t }}" {% if form.last_name %}value="{{ form.last_name }}"{% endif %} autocapitalize="words">
--->
-        <label for="Email" class="hidden-label">{{ 'customer.register.email' | t }}</label>
-        <input type="email" name="customer[email]" id="Email" class="input-full{% if form.errors contains 'email' %} error{% endif %}" placeholder="{{ 'customer.register.email' | t }}" {% if form.email %} value="{{ form.email }}"{% endif %} autocorrect="off" autocapitalize="off">
+      <!-- LOGIN FORM -->
+      {% form 'customer_login' %}
+      
+      	{% if form.errors %}
+      
+        {% for field in form.errors %}
+           {% if form.errors.messages[field] contains "verify" %}
+      		  <div class="verify_account">
+      		  {{ form.errors.messages[field] }}
+      		  </div>
+      	   {% else %}
+      		  <div class="errors"><ul><li>{{ form.errors.messages[field] }}</li></ul></div>
+           {% endif %}
+          {% endfor %}
+      
+        {% endif %}
+      
+      
+		<input type="hidden" name="return_url" value="/account">
+        
+        <label for="CustomerEmail" class="hidden-label">{{ 'customer.login.email' | t }}</label>
+        <input type="email" name="customer[email]" id="CustomerEmail" onblur="document.getElementById('Email').value=this.value;" class="input-full" placeholder="{{ 'customer.login.email' | t }}" autocorrect="off" autocapitalize="off">
 
-        <label for="CreatePassword" class="hidden-label">{{ 'customer.register.password' | t }}</label>
-        <input type="password" name="customer[password]" id="CreatePassword" class="input-full{% if form.errors contains 'password' %} error{% endif %}" placeholder="{{ 'customer.register.password' | t }}">
+        {% if form.password_needed %}
+          <label for="CustomerPassword" class="hidden-label">{{ 'customer.login.password' | t }}</label>
+          <input type="password" value="" name="customer[password]" id="CustomerPassword" onblur="document.getElementById('CreatePassword').value=this.value;" class="input-full" placeholder="{{ 'customer.login.password' | t }}">
+        {% endif %}
 
         <p>
-          <input type="submit" value="{{ 'customer.register.submit' | t }}" class="btn btn--full">
+          <a class="btn btn--full submit-acc" onclick="authenticate();">SUBMIT</a>
+          <input class="btn btn--full" id="CustomerLogin" value="{{ 'customer.login.sign_in' | t }}" style="display:none;">
         </p>
-      <p style="font-size: 14px;"><a href="/account">Already have an account? <u>Sign In Here</u></a></p>
-
+      
       {% endform %}
+      
+      
+      <!-- REGISTER FORM -->
+            
+      <span style="display:none;">
+      {% form 'create_customer' %}
+
+        <input type="hidden" name="return_to" value="/account">
+      
+        <label for="Email" class="hidden-label">{{ 'customer.register.email' | t }}</label>
+        <input type="email" name="customer[email]" id="Email"  class="input-full" placeholder="{{ 'customer.login.email' | t }}" {% if form.email %} value="{{ form.email }}"{% else %}{% endif %} autocorrect="off" autocapitalize="off">
+
+        <label for="CreatePassword" class="hidden-label">{{ 'customer.register.password' | t }}</label>
+        <input type="password" name="customer[password]" id="CreatePassword" class="input-full" placeholder="{{ 'customer.login.password' | t }}">
+
+        <p>
+          
+          <input type="submit" id="createAccountButton" value="{{ 'customer.register.submit' | t }}" class="btn btn--full" style="display:none;">
+        </p>
+      
+      {% endform %}
+      </span>
+
+      <p><a href="#recover" id="RecoverPassword">Forgot Your Password?</a></p>
+      
+      
+      <script>
+
+
+        function authenticate(){
+          
+          var email = document.getElementById('CustomerEmail').value; 
+          
+          if (email){$(".submit-acc").addClass("btn--loading");}
+          
+          var email_encoded = email.replace(/\+/g, "%2b");
+          console.log(email_encoded);
+          
+          
+          var email_data;
+          
+          $.ajax({
+
+              url : 'https://my.storyville.com/api/customers/check?email=' + email_encoded,
+              type : 'GET',
+              dataType:'json',
+              success : function(data) {
+                
+                  email_data = data;
+                  console.log(data);
+                
+              },
+              error : function(error)
+              {
+                
+                email_data = error;
+                
+                console.log("ERROR COULD NOT ACCESS GET: ");;
+                console.log(error);
+                
+                document.getElementById('customer_login').submit();
+
+              }
+          }).done( function(){
+          
+            if(email_data.exists){
+            	console.log("Customer has an account");
+                document.getElementById('customer_login').submit();
+            } else{
+            	console.log("Customer does not have an account");
+                document.getElementById('create_customer').submit();
+            }
+          		
+          });
+        };
+        
+        
+      </script>
+
+      
+      
+      
     </div>
+
+    {% comment %}
+      JS shows/hides this form in timber.loginForms()
+    {% endcomment %}
+    <div id="RecoverPasswordForm" style="display: none;">
+
+      <p>{{ 'customer.recover_password.subtext' | t }}</p>
+      <hr class="hr--small">
+
+      <div class="form-vertical">
+        
+        
+        {% form 'recover_customer_password' %}
+
+          {% if form.errors %}
+        	<div class="errors">
+              <ul>
+                <li>{{ 'shopify.notices.customer.no_account_found_html' | t }}</li>
+              </ul>
+       		</div>
+          {% endif %}
+
+
+        
+          {% comment %}
+            Assign variable to be used after timber.init() is run in theme.liquid
+          {% endcomment %}
+        
+          {% if form.posted_successfully? %}
+            {% assign resetPassword = true %}
+          {% endif %}
+
+          <label for="RecoverEmail" class="hidden-label">{{ 'customer.recover_password.email' | t }}</label>
+          <input type="email" value="" name="email" id="RecoverEmail" class="input-full" placeholder="{{ 'customer.recover_password.email' | t }}" autocorrect="off" autocapitalize="off">
+
+          <p>
+            <input type="submit" class="btn btn--full" value="{{ 'customer.recover_password.submit' | t }}">
+          </p>
+          <button type="button" id="HideRecoverPasswordLink">{{ 'customer.recover_password.cancel' | t }}</button>
+        {% endform %}
+      </div>
+
+    </div>
+
+    {% comment %}
+      If accounts are set as optional, the following will be shown as an option
+      during checkout, not on the default /login page.
+    {% endcomment %}
+    {% if shop.checkout.guest_login %}
+      <hr class="hr--clear">
+
+      <h1>{{ 'customer.login.guest_title' | t }}</h1>
+      <hr class="hr--small">
+
+      {% form 'guest_login' %}
+        <input type="submit" class="btn" value="{{ 'customer.login.guest_continue' | t }}">
+      {% endform %}
+    {% endif %}
 
   </div>
 
 </div>
 
-
-
-
-
-
 <script>
-  
-function getUrlParams(){
-  var params = {};
-  var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value){
-  		params[key] = value;
-  });
-  return params;
-}
-  
-$(window).load(function() {
-  var $getEmail = getUrlParams()["utm_email"];
-  var email = '';
-    
-  if (typeof $getEmail !== "undefined"){
-        var email = $getEmail.replace(/%40/i, '@');
-  }
-  
-  document.getElementById('Email').value = email;
-});
 
   
+  $(function() {
+    $('#customer_login').submit(function() {
+            
+	        {% if customer.metafields.subscriptions.customer_string %}
+      		console.log("is a subscriber");
+  			window.location = "https://storyville.com/tools/recurring/portal/{{ customer.metafields.subscriptions.customer_string }}/subscriptions";
+            {% else %}
+            window.location = "https://storyville.com/account"
+            {% endif %}
+            
+    }); 
+  });
+
 </script>

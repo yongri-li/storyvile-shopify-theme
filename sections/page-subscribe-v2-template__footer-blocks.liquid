@@ -17,9 +17,21 @@
           include 'component-banner'
             title : block.settings.title,
             description : block.settings.description,
+			button : block.settings.button,
+			url : block.settings.url,
             text_position : block.settings.text_position,
             background_image : block.settings.background_image,
-            use_dark_text: block.settings.use_dark_text
+            use_dark_text : block.settings.use_dark_text,
+			use_large_text : block.settings.use_large_text,
+            mobile_bump : block.settings.mobile_bump,
+            desc_size : block.settings.desc_size,
+            title_size : block.settings.title_size,
+			full_width_text : block.settings.full_width_text,
+			banner_height : block.settings.banner_height,
+			banner_text_offset : block.settings.banner_text_offset,
+			banner_bg : block.settings.banner_bg,
+			banner_max_width : block.settings.banner_max_width,
+			fixed_position : block.settings.fixed_position
         %}
 
     {% endcase %}
@@ -73,9 +85,40 @@
             "label": "Title"
           },
           {
-            "type": "richtext",
+            "type": "range",
+            "id": "title_size",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "label": "Title Size",
+            "default": 40
+
+          },
+          {
+            "type": "textarea",
             "id": "description",
             "label": "Description"
+          },
+          {
+            "type": "range",
+            "id": "desc_size",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "label": "Desc Size",
+            "default": 17
+          },
+          {
+            "type": "text",
+            "id": "button",
+            "label": "Button Text"
+          },
+          {
+            "type": "url",
+            "id": "url",
+            "label": "Button URL (required)"
           },
           {
             "type": "select",
@@ -89,6 +132,10 @@
               {
                 "value": "right",
                 "label": "Right"
+              },
+			  {
+                "value": "center",
+                "label": "Center"
               }
             ],
             "default": "left",
@@ -98,8 +145,93 @@
             "type": "checkbox",
             "id": "use_dark_text",
             "label": "Use dark text",
-            "default": false,
-            "info": "For light background images"
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "mobile_bump",
+            "label": "Seperate on mobile",
+            "default": true,
+            "info": "Seperate the image from the text"
+          },
+          {
+            "type": "checkbox",
+            "id": "full_width_text",
+            "label": "Full Width Text",
+            "default": false
+          },
+          {
+            "type": "range",
+            "id": "banner_height",
+            "min": 200,
+            "max": 900,
+            "step": 50,
+            "unit": "px",
+            "label": "Adjust Banner Height",
+            "default": 700
+          },
+          {
+            "type": "range",
+            "id": "banner_text_offset",
+            "min": -400,
+            "max": 400,
+            "step": 10,
+            "unit": "px",
+            "label": "Adjust Text Offset",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "banner_max_width",
+            "min": 0,
+            "max": 1600,
+            "step": 50,
+            "unit": "px",
+            "label": "Image Max Width",
+            "default": 0
+          },
+          {
+            "type": "select",
+            "id": "fixed_position",
+            "label": "Fixed Background Position",
+            "options": [
+              {
+                "value": "top",
+                "label": "Top Center"
+              },
+              {
+                "value": "top_right",
+                "label": "Top Right"
+              },
+              {
+                "value": "top_left",
+                "label": "Top Left"
+              },
+              {
+                "value": "center",
+                "label": "Center Center"
+              },
+			  {
+                "value": "bottom",
+                "label": "Bottom Center"
+              },
+			  {
+                "value": "bottom_right",
+                "label": "Bottom Right"
+              },
+			  {
+                "value": "bottom_left",
+                "label": "Bottom Left"
+              }
+            ],
+            "default": "center",
+            "info": "Where should the background expand from"
+          },
+          {
+            "type": "color",
+            "id": "banner_bg",
+            "label": "Background Color",
+			"default": "#ffffff"
           }
         ]
       }
