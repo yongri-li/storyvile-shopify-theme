@@ -1,0 +1,29 @@
+{% layout none %}<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+<channel>
+    <title>{{shop.name}} Products</title>
+    <description>Storyville Coffee</description>
+    <link>{{shop.url}}</link>
+{% paginate collections.all.products  by 1000 %}{% for product in collections.all.products  %}{% if product.type != 'Sample' %}
+ <item>
+   <title><![CDATA[{{product.title | strip_html}}]]></title>
+   <g:brand>Storyville Coffee</g:brand>
+   <g:mpn>{{ product.selected_or_first_available_variant.sku }}</g:mpn>
+   <g:product_type>Food, Beverages & Tobacco &gt; Beverages &gt; Coffee</g:product_type>
+   <g:id>{{product.id}}</g:id>
+   <g:description><![CDATA[{{product.metafields.product_about.about_content.html }}]]></g:description>
+
+   <g:image_link>https:{{product.featured_image | product_img_url: 'large'}}</g:image_link>
+   <link>{{shop.url}}{{product.url}}</link>
+   <guid>{{shop.url}}{{product.url}}</guid>
+   <g:payment_accepted>Visa</g:payment_accepted>
+   <g:payment_accepted>MasterCard</g:payment_accepted>
+   <g:payment_accepted>PayPal</g:payment_accepted>
+  <g:availability>in_stock</g:availability>
+   <g:price>{{product.price | money_without_currency}} USD</g:price>
+   <g:quantity>1</g:quantity>
+ 
+ </item>
+{% endif %}{% endfor %}{% endpaginate %}
+</channel>
+</rss>
