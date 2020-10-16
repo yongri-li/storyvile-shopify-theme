@@ -165,6 +165,8 @@ var onetime = {
   var customerEmail = '';
   
   var $getCouponCode = query.utm_coupon;
+
+  if (sessionStorage.getItem('promocode')) $getCouponCode = sessionStorage.getItem('promocode');
   
   var couponCode =  "{{ settings.onsite_coupon }}";
   
@@ -1094,8 +1096,8 @@ function addToCartCarthook(){
             .done(function () {
 
               debug('Successfully changed the quantity of ' + cartItem.id);
-
-              window.testGlobalBeforeReact(0);
+              if(sessionStorage.getItem('recharge_checkout')) window.location.href = getCheckoutUrl();
+              else window.testGlobalBeforeReact(0);
 
             });
           
@@ -1106,7 +1108,8 @@ function addToCartCarthook(){
             
             debug('Successfully added item to the cart');
 
-            window.testGlobalBeforeReact(0);
+            if (sessionStorage.getItem('recharge_checkout')) window.location.href = getCheckoutUrl();
+            else window.testGlobalBeforeReact(0);
           });
         }
         

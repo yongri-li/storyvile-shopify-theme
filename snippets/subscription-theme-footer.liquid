@@ -76,7 +76,10 @@
                                         var paramLinker = '';
                                     }
                                     var paramCustomer = '{% if customer %}&customer_id={{ customer.id }}&customer_email={{ customer.email }}{% endif %}';
-                                    window.location = "https://checkout.rechargeapps.com/r/checkout?" + paramDomain +  paramCart + paramLinker + paramCustomer;
+									var discount = '';
+									if(sessionStorage.getItem('promocode')) discount = '&discount='+sessionStorage.getItem('promocode');
+
+                                    window.location = "https://checkout.rechargeapps.com/r/checkout?" + paramDomain +  paramCart + paramLinker + paramCustomer + discount;
                                 } else {
                                     window.location = '/checkout';
                                 }

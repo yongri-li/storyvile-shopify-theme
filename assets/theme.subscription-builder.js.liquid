@@ -129,11 +129,15 @@ $(function () {
 
   function getCheckoutUrl(cart) {
     var token = cart ? cart.token : state.cartToken;
+    
+    var discount = '';
+    if (sessionStorage.getItem('promocode'))  discount = sessionStorage.getItem('promocode');
 
     if (token) {
       var params = [
         'cart_token=' + state.cartToken,
-        'myshopify_domain=' + options.shopify_domain
+        'myshopify_domain=' + options.shopify_domain,
+        'discount=' + discount
       ];
       return 'https://checkout.rechargeapps.com/r/checkout?' + params.join('&') + '&discount=' + couponCode;
     } else {

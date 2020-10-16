@@ -669,7 +669,8 @@ function addToCartCarthook(is_customer){
 
               
               if (is_customer){
-                window.testGlobalBeforeReact(0);
+                if (sessionStorage.getItem('recharge_checkout')) window.location.href = getCheckoutUrl();
+                else window.testGlobalBeforeReact(0);
               } else{  			  
                 document.getElementById("createAccountButton").click();
                 //window.testGlobalBeforeReact(0);
@@ -685,7 +686,8 @@ function addToCartCarthook(is_customer){
             debug('Successfully added item to the cart');
 			
               if (is_customer){
-                window.testGlobalBeforeReact(0);
+                if (sessionStorage.getItem('recharge_checkout')) window.location.href = getCheckoutUrl();
+                else window.testGlobalBeforeReact(0);
               } else{  			  
                 document.getElementById("createAccountButton").click();
                 //window.testGlobalBeforeReact(0);

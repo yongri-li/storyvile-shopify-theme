@@ -58,6 +58,15 @@
     };
   </script>
 
+  <script>    
+    var params = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value){
+        params[key] = value;
+    });
+    if(params['promocode']) sessionStorage.setItem('promocode',params['promocode']);
+    if(params['recharge_checkout']) sessionStorage.setItem('recharge_checkout',params['promocode']);
+  </script>
+
   {{ 'jquery-2.2.3.min.js' | asset_url | script_tag }}
 
   <!--[if (gt IE 9)|!(IE)]><!--><script src="{{ 'lazysizes.min.js' | asset_url }}" async="async"></script><!--<![endif]-->

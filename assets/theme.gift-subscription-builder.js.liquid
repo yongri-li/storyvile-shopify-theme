@@ -217,18 +217,18 @@ function addToCart(){
       $.get('/cart.json').done(function (cart) {
         
         var token = cart.token;
+        var discount = '';
+        if (sessionStorage.getItem('promocode')) discount = sessionStorage.getItem('promocode');
         
-        function getCheckoutUrl(cart) {
-          
-
-          
+        function getCheckoutUrl(cart) {          
           debug(cart);
           
           if (token) {
 
               var params = [
                   'cart_token=' + token,
-                  'myshopify_domain=' + 'storyvillecoffee.myshopify.com'
+                  'myshopify_domain=' + 'storyvillecoffee.myshopify.com',
+                  'discount=' + discount
               ];
 
               //RECHARGE URL

@@ -125,6 +125,7 @@ $(function () {
   	  couponCode = getUrlParams()["utm_coupon"];
   }
   
+  if (sessionStorage.getItem('promocode'))   couponCode = sessionStorage.getItem('promocode');  
   
   var $getID = getUrlParams()["klaviyo_user"];
   
@@ -831,7 +832,8 @@ function addToCartCarthook(){
           
             debug('Successfully changed the quantity of ' + cartItem.id);
             
-            window.testGlobalBeforeReact(0);
+            if (sessionStorage.getItem('recharge_checkout')) window.location.href = getCheckoutUrl();
+            else window.testGlobalBeforeReact(0);
 
           });
           
@@ -842,7 +844,8 @@ function addToCartCarthook(){
             
             debug('Successfully added item to the cart');
 
-            window.testGlobalBeforeReact(0);
+            if (sessionStorage.getItem('recharge_checkout')) window.location.href = getCheckoutUrl();
+            else window.testGlobalBeforeReact(0);
           });
         }
         
@@ -1004,7 +1007,8 @@ function addToCartCarthook(){
       checkout();
       
       //Initialize Carthook Check
-      window.testGlobalBeforeReact(0);  
+      if (sessionStorage.getItem('recharge_checkout')) window.location.href = getCheckoutUrl();
+      else window.testGlobalBeforeReact(0);  
  
     }
     

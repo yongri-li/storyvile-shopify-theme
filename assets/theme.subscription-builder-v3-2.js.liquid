@@ -168,6 +168,7 @@ var onetime = {
   
   var couponCode = 'FRESH';
   
+  if (sessionStorage.getItem('promocode'))   couponCode = sessionStorage.getItem('promocode');    
   
   if (query.utm_coupon){
   	var multiple_coupons = query.utm_coupon.includes("-") ? query.utm_coupon.split("-") : '';
@@ -1087,7 +1088,8 @@ function addToCartCarthook(){
             
             debug('Successfully added item to the cart');
 
-            window.testGlobalBeforeReact(0);
+            if (sessionStorage.getItem('recharge_checkout')) window.location.href = getCheckoutUrl();
+            else window.testGlobalBeforeReact(0);
           });
         
         });
