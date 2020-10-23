@@ -772,16 +772,28 @@ function addToCartCarthook(){
       var productOption = state.productOptions[state.selectedQuantity];
       var unitVariant = getUnitVariant();
 
-      var cartItem = {
-        id: unitVariant.id,
-        quantity: productOption.quantity,
-        note: "order number 0",
-        properties: {
-          'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
-          'shipping_interval_unit_type': product.shipping_interval_unit_type,
-          'subscription_id': product.subscription_id
-        }
-      };
+      if (sessionStorage.getItem('recharge_checkout')) {
+        var cartItem = {
+          id: unitVariant.id,
+          quantity: productOption.quantity,
+          properties: {
+            'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
+            'shipping_interval_unit_type': product.shipping_interval_unit_type,
+            'subscription_id': product.subscription_id
+          }
+        };
+      } else {
+        var cartItem = {
+          id: unitVariant.id,
+          quantity: productOption.quantity,
+          note: "order number 0",
+          properties: {
+            'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
+            'shipping_interval_unit_type': product.shipping_interval_unit_type,
+            'subscription_id': product.subscription_id
+          }
+        };
+      }
       
 
       $.get('/cart.json').done(function (cart) {

@@ -187,17 +187,29 @@
               };
               
             } else {
-              
-              var cartItem = {
-                id: state.id,
-                quantity: state.quantity,
-                note: "order number 0",
-                properties: {
-                  'shipping_interval_frequency': state.frequency,
-                  'shipping_interval_unit_type': "Weeks",
-                  'subscription_id': state.subscription_id
-                }
-              };
+
+              if (sessionStorage.getItem('recharge_checkout')) {
+                var cartItem = {
+                  id: state.id,
+                  quantity: state.quantity,
+                  properties: {
+                    'shipping_interval_frequency': state.frequency,
+                    'shipping_interval_unit_type': "Weeks",
+                    'subscription_id': state.subscription_id
+                  }
+                };
+              } else {
+                var cartItem = {
+                  id: state.id,
+                  quantity: state.quantity,
+                  note: "order number 0",
+                  properties: {
+                    'shipping_interval_frequency': state.frequency,
+                    'shipping_interval_unit_type': "Weeks",
+                    'subscription_id': state.subscription_id
+                  }
+                };
+              }
               
             }
             
@@ -210,8 +222,17 @@
 
               var medium = query.utm_medium ? ('utm_medium=' + query.utm_medium) : '';
 
-
-              var ch_params = [
+              if (sessionStorage.getItem('recharge_checkout')) {
+                var ch_params = [
+                        'email=' + email_attribute,
+                        'coupon=' + coupon_attribute,
+                        'utm_coupon=' + coupon_attribute,
+                        source,
+                        content, 
+                        medium
+                ];
+              } else {
+                var ch_params = [
                         'email=' + email_attribute,
                         'coupon=' + coupon_attribute,
                         'utm_coupon=' + coupon_attribute,
@@ -219,7 +240,9 @@
                         source,
                         content, 
                         medium
-              ];
+                ];
+              }
+              
 
               window.ch_cust_param = ch_params.join('&');
 
@@ -236,18 +259,30 @@
 
               var lineNumber = (cartItemVariants.indexOf(cartItem.id) + 1);
 
-              var cartUpdate = {
-                line : lineNumber,
-                id: state.id,
-                quantity: state.quantity,
-                note: "order number 0",
-                properties: {
-                  'shipping_interval_frequency': state.frequency,
-                  'shipping_interval_unit_type': "Weeks",
-                  'subscription_id': state.subscription_id
-                }
-              };
-
+              if (sessionStorage.getItem('recharge_checkout')) {
+                var cartUpdate = {
+                  line : lineNumber,
+                  id: state.id,
+                  quantity: state.quantity,
+                  properties: {
+                    'shipping_interval_frequency': state.frequency,
+                    'shipping_interval_unit_type': "Weeks",
+                    'subscription_id': state.subscription_id
+                  }
+                };
+              } else {
+                var cartUpdate = {
+                  line : lineNumber,
+                  id: state.id,
+                  quantity: state.quantity,
+                  note: "order number 0",
+                  properties: {
+                    'shipping_interval_frequency': state.frequency,
+                    'shipping_interval_unit_type': "Weeks",
+                    'subscription_id': state.subscription_id
+                  }
+                };
+              }
 
               console.log('Current items in cart: ' + cartItemVariants);
               console.log('Line Item Number: ' + lineNumber);

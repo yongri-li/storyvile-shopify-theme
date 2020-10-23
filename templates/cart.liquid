@@ -399,14 +399,22 @@ function getQueryStringAsObject() {
   {% if cart.attributes.content %}
   	content = 'utm_content=' + "{{ cart.attributes.content }}";
   {% endif %}
-    
-      var ch_params = [
-      	'email=' + "{{ cart.attributes.email }}",
-      	'coupon=' + "{{ cart.attributes.coupon }}",
-        'utm_coupon=' + "{{ cart.attributes.coupon }}",
-        'additionalNote=' + "order number 0",
-        content
-      ];
+      if (sessionStorage.getItem('recharge_checkout')) {
+        var ch_params = [
+          'email=' + "{{ cart.attributes.email }}",
+          'coupon=' + "{{ cart.attributes.coupon }}",
+          'utm_coupon=' + "{{ cart.attributes.coupon }}",
+          content
+        ];
+      } else {
+        var ch_params = [
+          'email=' + "{{ cart.attributes.email }}",
+          'coupon=' + "{{ cart.attributes.coupon }}",
+          'utm_coupon=' + "{{ cart.attributes.coupon }}",
+          'additionalNote=' + "order number 0",
+          content
+        ];
+      } 
     
       window.ch_cust_param = ch_params.join('&');
   

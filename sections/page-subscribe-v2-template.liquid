@@ -552,7 +552,13 @@
 
         
     <!--CARTHOOK ORDER NOTE -->            
-	<textarea id="cartSpecialInstructions" style="opacity:0 !important;">order number 0</textarea>      
+	  <textarea id="cartSpecialInstructions" style="opacity:0 !important;">order number 0</textarea>  
+
+    <script>
+      if (sessionStorage.getItem('recharge_checkout')) {
+        document.getElementById("cartSpecialInstructions").value = '';
+      }
+    </script>
       
         
       </div>
