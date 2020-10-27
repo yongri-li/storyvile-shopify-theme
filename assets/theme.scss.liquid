@@ -8033,3 +8033,11 @@ top:0;
   bottom:0;
   font-size:100%;
 }
+
+.recharge_checkout#cartCheckoutButtons input.carthook_checkout:not([class*="elm_pos_"]), .recharge_checkout#cartCheckoutButtons .carthook_checkout[name="checkout"]:not([class*="elm_pos_"]) {
+  display: block !important;
+}
+.recharge_checkout#cartCheckoutButtons input.carthook_checkout[class*="elm_pos_"], .recharge_checkout#cartCheckoutButtons .carthook_checkout[class*="elm_pos_"] {
+  display: none !important;
+  pointer-events: none;
+}

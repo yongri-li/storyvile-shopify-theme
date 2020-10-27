@@ -305,7 +305,30 @@
                 .done(function () {
 
                   console.log('Successfully added item to the cart');                  
-                  if (sessionStorage.getItem('recharge_checkout')) getCheckoutUrl()
+                  if (sessionStorage.getItem('recharge_checkout')) {
+                    var paramCart = '&cart_token=' + (document.cookie.match('(^|; )cart=([^;]*)') || 0)[2];
+                    $.ajax({
+                      type: 'GET',
+                      url: '/cart.js',
+                      dataType: 'text',
+                      success: function (data) {
+                        if (data.indexOf("shipping_interval_frequency") > -1) {
+                          var paramDomain = 'myshopify_domain=storyvillecoffee.myshopify.com';
+                          try {
+                            var paramLinker = "&" + ga.getAll()[0].get('linkerParam');
+                          } catch (err) {
+                            var paramLinker = '';
+                          }
+                          var paramCustomer = '{% if customer %}&customer_id={{ customer.id }}&customer_email={{ customer.email }}{% endif %}';
+                          var discount = '';
+                          if (sessionStorage.getItem('promocode')) discount = '&discount=' + sessionStorage.getItem('promocode');
+                          window.location = "https://checkout.rechargeapps.com/r/checkout?" + paramDomain + paramCart + paramLinker + paramCustomer + discount;
+                        } else {
+                          window.testGlobalBeforeReact(0);
+                        }
+                      }
+                    });
+                  }
                   else window.testGlobalBeforeReact(0);
 
                 });

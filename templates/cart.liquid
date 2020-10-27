@@ -225,7 +225,7 @@
         
 
 
-        <div class="cart__row cartCheckoutButtons text-right">
+        <div class="cart__row cartCheckoutButtons text-right" id="cartCheckoutButtons">
          <button type="submit" name="update" class="btn--secondary update-cart">{{ 'cart.general.update' | t }}</button>
           <hr>
           <div class="grid--full cart__row--table-large">
@@ -303,6 +303,20 @@
 
 
 <script>
+
+if (sessionStorage.getItem('recharge_checkout')) {
+    var paramCart = '&cart_token=' + (document.cookie.match('(^|; )cart=([^;]*)') || 0)[2];
+    $.ajax({
+      type: 'GET',
+      url: '/cart.js',
+      dataType: 'text',
+      success: function (data) {
+        if (data.indexOf("shipping_interval_frequency") > -1) {
+          document.getElementById('cartCheckoutButtons').classList.add('recharge_checkout');
+        }
+      }
+    });
+}
   
 function getQueryStringAsObject() {
   var search = location.search.substring(1);
