@@ -306,16 +306,7 @@
 
 if (sessionStorage.getItem('recharge_checkout')) {
     var paramCart = '&cart_token=' + (document.cookie.match('(^|; )cart=([^;]*)') || 0)[2];
-    $.ajax({
-      type: 'GET',
-      url: '/cart.js',
-      dataType: 'text',
-      success: function (data) {
-        if (data.indexOf("shipping_interval_frequency") > -1) {
-          document.getElementById('cartCheckoutButtons').classList.add('recharge_checkout');
-        }
-      }
-    });
+    document.getElementById('cartCheckoutButtons').classList.add('recharge_checkout');
 }
   
 function getQueryStringAsObject() {
