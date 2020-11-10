@@ -403,5 +403,40 @@
         "info": "Will be scaled down to 32 x 32px"
       }
     ]
+  },
+  {
+    "name": "Cancel Subscription Popup",
+    "settings": [
+      {
+        "type": "text",
+        "id": "cancel_subscription_heading",
+        "label": "Heading",
+        "default": "Special Offer:"
+      }, 
+      {
+        "type": "text",
+        "id": "cancel_subscription_title",
+        "label": "Title",
+        "default": "Would you like 50% off your next shipment?"
+      },
+      {
+        "type": "text",
+        "id": "cancel_subscription_button_text",
+        "label": "Button Text",
+        "default": "Yes, Please!"
+      },
+      {
+        "type": "text",
+        "id": "cancel_subscription_cancel_link",
+        "label": "Button Text",
+        "default": "No thanks I’d still like to cancel."
+      },
+      {
+        "type": "text",
+        "id": "cancel_subscription_discount",
+        "label": "Discount",
+        "default": "STAYFOR50"
+      }
+    ]
   }
 ]
