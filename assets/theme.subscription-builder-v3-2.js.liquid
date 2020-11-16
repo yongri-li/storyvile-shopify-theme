@@ -998,28 +998,15 @@ function addToCartCarthook(){
           };
           
   		} else{
-          if (sessionStorage.getItem('recharge_checkout')) {
-            var cartItem = {
-              id: unitVariant_id,
-              quantity: productOption.quantity,
-              properties: {
-                'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
-                'shipping_interval_unit_type': product.shipping_interval_unit_type,
-                'subscription_id': product.subscription_id
-              }
-            };
-          } else {
-            var cartItem = {
-              id: unitVariant_id,
-              quantity: productOption.quantity,
-              note: "freeshop - order number 0",
-              properties: {
-                'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
-                'shipping_interval_unit_type': product.shipping_interval_unit_type,
-                'subscription_id': product.subscription_id
-              }
-            };
-          }          
+        var cartItem = {
+          id: unitVariant_id,
+          quantity: productOption.quantity,
+          properties: {
+            'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
+            'shipping_interval_unit_type': product.shipping_interval_unit_type,
+            'subscription_id': product.subscription_id
+          }
+        };    
   	  	}
 
   
@@ -1099,8 +1086,7 @@ function addToCartCarthook(){
             
             debug('Successfully added item to the cart');
 
-            if (sessionStorage.getItem('recharge_checkout')) window.location.href = getCheckoutUrl();
-            else window.testGlobalBeforeReact(0);
+            window.location.href = getCheckoutUrl();
           });
         
         });

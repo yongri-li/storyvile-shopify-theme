@@ -225,7 +225,7 @@
         
 
 
-        <div class="cart__row cartCheckoutButtons text-right" id="cartCheckoutButtons">
+        <div class="cart__row cartCheckoutButtons text-right recharge_checkout" id="cartCheckoutButtons">
          <button type="submit" name="update" class="btn--secondary update-cart">{{ 'cart.general.update' | t }}</button>
           <hr>
           <div class="grid--full cart__row--table-large">
@@ -303,12 +303,8 @@
 
 
 <script>
+var paramCart = '&cart_token=' + (document.cookie.match('(^|; )cart=([^;]*)') || 0)[2];
 
-if (sessionStorage.getItem('recharge_checkout')) {
-    var paramCart = '&cart_token=' + (document.cookie.match('(^|; )cart=([^;]*)') || 0)[2];
-    document.getElementById('cartCheckoutButtons').classList.add('recharge_checkout');
-}
-  
 function getQueryStringAsObject() {
   var search = location.search.substring(1);
   return search ? JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}') : {};
@@ -404,22 +400,12 @@ function getQueryStringAsObject() {
   {% if cart.attributes.content %}
   	content = 'utm_content=' + "{{ cart.attributes.content }}";
   {% endif %}
-      if (sessionStorage.getItem('recharge_checkout')) {
-        var ch_params = [
-          'email=' + "{{ cart.attributes.email }}",
-          'coupon=' + "{{ cart.attributes.coupon }}",
-          'utm_coupon=' + "{{ cart.attributes.coupon }}",
-          content
-        ];
-      } else {
-        var ch_params = [
-          'email=' + "{{ cart.attributes.email }}",
-          'coupon=' + "{{ cart.attributes.coupon }}",
-          'utm_coupon=' + "{{ cart.attributes.coupon }}",
-          'additionalNote=' + "order number 0",
-          content
-        ];
-      } 
+      var ch_params = [
+        'email=' + "{{ cart.attributes.email }}",
+        'coupon=' + "{{ cart.attributes.coupon }}",
+        'utm_coupon=' + "{{ cart.attributes.coupon }}",
+        content
+      ];
     
       window.ch_cust_param = ch_params.join('&');
   

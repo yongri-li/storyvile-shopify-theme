@@ -99,18 +99,6 @@
 {% include 'LittledataLayer' %}
 <!-- End of Littledata - Fix Google Analytics Script -->
 <script src="https://cdn.attn.tv/storyville/dtag.js"></script>
-
-{% if request.path contains '/tools/recurring/portal/' %}
-  <script>
-    window.cancel_subscription = {
-      heading: '{{ settings.cancel_subscription_heading }}',
-      title: '{{ settings.cancel_subscription_title }}',
-      button_text: '{{ settings.cancel_subscription_button_text }}',
-      cancel_link: '{{ settings.cancel_subscription_cancel_link" }}',
-      discount: '{{ settings.cancel_subscription_discount" }}'
-    }
-  </script>
-{% endif %}
 </head>
 
 {% comment %}

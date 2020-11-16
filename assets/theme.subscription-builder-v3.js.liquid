@@ -999,28 +999,15 @@ function addToCartCarthook(){
           };
           
   		} else{
-          if (sessionStorage.getItem('recharge_checkout')) {
-            var cartItem = {
-              id: unitVariant_id,
-              quantity: productOption.quantity,
-              properties: {
-                'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
-                'shipping_interval_unit_type': product.shipping_interval_unit_type,
-                'subscription_id': product.subscription_id
-              }
-            };
-          } else {
-            var cartItem = {
-              id: unitVariant_id,
-              quantity: productOption.quantity,
-              note: "order number 0",
-              properties: {
-                'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
-                'shipping_interval_unit_type': product.shipping_interval_unit_type,
-                'subscription_id': product.subscription_id
-              }
-            };
-          }        
+          var cartItem = {
+            id: unitVariant_id,
+            quantity: productOption.quantity,
+            properties: {
+              'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
+              'shipping_interval_unit_type': product.shipping_interval_unit_type,
+              'subscription_id': product.subscription_id
+            }
+          };
   	  	}
 
   
@@ -1042,30 +1029,16 @@ function addToCartCarthook(){
         
         var medium = query.utm_medium ? ('utm_medium=' + query.utm_medium) : '';
 
-        if (sessionStorage.getItem('recharge_checkout')) {
-          var ch_params = [
-            'email=' + email_attribute,
-            'coupon=' + coupon_attribute,
-            'utm_coupon=' + coupon_attribute,
-            source,
-            content, 
-            medium,
-            campaign,
-            trial
-          ];
-        } else {
-          var ch_params = [
-            'email=' + email_attribute,
-            'coupon=' + coupon_attribute,
-            'utm_coupon=' + coupon_attribute,
-            'additionalNote=' + 'order number 0',
-            source,
-            content, 
-            medium,
-            campaign,
-            trial
-          ];
-        } 
+        var ch_params = [
+          'email=' + email_attribute,
+          'coupon=' + coupon_attribute,
+          'utm_coupon=' + coupon_attribute,
+          source,
+          content, 
+          medium,
+          campaign,
+          trial
+        ];
         
         
 
@@ -1120,8 +1093,7 @@ function addToCartCarthook(){
             .done(function () {
 
               debug('Successfully changed the quantity of ' + cartItem.id);
-              if(sessionStorage.getItem('recharge_checkout')) window.location.href = getCheckoutUrl();
-              else window.testGlobalBeforeReact(0);
+              window.location.href = getCheckoutUrl();
 
             });
           
@@ -1132,8 +1104,7 @@ function addToCartCarthook(){
             
             debug('Successfully added item to the cart');
 
-            if (sessionStorage.getItem('recharge_checkout')) window.location.href = getCheckoutUrl();
-            else window.testGlobalBeforeReact(0);
+            window.location.href = getCheckoutUrl();
           });
         }
         

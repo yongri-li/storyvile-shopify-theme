@@ -581,28 +581,15 @@ function addToCartCarthook(is_customer){
           };
           
   		} else{
-          if (sessionStorage.getItem('recharge_checkout')) {
-            var cartItem = {
-              id: unitVariant_id,
-              quantity: productOption.quantity,
-              properties: {
-                'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
-                'shipping_interval_unit_type': product.shipping_interval_unit_type,
-                'subscription_id': product.subscription_id
-              }
-            };
-          } else {
-            var cartItem = {
-              id: unitVariant_id,
-              quantity: productOption.quantity,
-              note: "order number 0",
-              properties: {
-                'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
-                'shipping_interval_unit_type': product.shipping_interval_unit_type,
-                'subscription_id': product.subscription_id
-              }
-            };
-          }          
+          var cartItem = {
+            id: unitVariant_id,
+            quantity: productOption.quantity,
+            properties: {
+              'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
+              'shipping_interval_unit_type': product.shipping_interval_unit_type,
+              'subscription_id': product.subscription_id
+            }
+          };        
           
   	  	}
 
@@ -681,8 +668,7 @@ function addToCartCarthook(is_customer){
 
               
               if (is_customer){
-                if (sessionStorage.getItem('recharge_checkout')) window.location.href = getCheckoutUrl();
-                else window.testGlobalBeforeReact(0);
+                window.location.href = getCheckoutUrl();
               } else{  			  
                 document.getElementById("createAccountButton").click();
                 //window.testGlobalBeforeReact(0);
@@ -698,8 +684,7 @@ function addToCartCarthook(is_customer){
             debug('Successfully added item to the cart');
 			
               if (is_customer){
-                if (sessionStorage.getItem('recharge_checkout')) window.location.href = getCheckoutUrl();
-                else window.testGlobalBeforeReact(0);
+                window.location.href = getCheckoutUrl();
               } else{  			  
                 document.getElementById("createAccountButton").click();
                 //window.testGlobalBeforeReact(0);
