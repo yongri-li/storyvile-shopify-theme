@@ -159,10 +159,19 @@
         <!-------- CUSTOM CHECKOUT WIDGET ------>    
 		<form class="builder-widget" name="builder" action="/checkout" method="post" enctype="multipart/form-data" data-layer-product="Whole Bean" novalidate>
 		<a href="/checkout" name="checkout" style="display: none;" id="ch-checkout-enabled"></a>    
-         	
+          
+          
+            <p class="option-desc">Select How You Brew</p>
+            <div class="brewmethod-contain">
+              <a class="method-select selected" id="whole-bean-select"><img src="https://cdn.shopify.com/s/files/1/0090/2135/8137/files/wholeBeans_4cc45d11-6d97-469e-b352-ea2745f527ba.png?v=1586482823">Whole <br>Bean</a>
+              <a class="method-select" id="pods-select"><img src="https://cdn.shopify.com/s/files/1/0090/2135/8137/files/kCups_1c15257a-993d-4dbf-b8ab-6b21d76d0134.png?v=1586482823">Keurig<sub>®</sub> <br>Pods</a>
+              <a class="method-select" id="capsules-select"><img src="https://cdn.shopify.com/s/files/1/0090/2135/8137/files/nespresso_b431c186-6529-4f33-9144-a9590c43e47c.png?v=1586482823">Nespresso<sub>®</sub> <br>Capsules</a>
+            </div>
+          
+          
             <div class="onetimes-contain">
               <a class="option-select product-onetime-select" data-option="onetime" id="wants-onetime">
-                One-Time Purchase <span class="onetime-prices" data-onetime-price-select></span>
+                One-Time Purchase <span class="onetime-prices" data-onetime-price-select>$18</span>
               </a>
               <a class="option-select product-onetime-select" data-option="onetime" id="subscribe-save">
                 Subscribe & Save <span data-subscribe-discount>22%</span> <span class="onetime-prices" data-subscribe-price-select><s>$18</s> <span id="ProductPrice" itemprop="price" content="14.00">$14</span></span>
@@ -173,7 +182,7 @@
             {% assign quantities = '1,2,3' | split: ','%}
             <div class="quantites-contain">
           	{% for quantity in quantities %}
-            	<a class="option-select product-quantity-select{% if forloop.index0 == 1 %} selected{% endif %}" 
+            	<a class="option-select product-quantity-select{% if forloop.index0 == 2 %} selected{% endif %}" 
                    data-option="quantity" 
                    data-quantity-value="{{ quantity }}">
                   {{ quantity }} Bag{% if forloop.index0 != 0 %}s{% endif %} <span data-price></span>
@@ -187,7 +196,7 @@
           	<select class="product-frequency-select" 
                     data-option="frequency">
             {% for frequency in frequencies %}
-            	<option {% if forloop.index0 == 0 %}selected class="selected"{% endif %}data-index="{{ forloop.index0 }}" value="{{ frequency }}">
+            	<option {% if forloop.index0 == 1 %}selected class="selected"{% endif %}data-index="{{ forloop.index0 }}" value="{{ frequency }}">
                   Ships Every {{ frequency }} Weeks
                 </option>
             {% endfor %}

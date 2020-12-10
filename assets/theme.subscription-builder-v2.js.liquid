@@ -200,7 +200,7 @@ $(function () {
       
       var params = [
         'cart_token=' + state.cartToken,
-        'myshopify_domain=storyvillecoffee.myshopify.com',
+        'myshopify_domain=' + options.shopify_domain,
         'discount=' + couponCode
       ];
       
@@ -771,10 +771,11 @@ function addToCartCarthook(){
       var product = options.products[state.product];
       var productOption = state.productOptions[state.selectedQuantity];
       var unitVariant = getUnitVariant();
-
+      
       var cartItem = {
         id: unitVariant.id,
         quantity: productOption.quantity,
+        note: "order number 0",
         properties: {
           'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
           'shipping_interval_unit_type': product.shipping_interval_unit_type,
@@ -831,7 +832,7 @@ function addToCartCarthook(){
           
             debug('Successfully changed the quantity of ' + cartItem.id);
             
-            window.location.href = getCheckoutUrl();
+            window.testGlobalBeforeReact(0);
 
           });
           
@@ -842,7 +843,7 @@ function addToCartCarthook(){
             
             debug('Successfully added item to the cart');
 
-            window.location.href = getCheckoutUrl();
+            window.testGlobalBeforeReact(0);
           });
         }
         
@@ -1004,7 +1005,7 @@ function addToCartCarthook(){
       checkout();
       
       //Initialize Carthook Check
-      window.location.href = getCheckoutUrl();
+      window.testGlobalBeforeReact(0);  
  
     }
     

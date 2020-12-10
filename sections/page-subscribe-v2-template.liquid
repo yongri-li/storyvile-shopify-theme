@@ -52,7 +52,7 @@
         {% assign unit_variant = prod.metafields.subscriptions.unit-variant %}
 
         {% if product_builder_id == 'pods' %}
-          {% assign sizes = '32, 48, 64' %}
+          {% assign sizes = '16, 32, 48' %}
         {% else %}
           {% assign sizes = '16, 32, 48' %}
         {% endif %}
@@ -91,15 +91,15 @@
 		{% if product_builder_id == 'pods' %}
             {
               "src": "{{ section.settings.p_quantity_1 | img_url: 'original' }}",
-              "alt": "quantity=32"
+              "alt": "quantity=16"
             },
             {
               "src": "{{ section.settings.p_quantity_2 | img_url: 'original' }}",
-              "alt": "quantity=48"
+              "alt": "quantity=32"
             },
             {
               "src": "{{ section.settings.p_quantity_3 | img_url: 'original' }}",
-              "alt": "quantity=64"
+              "alt": "quantity=48"
             }
 		{% endif %}
 		{% if product_builder_id == 'capsules' %}
@@ -552,7 +552,7 @@
 
         
     <!--CARTHOOK ORDER NOTE -->            
-	  <textarea id="cartSpecialInstructions" style="opacity:0 !important;"></textarea>  
+	  <textarea id="cartSpecialInstructions" style="opacity:0 !important;">order number 0</textarea>  
       
         
       </div>

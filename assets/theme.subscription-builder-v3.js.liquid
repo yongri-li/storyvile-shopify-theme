@@ -66,6 +66,14 @@ $(function () {
   }, JSON.parse($builder.attr('data-subscription-builder')));
 
   
+  
+  var hasLoaded = {
+    "beans": false,
+    "pods": false,
+    "capsules": false
+  };
+  
+  
   // ESTABLISH DEFAULT URL PARAMS (IF ANY)
   if (query.default_product && validProducts.indexOf(query.default_product) >= 0) {
     options.defaultProduct = query.default_product;
@@ -308,7 +316,7 @@ if (query.gift){
       
       var params = [
         'cart_token=' + state.cartToken,
-        'myshopify_domain=storyvillecoffee.myshopify.com',
+        'myshopify_domain=' + options.shopify_domain,
         'discount=' + couponCode
       ];
       
@@ -361,7 +369,8 @@ if (query.gift){
 
     $builder.attr('action', getCheckoutUrl());
     $builder.find('[data-onetime-discount]').text(( state.product == 'beans' ? '22%' : '17%' ));
-
+	
+    
     
     
     //FOR ONETIMES SWITCH
@@ -376,12 +385,14 @@ if (query.gift){
       
       
     } else {
+      
         $builder.find('.quantity__options').removeClass("onetime_selected");
     	$builder.find('.frequency__options').show();
         $builder.find('.summary_col1 .sub_text').show();
         $builder.find('.summary_subscribe').show();
         $builder.find('.summary_onetime').hide();
       	
+
       
       if (query.fixed_price){
         
@@ -998,17 +1009,18 @@ function addToCartCarthook(){
             quantity: productOption.quantity
           };
           
-  		} else{
-          var cartItem = {
-            id: unitVariant_id,
-            quantity: productOption.quantity,
-            properties: {
-              'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
-              'shipping_interval_unit_type': product.shipping_interval_unit_type,
-              'subscription_id': product.subscription_id
-            }
-          };
-  	  	}
+  		} else{          
+        var cartItem = {
+          id: unitVariant_id,
+          quantity: productOption.quantity,
+          note: "order number 0",
+          properties: {
+            'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
+            'shipping_interval_unit_type': product.shipping_interval_unit_type,
+            'subscription_id': product.subscription_id
+          }
+        };     
+  	  }
 
   
 
@@ -1029,10 +1041,12 @@ function addToCartCarthook(){
         
         var medium = query.utm_medium ? ('utm_medium=' + query.utm_medium) : '';
 
+        
         var ch_params = [
           'email=' + email_attribute,
           'coupon=' + coupon_attribute,
           'utm_coupon=' + coupon_attribute,
+          'additionalNote=' + 'order number 0',
           source,
           content, 
           medium,
@@ -1092,8 +1106,12 @@ function addToCartCarthook(){
           $.post('/cart/change.json', cartUpdate)
             .done(function () {
 
-              debug('Successfully changed the quantity of ' + cartItem.id);
-              window.location.href = getCheckoutUrl();
+            debug('Successfully changed the quantity of ' + cartItem.id);
+            {% if settings.recharge_checkout %}
+            window.location.href = getCheckoutUrl();
+            {% else %}
+            window.testGlobalBeforeReact(0);
+            {% endif %}
 
             });
           
@@ -1104,7 +1122,11 @@ function addToCartCarthook(){
             
             debug('Successfully added item to the cart');
 
+            {% if settings.recharge_checkout %}
             window.location.href = getCheckoutUrl();
+            {% else %}
+            window.testGlobalBeforeReact(0);
+            {% endif %}
           });
         }
         
@@ -1195,6 +1217,17 @@ function addToCartCarthook(){
       product: productId,
       productOptions: getProductOptions(productId)
     });
+    
+    
+    
+    // SET DEFAULTS FOR EACH PRODUCT
+    if(state.product == 'capsules'){ state.selectedQuantity = 1 }
+    if(state.product == 'pods'){ state.selectedQuantity = 1 }
+    if(state.product == 'beans'){ state.selectedQuantity = 1 }
+
+    $quantityOptions.val(state.selectedQuantity).prop('selected', true);
+
+    
   }
 
 
