@@ -3530,3 +3530,17 @@ $(".colIcons").hover(
   function() {
     $(this).hasClass("activeIcons") || ($(".colIcons.activeIcons").removeClass("activeIcons"), $(this).toggleClass("activeIcons"));
 });
+
+
+function getParameterByName(name, url = window.location.href) {
+  name = name.replace(/[\[\]]/g, '\\$&');
+  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+      results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+if ( getParameterByName('klaviyo_user') ) {
+    localStorage.setItem('klaviyo_user', getParameterByName('klaviyo_user')); 
+}

@@ -59,7 +59,13 @@ $(function(){
           var paramCustomer = '{% if customer %}&customer_id={{ customer.id }}&customer_email={{ customer.email }}{% endif %}';
           var discount = '';
           if (sessionStorage.getItem('promocode')) discount = '&discount=' + sessionStorage.getItem('promocode');
-          window.location = "https://checkout.rechargeapps.com/r/checkout?" + paramDomain + paramCart + paramLinker + paramCustomer + discount;
+
+          var klaviyo_user = ''; 
+          if (localStorage.getItem('klaviyo_user')) klaviyo_user = '&klaviyo_user=' + localStorage.getItem('klaviyo_user');
+
+          console.log('test');
+        
+          // window.location = "https://checkout.rechargeapps.com/r/checkout?" + paramDomain + paramCart + paramLinker + paramCustomer + discount + klaviyo_user;
         } else {
           window.location = '/checkout';
         }
@@ -226,6 +232,9 @@ $(function(){
               medium
       ];
 
+      if( localStorage.getItem('klaviyo_user') ) {
+        ch_params.push('klaviyo_user=' + localStorage.getItem('klaviyo_user'));
+      }
 
       window.ch_cust_param = ch_params.join('&');
 
