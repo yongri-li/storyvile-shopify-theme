@@ -584,12 +584,13 @@ function addToCartCarthook(is_customer){
           var cartItem = {
             id: unitVariant_id,
             quantity: productOption.quantity,
+            note: "order number 0",
             properties: {
               'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
               'shipping_interval_unit_type': product.shipping_interval_unit_type,
               'subscription_id': product.subscription_id
             }
-          };        
+          };       
           
   	  	}
 
