@@ -15,6 +15,12 @@
     
    	{{ 'checkout.scss.css' | asset_url | stylesheet_tag }}
     
+    <script>
+      setTimeout(function() {
+      var triggerDiscountMobile = document.getElementsByClassName('order-summary-toggle');
+      triggerDiscountMobile[0].click();
+      }, 200);
+    </script>
   
 <!-- Start of Littledata - Fix Google Analytics Script-->
 {% include 'LittledataLayer' %}

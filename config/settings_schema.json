@@ -25,12 +25,6 @@
         "id": "onsite_coupon",
         "label": "Onsite Coupon (ie 'HOME')",
         "default": "HOME"
-      },
-      {
-        "type": "checkbox",
-        "id": "recharge_checkout",
-        "label": "Enable recharge checkout?",
-        "default": false
       }
     ]
   },

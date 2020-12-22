@@ -1,403 +1,370 @@
-
-function getQueryStringAsObject() {
-  var search = location.search.substring(1);
-  return search ? JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}') : {};
-}
-
-var query = getQueryStringAsObject();
-
-$(function(){ 
-
-  var id = $(".product-variant-select.selected").data('variant-id');
-  var sub_id = "{{ product.metafields.subscriptions.subscription_id }}";
-  var quantity = parseInt($(".product-quantity-select.selected").data('quantity-value'));
-  var frequency = parseInt($(".product-frequency-select .selected").val());
-  var unit_price = parseInt($(".product-variant-select.selected").data('variant-price'));
-  var wants_onetime = query.onetime ? true : false;
-  var customer_email = '';
-  var utm_coupon = query.utm_coupon ? query.utm_coupon : "{{ settings.onsite_coupon }}";
-  var $getID = query.klaviyo_user;
-
-  var k_id = '';
-
-  if (typeof $getID !== "undefined"){
-        var k_id = $getID;
-  }   
-
-  var price = (quantity * unit_price) / 100;
-  var discount = query.utm_content ? query.utm_content : {{ settings.onsite_discount }};
-
-  var state = {
-    id : id,
-    subscription_id : sub_id,
-    quantity : quantity,
-    frequency : frequency,
-    coupon : utm_coupon,
-    onetime : wants_onetime
-  };
-
-
-  function asMoney(value, rounded) {
-    return ( rounded ? Math.ceil(value).toFixed(0) : value.toFixed(2).replace('.00', '') );
-  }
-
-
-  function getCheckoutUrl() {
-    var paramCart = '&cart_token=' + (document.cookie.match('(^|; )cart=([^;]*)') || 0)[2];
-    $.ajax({
-      type: 'GET',
-      url: '/cart.js',
-      dataType: 'text',
-      success: function (data) {
-        if (data.indexOf("shipping_interval_frequency") > -1) {
-          var paramDomain = 'myshopify_domain=storyvillecoffee.myshopify.com';
-          try {
-            var paramLinker = "&" + ga.getAll()[0].get('linkerParam');
-          } catch (err) {
-            var paramLinker = '';
-          }
-          var paramCustomer = '{% if customer %}&customer_id={{ customer.id }}&customer_email={{ customer.email }}{% endif %}';
-          var discount = '';
-          if (sessionStorage.getItem('promocode')) discount = '&discount=' + sessionStorage.getItem('promocode');
-          window.location = "https://checkout.rechargeapps.com/r/checkout?" + paramDomain + paramCart + paramLinker + paramCustomer + discount;
-        } else {
-          window.location = '/checkout';
+        
+        function getQueryStringAsObject() {
+          var search = location.search.substring(1);
+          return search ? JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}') : {};
         }
-      }
-    });
-  }
 
+        var query = getQueryStringAsObject();
 
-  //Update individual quantity prices
-  /*
-  $(".product-quantity-select").each(function () {
-    var $quantityOption = $(this);
-    var option_price = parseInt($quantityOption.data('quantity-value'));
-
-    $quantityOption.find('[data-price]').text("$" + (unit_price * option_price) / 100);
-  });
-  */
-
-  //Update Selected price
-  $(document).find('[data-total-price]').text("$" + price);
-  $(document).find('[data-total-price-with-discount]').text("$" + asMoney(price - (price * (discount / 100))));
-
-  if(discount > 0){
-    $(document).find('[data-additional-discount]').text("Additional " + discount + "% off");
-  }
-
-  //$(document).find('[data-onetime-price-select]').text("$" + (parseInt($(".product-variant-select.selected").data('onetime-price')) / 100)); 
-
-
-  function update(){
-    quantity = parseInt($(".product-quantity-select.selected").data('quantity-value')); 
-    frequency = parseInt($(".product-frequency-select .selected").val()); 
-
-    if (state.onetime == false){
-      $(".product-onetime-select.selected").removeClass("selected");
-      $("#subscribe-save").addClass("selected");
-
-      id = $(".product-variant-select.selected").data('variant-id');
-      unit_price = parseInt($(".product-variant-select.selected").data('variant-price'));
-      price = (quantity * unit_price) / 100;
-
-      $(".order_summary").removeClass("inactive_sub");
-
-    } else {
-
-      $(".product-onetime-select.selected").removeClass("selected");
-      $("#wants-onetime").addClass("selected");
-      id = $(".product-variant-select.selected").data('onetime-id');
-      unit_price = parseInt($(".product-variant-select.selected").data('onetime-price'));
-      price = (quantity * unit_price) / 100;
-
-      $(".order_summary").addClass("inactive_sub");
-
-    }
-
-    state.id = id;
-    state.quantity = quantity;
-    state.frequency = frequency;
-
-    $(document).find('[data-total-price]').text("$" + price);
-    $(document).find('[data-total-price-with-discount]').text("$" + asMoney(price - (price * (discount / 100))));
-    
-    var onetime_total_price = ((parseInt($(".product-variant-select.selected").data('onetime-price')) / 100) * quantity )
-    /*
-	$('#ProductPrice').text("$" + asMoney(((parseInt($(".product-variant-select.selected").data('variant-price')) * quantity) / 100)));
-    $(document).find('[data-onetime-price-select]').text("$" + onetime_total_price);
-    $('.onetime-prices s').text("$" + onetime_total_price);
-    */
-    // WE ARE DISABLING THIS FOR THE TIME BEING
-    /*
-    $(".product-quantity-select").each(function () {
-      var $quantityOption = $(this);
-      var option_price = parseInt($quantityOption.data('quantity-value'));
-	
-      $quantityOption.find('[data-price]').text("$" + (unit_price * option_price) / 100);
-    });
-	*/
-
-    if(state.onetime){ 
-      $("#select-f").hide(); 
-    } else {
-      $("#select-f").show();
-    }
-
-    var dataLayer_product = $(".builder-widget").data('layer-product');
-
-    dataLayer.push({'Product': dataLayer_product});
-    dataLayer.push({'Quantity': state.quantity});
-    var f = state.frequency + ' Weeks'
-    dataLayer.push({'Frequency': f});
-
-
-    console.log(state);
-
-  }
-
-
-  function updateAttributes(){
-
-        var cartAttributes = {
-               attributes: {
-                 'email': customer_email,
-                 'content': discount,
-                 'coupon': state.coupon
-               }
-         };
-
-        $.post('/cart/update.json', cartAttributes).done(function () {   
-          console.log('Updated Cart Attributes: ' + state.coupon + ' and ' + customer_email + ' and ' + discount);
-        });  
-
-  }
-
-
-  function initiate(){
-    update();
-
-    $("#add-to-cart").removeClass('hidden-cart');
-  }
-
-
-  initiate();
-
-
-
-  function addToCart(){
-
-    if (state.onetime){
-
-      var cartItem = {
-        id: state.id,
-        quantity: state.quantity,
-      };
-
-    } else {
-      var cartItem = {
-        id: state.id,
-        quantity: state.quantity,
-        note: "order number 0",
-        properties: {
-          'shipping_interval_frequency': state.frequency,
-          'shipping_interval_unit_type': "Weeks",
-          'subscription_id': state.subscription_id
-        }
-      };              
-    }
-
-    $.get('/cart.json').done(function (cart) {
-
-      var email_attribute = cart.attributes.email ? cart.attributes.email : '';
-      var coupon_attribute = query.utm_coupon ? state.coupon : (cart.attributes.coupon ? cart.attributes.coupon : state.coupon);
-      var source = query.utm_source ? ('utm_source=' + query.utm_source) : '';
-      var content = query.utm_content ? ("utm_content=" + query.utm_content) : (cart.attributes.content ? ("utm_content=" + cart.attributes.content) : "");
-
-      var medium = query.utm_medium ? ('utm_medium=' + query.utm_medium) : '';
-
-      var ch_params = [
-              'email=' + email_attribute,
-              'coupon=' + coupon_attribute,
-              'utm_coupon=' + coupon_attribute,
-          'additionalNote=' + 'order number 0',
-              source,
-              content, 
-              medium
-      ];
-
-
-      window.ch_cust_param = ch_params.join('&');
-
-
-      console.log('Initializing checkout for: ' + cartItem.id);
-
-
-      var cartItemVariants = [];
-
-      cart.items.forEach(function(item) {
-        var i = item.variant_id
-        cartItemVariants.push(i);
-      });
-
-      var lineNumber = (cartItemVariants.indexOf(cartItem.id) + 1);
-
-      var cartUpdate = {
-        line : lineNumber,
-        id: state.id,
-        quantity: state.quantity,
-        note: "order number 0",
-        properties: {
-          'shipping_interval_frequency': state.frequency,
-          'shipping_interval_unit_type': "Weeks",
-          'subscription_id': state.subscription_id
-        }
-      };
-
-      console.log('Current items in cart: ' + cartItemVariants);
-      console.log('Line Item Number: ' + lineNumber);
-
-
-
-      if (cartItemVariants.indexOf(cartItem.id) > -1 && !state.onetime){
-        $.post('/cart/change.json', cartUpdate)
-          .done(function () {
-
-          console.log('Successfully changed the quantity of ' + cartItem.id);
-          {% if settings.recharge_checkout %}
-          getCheckoutUrl()
-          {% else %}
-          window.testGlobalBeforeReact(0);
-          {% endif %}
-
-          });
-
-      } else {
-
-        $.post('/cart/add.json', cartItem)
-        .done(function () {
-
-          console.log('Successfully added item to the cart');
+        $(function(){ 
           
-          {% if settings.recharge_checkout %}
-          getCheckoutUrl()
-          {% else %}
-          window.testGlobalBeforeReact(0);
-          {% endif %}
+          var id = $(".product-variant-select.selected").data('variant-id');
+          var sub_id = "{{ product.metafields.subscriptions.subscription_id }}";
+          var quantity = parseInt($(".product-quantity-select.selected").data('quantity-value'));
+          var frequency = parseInt($(".product-frequency-select .selected").val());
+          var unit_price = parseInt($(".product-variant-select.selected").data('variant-price'));
+          var wants_onetime = query.onetime ? true : false;
+          var customer_email = '';
+          var utm_coupon = query.utm_coupon ? query.utm_coupon : "{{ settings.onsite_coupon }}";
+          var $getID = query.klaviyo_user;
+  
+          var k_id = '';
+
+          if (typeof $getID !== "undefined"){
+                var k_id = $getID;
+          }   
+          
+          var price = (quantity * unit_price) / 100;
+          var discount = query.utm_content ? query.utm_content : {{ settings.onsite_discount }};
+          
+          var state = {
+            id : id,
+            subscription_id : sub_id,
+            quantity : quantity,
+            frequency : frequency,
+            coupon : utm_coupon,
+            onetime : wants_onetime
+          };
+          
+          
+          function asMoney(value, rounded) {
+            return ( rounded ? Math.ceil(value).toFixed(0) : value.toFixed(2).replace('.00', '') );
+          }
+
+
+          function getCheckoutUrl() {
+            var paramCart = '&cart_token=' + (document.cookie.match('(^|; )cart=([^;]*)') || 0)[2];
+            $.ajax({
+              type: 'GET',
+              url: '/cart.js',
+              dataType: 'text',
+              success: function (data) {
+                if (data.indexOf("shipping_interval_frequency") > -1) {
+                  var paramDomain = 'myshopify_domain=storyvillecoffee.myshopify.com';
+                  try {
+                    var paramLinker = "&" + ga.getAll()[0].get('linkerParam');
+                  } catch (err) {
+                    var paramLinker = '';
+                  }
+                  var paramCustomer = '{% if customer %}&customer_id={{ customer.id }}&customer_email={{ customer.email }}{% endif %}';
+                  var discount = '';
+                  if (sessionStorage.getItem('promocode')) discount = '&discount=' + sessionStorage.getItem('promocode');
+                  window.location = "https://checkout.rechargeapps.com/r/checkout?" + paramDomain + paramCart + paramLinker + paramCustomer + discount;
+                } else {
+                  window.location = '/checkout';
+                }
+              }
+            });
+          }
+
+          
+          //Update individual quantity prices
+          $(".product-quantity-select").each(function () {
+            var $quantityOption = $(this);
+            var option_price = parseInt($quantityOption.data('quantity-value'));
+            
+            $quantityOption.find('[data-price]').text("$" + (unit_price * option_price) / 100);
+          });
+          
+          
+          //Update Selected price
+          $(document).find('[data-total-price]').text("$" + price);
+          $(document).find('[data-total-price-with-discount]').text("$" + asMoney(price - (price * (discount / 100))));
+          
+          if(discount > 0){
+          	$(document).find('[data-additional-discount]').text("Additional " + discount + "% off");
+          }
+          
+          $(document).find('[data-onetime-price-select]').text("$" + (parseInt($(".product-variant-select.selected").data('onetime-price')) / 100)); 
+          
+          
+          function update(){
+            quantity = parseInt($(".product-quantity-select.selected").data('quantity-value')); 
+            frequency = parseInt($(".product-frequency-select .selected").val()); 
+            
+            if (state.onetime == false){
+              $(".product-onetime-select.selected").removeClass("selected");
+			  $("#subscribe-save").addClass("selected");
+              
+              id = $(".product-variant-select.selected").data('variant-id');
+              unit_price = parseInt($(".product-variant-select.selected").data('variant-price'));
+              price = (quantity * unit_price) / 100;
+              
+              $(".order_summary").removeClass("inactive_sub");
+              
+            } else {
+              
+              $(".product-onetime-select.selected").removeClass("selected");
+			  $("#wants-onetime").addClass("selected");
+              id = $(".product-variant-select.selected").data('onetime-id');
+              unit_price = parseInt($(".product-variant-select.selected").data('onetime-price'));
+              price = (quantity * unit_price) / 100;
+              
+              $(".order_summary").addClass("inactive_sub");
+              
+            }
+            
+            state.id = id;
+            state.quantity = quantity;
+            state.frequency = frequency;
+            
+          	$(document).find('[data-total-price]').text("$" + price);
+            $(document).find('[data-total-price-with-discount]').text("$" + asMoney(price - (price * (discount / 100))));
+          
+            
+            $(".product-quantity-select").each(function () {
+              var $quantityOption = $(this);
+              var option_price = parseInt($quantityOption.data('quantity-value'));
+
+              $quantityOption.find('[data-price]').text("$" + (unit_price * option_price) / 100);
+            });
+
+           	
+            if(state.onetime){ 
+              $("#select-f").hide(); 
+            } else {
+              $("#select-f").show();
+            }
+            
+            var dataLayer_product = $(".builder-widget").data('layer-product');
+            
+            dataLayer.push({'Product': dataLayer_product});
+            dataLayer.push({'Quantity': state.quantity});
+            var f = state.frequency + ' Weeks'
+            dataLayer.push({'Frequency': f});
+            
+
+            console.log(state);
+          
+          }
+          
+          
+          function updateAttributes(){
+
+                var cartAttributes = {
+                       attributes: {
+                         'email': customer_email,
+                         'content': discount,
+                         'coupon': state.coupon
+                       }
+                 };
+
+                $.post('/cart/update.json', cartAttributes).done(function () {   
+                  console.log('Updated Cart Attributes: ' + state.coupon + ' and ' + customer_email + ' and ' + discount);
+                });  
+
+          }
+          
+          
+          function initiate(){
+          	update();
+            
+            $("#add-to-cart").removeClass('hidden-cart');
+          }
+          
+          
+          initiate();
+          
+          
+          
+          function addToCart(){
+            
+            if (state.onetime){
+              
+              var cartItem = {
+                id: state.id,
+                quantity: state.quantity,
+              };
+              
+            } else {
+              var cartItem = {
+                id: state.id,
+                quantity: state.quantity,
+                properties: {
+                  'shipping_interval_frequency': state.frequency,
+                  'shipping_interval_unit_type': "Weeks",
+                  'subscription_id': state.subscription_id
+                }
+              };
+              
+            }
+            
+            $.get('/cart.json').done(function (cart) {
+
+              var email_attribute = cart.attributes.email ? cart.attributes.email : '';
+              var coupon_attribute = query.utm_coupon ? state.coupon : (cart.attributes.coupon ? cart.attributes.coupon : state.coupon);
+              var source = query.utm_source ? ('utm_source=' + query.utm_source) : '';
+              var content = query.utm_content ? ("utm_content=" + query.utm_content) : (cart.attributes.content ? ("utm_content=" + cart.attributes.content) : "");
+
+              var medium = query.utm_medium ? ('utm_medium=' + query.utm_medium) : '';
+
+              var ch_params = [
+                      'email=' + email_attribute,
+                      'coupon=' + coupon_attribute,
+                      'utm_coupon=' + coupon_attribute,
+                      source,
+                      content, 
+                      medium
+              ];
+            
+
+              window.ch_cust_param = ch_params.join('&');
+
+
+              console.log('Initializing checkout for: ' + cartItem.id);
+
+
+              var cartItemVariants = [];
+
+              cart.items.forEach(function(item) {
+                var i = item.variant_id
+                cartItemVariants.push(i);
+              });
+
+              var lineNumber = (cartItemVariants.indexOf(cartItem.id) + 1);
+
+              var cartUpdate = {
+                line : lineNumber,
+                id: state.id,
+                quantity: state.quantity,
+                properties: {
+                  'shipping_interval_frequency': state.frequency,
+                  'shipping_interval_unit_type': "Weeks",
+                  'subscription_id': state.subscription_id
+                }
+              };
+              
+
+              console.log('Current items in cart: ' + cartItemVariants);
+              console.log('Line Item Number: ' + lineNumber);
+
+
+
+              if (cartItemVariants.indexOf(cartItem.id) > -1 && !state.onetime){
+                $.post('/cart/change.json', cartUpdate)
+                  .done(function () {
+
+                    console.log('Successfully changed the quantity of ' + cartItem.id);
+                    getCheckoutUrl();
+
+                  });
+
+              } else {
+
+                $.post('/cart/add.json', cartItem)
+                .done(function () {
+
+                  console.log('Successfully added item to the cart');                  
+                  getCheckoutUrl();
+
+                });
+              }
+
+            });
+		
+            
+          }
+         
+          
+          $.ajax({
+            url         : "https://meraki.storyville.com/klaviyo-apps/id-lookup.php",
+            data        : { "klaviyo_id": k_id },
+            dataType    : 'json',
+            type        : 'GET',
+            crossDomain : true,
+            contentType : "application/json; charset=utf-8",
+            error       : function(err) {
+
+              console.log("Could not reach meraki.storyville.com for ID retrival");
+              updateAttributes();
+            },
+
+            success : function(data) {
+
+              if (data.result == "failure") {
+
+                 updateAttributes();
+
+              } else {
+
+                console.log("Success! Retrieved email from Klaviyo ID: " + data.email, true);
+
+                customer_email = (data.email.indexOf('+') > -1) ? (data.email.replace(/\+/g,'%2B')) : data.email;
+
+                updateAttributes();
+             }
+
+
+
+
+
+            }});
+          
+          
+          
+          // User Experience action handlers
+          
+          $("#wants-onetime").click(function(){ state.onetime = true; });
+          
+          $("#subscribe-save").click(function(){ state.onetime = false; }); 
+          
+          
+          
+          $(".want-decaf").click(function(){
+            
+            $(this).toggleClass("active-decaf");
+            $(document).find('.product-variant-select:not(.selected)').click();
+            
+          });
+          
+          
+          
+          $(".option-select").click(function() {
+            
+            var option = $(this).data('option');
+            
+            $(document).find('[data-option="'+option+'"].selected').removeClass('selected');
+            $(this).addClass("selected"); 
+            
+            update();
+            
+          });
+          
+          
+          
+          $(".product-frequency-select").change(function(){
+            
+
+            var optionSelected = $("option:selected", this);
+            $(".product-frequency-select .selected").removeClass("selected");
+            
+            $(optionSelected).addClass("selected");
+
+            
+            update();
+          });
+          
+    
+          
+          $("#add-to-cart").click(addToCart);
+          
+          
+          $(".learn_more").click(function(){ 
+          	$(".more-overlay").addClass("visible_overlay");
+          });
+          
+          $(".close_learn-more").click(function(){ $(".visible_overlay").removeClass("visible_overlay"); });
+          $(".dark_bg").click(function(){ $(".visible_overlay").removeClass("visible_overlay"); });
+
           
         });
-      }
-
-    });
-
-
-  }
-
-  
-  
-  
-  function update_brew_method_urls(){
-  
-  	var url_search_params = window.location.search;
-    
-    document.getElementById('pods-select').setAttribute('href', ('/products/keurig-k-cup-subscription' + url_search_params));
-    document.getElementById('capsules-select').setAttribute('href', ('/products/nespresso-capsule-subscription' + url_search_params));
-    document.getElementById('whole-bean-select').setAttribute('href', ('/products/coffee-subscription' + url_search_params));
-  }
-  
-  update_brew_method_urls();
-  
-  
-
-  $.ajax({
-    url         : "https://meraki.storyville.com/klaviyo-apps/id-lookup.php",
-    data        : { "klaviyo_id": k_id },
-    dataType    : 'json',
-    type        : 'GET',
-    crossDomain : true,
-    contentType : "application/json; charset=utf-8",
-    error       : function(err) {
-
-      console.log("Could not reach meraki.storyville.com for ID retrival");
-      updateAttributes();
-    },
-
-    success : function(data) {
-
-      if (data.result == "failure") {
-
-         updateAttributes();
-
-      } else {
-
-        console.log("Success! Retrieved email from Klaviyo ID: " + data.email, true);
-
-        customer_email = (data.email.indexOf('+') > -1) ? (data.email.replace(/\+/g,'%2B')) : data.email;
-
-        updateAttributes();
-     }
-
-
-
-
-
-    }});
-
-
-
-  // User Experience action handlers
-
-  $("#wants-onetime").click(function(){ state.onetime = true; });
-
-  $("#subscribe-save").click(function(){ state.onetime = false; }); 
-
-
-
-  $(".want-decaf").click(function(){
-
-    $(this).toggleClass("active-decaf");
-    $(document).find('.product-variant-select:not(.selected)').click();
-
-  });
-
-
-
-  $(".option-select").click(function() {
-
-    var option = $(this).data('option');
-
-    $(document).find('[data-option="'+option+'"].selected').removeClass('selected');
-    $(this).addClass("selected"); 
-
-    update();
-
-  });
-
-
-
-  $(".product-frequency-select").change(function(){
-
-
-    var optionSelected = $("option:selected", this);
-    $(".product-frequency-select .selected").removeClass("selected");
-
-    $(optionSelected).addClass("selected");
-
-
-    update();
-  });
-
-
-
-  $("#add-to-cart").click(addToCart);
-
-
-  $(".learn_more").click(function(){ 
-    $(".more-overlay").addClass("visible_overlay");
-  });
-
-  $(".close_learn-more").click(function(){ $(".visible_overlay").removeClass("visible_overlay"); });
-  $(".dark_bg").click(function(){ $(".visible_overlay").removeClass("visible_overlay"); });
-
-
-});

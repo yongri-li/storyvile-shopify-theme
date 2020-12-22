@@ -584,13 +584,12 @@ function addToCartCarthook(is_customer){
           var cartItem = {
             id: unitVariant_id,
             quantity: productOption.quantity,
-            note: "order number 0",
             properties: {
               'shipping_interval_frequency': product.shipping_interval_frequency[state.selectedFrequency],
               'shipping_interval_unit_type': product.shipping_interval_unit_type,
               'subscription_id': product.subscription_id
             }
-          };       
+          };        
           
   	  	}
 
@@ -669,7 +668,7 @@ function addToCartCarthook(is_customer){
 
               
               if (is_customer){
-                window.testGlobalBeforeReact(0);
+                window.location.href = getCheckoutUrl();
               } else{  			  
                 document.getElementById("createAccountButton").click();
                 //window.testGlobalBeforeReact(0);
@@ -685,7 +684,7 @@ function addToCartCarthook(is_customer){
             debug('Successfully added item to the cart');
 			
               if (is_customer){
-                window.testGlobalBeforeReact(0);
+                window.location.href = getCheckoutUrl();
               } else{  			  
                 document.getElementById("createAccountButton").click();
                 //window.testGlobalBeforeReact(0);
