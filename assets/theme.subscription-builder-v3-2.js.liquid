@@ -307,7 +307,7 @@ if (query.gift){
       
       var params = [
         'cart_token=' + state.cartToken,
-        'myshopify_domain=' + options.shopify_domain,
+        'myshopify_domain=storyvillecoffee.myshopify.com',
         'discount=' + couponCode
       ];
 
@@ -1012,6 +1012,10 @@ function addToCartCarthook(){
               'subscription_id': product.subscription_id
             }
           };       
+        };    
+          };       
+        };    
+          };       
   	  	}
 
   
@@ -1091,7 +1095,7 @@ function addToCartCarthook(){
             
             debug('Successfully added item to the cart');
 
-            window.testGlobalBeforeReact(0);
+            window.location.href = getCheckoutUrl();
           });
         
         });

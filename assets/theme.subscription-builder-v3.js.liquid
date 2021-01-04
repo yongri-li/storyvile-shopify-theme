@@ -316,7 +316,7 @@ if (query.gift){
       
       var params = [
         'cart_token=' + state.cartToken,
-        'myshopify_domain=' + options.shopify_domain,
+        'myshopify_domain=storyvillecoffee.myshopify.com',
         'discount=' + couponCode
       ];
       
@@ -1023,6 +1023,8 @@ function addToCartCarthook(){
             'shipping_interval_unit_type': product.shipping_interval_unit_type,
             'subscription_id': product.subscription_id
           }
+        };     
+          };
         };     
   	  }
 
