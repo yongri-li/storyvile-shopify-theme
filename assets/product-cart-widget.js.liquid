@@ -63,9 +63,7 @@ $(function(){
           var klaviyo_user = ''; 
           if (localStorage.getItem('klaviyo_user')) klaviyo_user = '&klaviyo_user=' + localStorage.getItem('klaviyo_user');
 
-          console.log('test');
-        
-          // window.location = "https://checkout.rechargeapps.com/r/checkout?" + paramDomain + paramCart + paramLinker + paramCustomer + discount + klaviyo_user;
+          window.location = "https://checkout.rechargeapps.com/r/checkout?" + paramDomain + paramCart + paramLinker + paramCustomer + discount + klaviyo_user;
         } else {
           window.location = '/checkout';
         }
