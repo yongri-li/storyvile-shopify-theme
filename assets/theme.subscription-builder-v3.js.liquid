@@ -316,14 +316,10 @@ if (query.gift){
       
       var params = [
         'cart_token=' + state.cartToken,
-        'myshopify_domain=storyvillecoffee.myshopify.com',
+        'myshopify_domain=' + options.shopify_domain,
         'discount=' + couponCode
       ];
       
-      if (localStorage.getItem('klaviyo_user')) {
-        params.push('klaviyo_user=' + localStorage.getItem('klaviyo_user'))
-      }
-
       //RECHARGE URL
       return 'https://checkout.rechargeapps.com/r/checkout?' + params.join('&');
       
@@ -1023,8 +1019,6 @@ function addToCartCarthook(){
             'shipping_interval_unit_type': product.shipping_interval_unit_type,
             'subscription_id': product.subscription_id
           }
-        };     
-          };
         };     
   	  }
 

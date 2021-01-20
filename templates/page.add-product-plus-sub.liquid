@@ -14,7 +14,7 @@
   <script>
     // Redirect to Subscription Checkout
     function reChargeProcessCart() {
-      var myshopify_domain = 'storyvillecoffee.myshopify.com';
+      var myshopify_domain = '{{ shop.permanent_domain }}';
       var customer_param = '{% if customer %}customer_id={{customer.id}}&customer_email={{customer.email}}{% endif %}';
 
       function get_cookie(name) {
