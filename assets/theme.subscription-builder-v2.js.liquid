@@ -203,6 +203,10 @@ $(function () {
         'myshopify_domain=storyvillecoffee.myshopify.com',
         'discount=' + couponCode
       ];
+
+      if (localStorage.getItem('klaviyo_user')) {
+        params.push('klaviyo_user=' + localStorage.getItem('klaviyo_user'))
+      }
       
       //RECHARGE URL
       return 'https://checkout.rechargeapps.com/r/checkout?' + params.join('&');
