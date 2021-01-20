@@ -320,6 +320,15 @@ if (query.gift){
         'discount=' + couponCode
       ];
       
+      if (sessionStorage.getItem('klaviyo_user')) {
+        params.push('klaviyo_user=' + sessionStorage.getItem('klaviyo_user'))
+      }
+
+      
+      if (sessionStorage.getItem('utm_coupon')) {
+        params.push('utm_coupon=' + sessionStorage.getItem('utm_coupon'))
+      }
+
       //RECHARGE URL
       return 'https://checkout.rechargeapps.com/r/checkout?' + params.join('&');
       

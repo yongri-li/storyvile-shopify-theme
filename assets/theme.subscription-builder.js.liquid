@@ -141,8 +141,8 @@ $(function () {
       ];
 
       
-      if (localStorage.getItem('klaviyo_user')) {
-        params.push('klaviyo_user=' + localStorage.getItem('klaviyo_user'))
+      if (sessionStorage.getItem('klaviyo_user')) {
+        params.push('klaviyo_user=' + sessionStorage.getItem('klaviyo_user'))
       }
 
       return 'https://checkout.rechargeapps.com/r/checkout?' + params.join('&') + '&discount=' + couponCode;

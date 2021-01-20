@@ -99,7 +99,11 @@ function getParameterByName(name, url = window.location.href) {
 }
 
 if ( getParameterByName('klaviyo_user') ) {
-    localStorage.setItem('klaviyo_user', getParameterByName('klaviyo_user')); 
+    sessionStorage.setItem('klaviyo_user', getParameterByName('klaviyo_user')); 
+}
+
+if ( getParameterByName('utm_coupon') ) {
+  sessionStorage.setItem('utm_coupon', getParameterByName('utm_coupon')); 
 }
 
 

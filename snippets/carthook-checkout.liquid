@@ -11,8 +11,8 @@
 		}));
 		sessionStorage.setItem("ch_sd", ch_sd);
 
-		if( localStorage.getItem('klaviyo_user') ) {
-			window.ch_custom_param += '&klaviyo_user=' + localStorage.getItem('klaviyo_user'); 
+		if( sessionStorage.getItem('klaviyo_user') ) {
+			window.ch_custom_param += '&klaviyo_user=' + sessionStorage.getItem('klaviyo_user'); 
 		}
 
 	</script>

@@ -422,6 +422,10 @@ $(function () {
         'discount=' + couponCode
       ];
 
+      if (sessionStorage.getItem('klaviyo_user')) {
+        params.push('klaviyo_user=' + sessionStorage.getItem('klaviyo_user'))
+      }
+
       //RECHARGE URL
       return 'https://checkout.rechargeapps.com/r/checkout?' + params.join('&');
 
