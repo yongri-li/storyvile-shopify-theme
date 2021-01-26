@@ -63,7 +63,9 @@
     var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value){
         params[key] = value;
     });
-    if(params['promocode']) sessionStorage.setItem('promocode',params['promocode']);
+    {% if settings.onsite_coupon != "" %}
+    if(sessionStorage.getItem('promocode') == undefined || sessionStorage.getItem('promocode') == "") sessionStorage.setItem('promocode',"{{ settings.onsite_coupon }}");
+    {% endif %}
     if(params['recharge_checkout']) sessionStorage.setItem('recharge_checkout',params['promocode']);
   </script>
 
