@@ -64,8 +64,10 @@
         params[key] = value;
     });
     {% if settings.onsite_coupon != "" %}
-    if(sessionStorage.getItem('promocode') == undefined || sessionStorage.getItem('promocode') == "") sessionStorage.setItem('promocode',"{{ settings.onsite_coupon }}");
-	else {
+    if(sessionStorage.getItem('promocode') == undefined || sessionStorage.getItem('promocode') == "") {
+      if(params['utm_coupon'] && params['utm_coupon'] != sessionStorage.getItem('promocode')) sessionStorage.setItem('promocode',params['utm_coupon']); 
+	  else sessionStorage.setItem('promocode',"{{ settings.onsite_coupon }}");
+    } else {
       if(params['utm_coupon'] && params['utm_coupon'] != sessionStorage.getItem('promocode')) sessionStorage.setItem('promocode',params['utm_coupon']);
     }
     {% endif %}
