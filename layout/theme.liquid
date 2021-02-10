@@ -224,9 +224,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 {% comment %}DISABLED{% include 'booster-discounts' %}
    {% endcomment %}  
   
+  {% unless settings.recharge_checkout %}}
 <!-- Warning: Do not remove.This is used for CartHook Checkout Replacement -->
 {% capture the_snippet_content %}{% include 'carthook-checkout' %} {% endcapture %} {% unless the_snippet_content contains "Liquid error" %} {% include 'carthook-checkout' %} {% endunless %}
 <!-- Warning: Do not remove.This is used for CartHook Checkout Replacement -->
+  {% endunless %}
      
   
 <!-- Start of storyville Zendesk Widget script -->

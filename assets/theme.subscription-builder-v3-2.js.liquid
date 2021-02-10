@@ -298,9 +298,39 @@ if (query.gift){
   }
   
   
+  function getCheckoutUrl() {
+    var paramCart = '&cart_token=' + (document.cookie.match('(^|; )cart=([^;]*)') || 0)[2];
+    $.ajax({
+      type: 'GET',
+      url: '/cart.js',
+      dataType: 'text',
+      success: function (data) {
+        if (data.indexOf("shipping_interval_frequency") > -1) {
+          var paramDomain = 'myshopify_domain=storyvillecoffee.myshopify.com';
+          try {
+            var paramLinker = "&" + ga.getAll()[0].get('linkerParam');
+          } catch (err) {
+            var paramLinker = '';
+          }
+          var paramCustomer = '{% if customer %}&customer_id={{ customer.id }}&customer_email={{ customer.email }}{% endif %}';
+          var discount = '';
+          if (sessionStorage.getItem('promocode')) discount = '&discount=' + sessionStorage.getItem('promocode');
 
+          var klaviyo_user = ''; 
+          if (sessionStorage.getItem('klaviyo_user')) klaviyo_user = '&klaviyo_user=' + sessionStorage.getItem('klaviyo_user');
+
+          var utm_coupon = ''; 
+          if (sessionStorage.getItem('utm_coupon')) utm_coupon = '&utm_coupon=' + sessionStorage.getItem('utm_coupon');
+
+          window.location = "https://checkout.rechargeapps.com/r/checkout?" + paramDomain + paramCart + paramLinker + paramCustomer + discount + klaviyo_user + utm_coupon;
+        } else {
+          window.location = '/checkout';
+        }
+      }
+    });
+  }
   
-  function getCheckoutUrl(cart) {
+  function returnCheckoutUrl(cart) {
     var token = cart ? cart.token : state.cartToken;
 
     if (token) {
@@ -362,7 +392,7 @@ if (query.gift){
 
     debug('Update', state);
 
-    $builder.attr('action', getCheckoutUrl());
+    $builder.attr('action', returnCheckoutUrl());
     $builder.find('[data-onetime-discount]').text(( state.product == 'beans' ? '22%' : '17%' ));
 
     
@@ -1090,8 +1120,11 @@ function addToCartCarthook(){
           .done(function () {
             
             debug('Successfully added item to the cart');
-
+            {% if settings.recharge_checkout %}
+            getCheckoutUrl();
+            {% else %}
             window.testGlobalBeforeReact(0);
+            {% endif %}
           });
         
         });
