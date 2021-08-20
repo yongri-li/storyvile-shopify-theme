@@ -1,3 +1,4 @@
+console.log('Loaded cart widget.')
 
 function getQueryStringAsObject() {
   var search = location.search.substring(1);
@@ -9,13 +10,14 @@ var query = getQueryStringAsObject();
 $(function(){ 
 
   var id = $(".product-variant-select.selected").data('variant-id');
+  var product_name = $(".product_name").data('handle');
+  
   var sub_id = "{{ product.metafields.subscriptions.subscription_id }}";
   var quantity = parseInt($(".product-quantity-select.selected").data('quantity-value'));
   var frequency = parseInt($(".product-frequency-select .selected").val());
   var unit_price = parseInt($(".product-variant-select.selected").data('variant-price'));
   var wants_onetime = query.onetime ? true : false;
   var customer_email = '';
-  var utm_coupon = query.utm_coupon ? query.utm_coupon : "{{ settings.onsite_coupon }}";
   var $getID = query.klaviyo_user;
 
   var k_id = '';
@@ -25,8 +27,35 @@ $(function(){
   }   
 
   var price = (quantity * unit_price) / 100;
-  var discount = query.utm_content ? query.utm_content : {{ settings.onsite_discount }};
-
+	
+  
+  // GLOBAL DISCOUNT APPLICATIONS
+  var onsite_discount = 0;
+  var onsite_coupon;
+  
+  if(product_name == 'bean'){ 
+    onsite_discount = {% if settings.onsite_discount_bean == 0 %}0{% else %}{{ settings.onsite_discount_bean }}{% endif %};
+    onsite_coupon = {% if settings.onsite_coupon_bean == blank %}false{% else %}"{{ settings.onsite_coupon_bean }}"{% endif %}; 
+  }
+  
+  if(product_name == 'pod'){ 
+    onsite_discount = {% if settings.onsite_discount_pod == 0 %}0{% else %}{{ settings.onsite_discount_pod }}{% endif %};
+    onsite_coupon = {% if settings.onsite_coupon_pod == blank %}false{% else %}"{{ settings.onsite_coupon_pod }}"{% endif %};
+  }
+  
+  if(product_name == 'capsule'){ 
+    onsite_discount = {% if settings.onsite_discount_capsule == 0 %}0{% else %}{{ settings.onsite_discount_capsule }}{% endif %};
+    onsite_coupon = {% if settings.onsite_coupon_capsule == blank %}false{% else %}"{{ settings.onsite_coupon_capsule }}"{% endif %};
+  }
+  
+  // END
+  
+  
+  
+  var discount = (query.utm_content && onsite_discount != 0) ? query.utm_content : onsite_discount;
+  var utm_coupon = (query.utm_coupon && onsite_coupon) ? query.utm_coupon : onsite_coupon;
+  
+  
   var state = {
     id : id,
     subscription_id : sub_id,
@@ -57,16 +86,15 @@ $(function(){
             var paramLinker = '';
           }
           var paramCustomer = '{% if customer %}&customer_id={{ customer.id }}&customer_email={{ customer.email }}{% endif %}';
-          var discount = '';
-          if (sessionStorage.getItem('promocode')) discount = '&discount=' + sessionStorage.getItem('promocode');
+          
+          var discount_url = ('&discount=' + (utm_coupon ? utm_coupon : ''));
 
           var klaviyo_user = ''; 
           if (sessionStorage.getItem('klaviyo_user')) klaviyo_user = '&klaviyo_user=' + sessionStorage.getItem('klaviyo_user');
 
-          var utm_coupon = ''; 
-          if (sessionStorage.getItem('utm_coupon')) utm_coupon = '&utm_coupon=' + sessionStorage.getItem('utm_coupon');
+          var coupon_url = ('&utm_coupon=' + (utm_coupon ? utm_coupon : ''));
 
-          window.location = "https://checkout.rechargeapps.com/r/checkout?" + paramDomain + paramCart + paramLinker + paramCustomer + discount + klaviyo_user + utm_coupon;
+          window.location = "https://checkout.rechargeapps.com/r/checkout?" + paramDomain + paramCart + paramLinker + paramCustomer + discount_url + klaviyo_user + coupon_url;
         } else {
           window.location = '/checkout';
         }
@@ -85,6 +113,20 @@ $(function(){
   });
   */
 
+  // Check for discounts
+  if(onsite_discount != 0 && onsite_coupon != false){
+
+  } else {
+    
+    if(query.utm_content && onsite_discount != 0){} else{
+      
+      $(document).find('[data-total-price-with-discount]').hide();
+      $(document).find('.strike-out').removeClass('strike-out');
+      $(document).find('.order_summary .sub_text').hide();
+    }
+  }
+  
+  
   //Update Selected price
   $(document).find('[data-total-price]').text("$" + price);
   $(document).find('[data-total-price-with-discount]').text("$" + asMoney(price - (price * (discount / 100))));
@@ -165,6 +207,8 @@ $(function(){
 
 
   function updateAttributes(){
+    
+    if(onsite_discount != 0 && onsite_coupon != false){
 
         var cartAttributes = {
                attributes: {
@@ -177,7 +221,8 @@ $(function(){
         $.post('/cart/update.json', cartAttributes).done(function () {   
           console.log('Updated Cart Attributes: ' + state.coupon + ' and ' + customer_email + ' and ' + discount);
         });  
-
+    }
+    
   }
 
 
@@ -205,7 +250,6 @@ $(function(){
       var cartItem = {
         id: state.id,
         quantity: state.quantity,
-        note: "order number 0",
         properties: {
           'shipping_interval_frequency': state.frequency,
           'shipping_interval_unit_type': "Weeks",
@@ -217,7 +261,7 @@ $(function(){
     $.get('/cart.json').done(function (cart) {
 
       var email_attribute = cart.attributes.email ? cart.attributes.email : '';
-      var coupon_attribute = query.utm_coupon ? state.coupon : (cart.attributes.coupon ? cart.attributes.coupon : state.coupon);
+      var coupon_attribute = query.utm_coupon ? query.utm_coupon : (cart.attributes.coupon ? cart.attributes.coupon : state.coupon);
       var source = query.utm_source ? ('utm_source=' + query.utm_source) : '';
       var content = query.utm_content ? ("utm_content=" + query.utm_content) : (cart.attributes.content ? ("utm_content=" + cart.attributes.content) : "");
 
@@ -233,6 +277,7 @@ $(function(){
               medium
       ];
 
+      
       if( sessionStorage.getItem('klaviyo_user') ) {
         ch_params.push('klaviyo_user=' + sessionStorage.getItem('klaviyo_user'));
       }
@@ -256,7 +301,6 @@ $(function(){
         line : lineNumber,
         id: state.id,
         quantity: state.quantity,
-        note: "order number 0",
         properties: {
           'shipping_interval_frequency': state.frequency,
           'shipping_interval_unit_type': "Weeks",
@@ -308,7 +352,11 @@ $(function(){
   
   function update_brew_method_urls(){
   
+    // This carrys UTM paramaters from product to product
   	var url_search_params = window.location.search;
+    
+   // This does not carry UTM Paramaters
+   // var url_search_params = "";
     
     document.getElementById('pods-select').setAttribute('href', ('/products/keurig-k-cup-subscription' + url_search_params));
     document.getElementById('capsules-select').setAttribute('href', ('/products/nespresso-capsule-subscription' + url_search_params));

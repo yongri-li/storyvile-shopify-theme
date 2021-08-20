@@ -18,7 +18,7 @@
       <header class="section-header text-center">
         {% if search.performed %}
           {% if search.results_count == 0 %}
-            <h1 class="text-center">{{ 'general.search.no_results_html' | t: terms: search.terms }}</h1>
+            <h1 class="text-center">I'm sorry, there were no results found for that search.</h1>
           {% else %}
             <h1 class="text-center">{{ 'general.search.results_for_html' | t: terms: search.terms }}</h1>
           {% endif %}

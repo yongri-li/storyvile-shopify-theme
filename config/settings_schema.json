@@ -8,23 +8,77 @@
     "theme_support_url": "https:\/\/support.shopify.com\/"
   },
   {
-    "name": "Onsite Discount",
+    "name": "Onsite Discounts",
     "settings": [
       {
+        "type": "header",
+        "content": "Whole Bean"
+      },
+      {
         "type": "range",
-        "id": "onsite_discount",
-        "min": 1,
+        "id": "onsite_discount_bean",
+        "info": "If 0% discount will not show on product page.",
+        "min": 0,
         "max": 100,
         "step": 1,
         "unit": "%",
-        "label": "Onsite Discount",
+        "label": "Whole bean Onsite Discount",
         "default": 50
       },
       {
         "type": "text",
-        "id": "onsite_coupon",
-        "label": "Onsite Coupon (ie 'HOME')",
+        "id": "onsite_coupon_bean",
+        "label": "Whole bean Onsite Coupon",
+        "info": "This will be automaticaly filled in at checkout.",
         "default": "HOME"
+      },
+      {
+        "type": "header",
+        "content": "Pods"
+      },
+      {
+        "type": "range",
+        "id": "onsite_discount_pod",
+        "info": "If 0% discount will not show on product page.",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "%",
+        "label": "Pods Onsite Discount",
+        "default": 50
+      },
+      {
+        "type": "text",
+        "id": "onsite_coupon_pod",
+        "label": "Pods Onsite Coupon",
+        "info": "This will be automaticaly filled in at checkout.",
+        "default": "HOME"
+      },
+      {
+        "type": "header",
+        "content": "Capsules"
+      },
+      {
+        "type": "range",
+        "id": "onsite_discount_capsule",
+        "info": "If 0% discount will not show on product page.",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "%",
+        "label": "Capsules Onsite Discount",
+        "default": 50
+      },
+      {
+        "type": "text",
+        "id": "onsite_coupon_capsule",
+        "label": "Capsules Onsite Coupon",
+        "info": "This will be automaticaly filled in at checkout.",
+        "default": "HOME"
+      },
+      {
+        "type": "header",
+        "content": "Other"
       },
       {
         "type": "checkbox",

@@ -104,7 +104,7 @@
 {%- assign jsonld_heritage = jsonld_for_seo_product.metafields.general.heritage | downcase -%}
 {%- if jsonld_heritage == 'vintage' -%}{%- assign jsonld_condition_from_heritage = 'UsedCondition' -%}{%- endif -%}
 {%- assign item_condition = jsonld_for_seo_product.metafields.jsonld.itemCondition | default: jsonld_condition_from_tag | default: shop.metafields.jsonld.itemCondition | default: jsonld_condition_from_heritage | default: "NewCondition" -%}
-{%- assign jsonld_availability = jsonld_for_seo_product.metafields.jsonld.availability | default: jsonld_availability_from_tag -%}
+{%- assign jsonld_availability = jsonld_for_seo_product.metafields.jsonld.availability -%}
 {%- assign jsonld_product_id = canonical_url | append: '#json-ld-for-seo' -%}
 <script type="application/ld+json">
 {
@@ -174,9 +174,9 @@
     {%- if jsonld_availability -%}
       "availability": "{{ jsonld_for_seo_protocol}}schema.org/{{ jsonld_availability }}"
     {%- elsif shop.metafields.jsonld.inventoryAsAvailability == "true" -%}
-      "availability": "{{ jsonld_for_seo_protocol}}schema.org/{% if variant.inventory_quantity > 0 %}InStock{% else %}OutOfStock{% endif %}"
+      "availability": "{{ jsonld_for_seo_protocol}}schema.org/{% if variant.inventory_quantity > 0 %}{{ jsonld_availability_from_tag | default: "InStock" }}{% else %}OutOfStock{% endif %}"
     {%- else -%}
-      "availability": "{{ jsonld_for_seo_protocol}}schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}"
+      "availability": "{{ jsonld_for_seo_protocol}}schema.org/{% if variant.available %}{{ jsonld_availability_from_tag | default: "InStock" }}{% else %}OutOfStock{% endif %}"
     {%- endif -%},
     "gtin": {{variant.barcode | json }}
     {%- if variant.barcode.size == 8 -%},
