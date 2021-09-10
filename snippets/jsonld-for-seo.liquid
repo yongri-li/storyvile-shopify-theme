@@ -3,7 +3,7 @@
 
   It could be updated from time to time as I add new JSON-LD features, so it should
   not be edited. If you run into an issues, or would like to request a JSON-LD feature,
-  please contact me at shopify@littlestreamsoftware.com.
+  please contact me at support@ilanadavis.com.
 
   Thanks!
 
@@ -99,6 +99,22 @@
   {%- assign jsonld_for_seo_show_product_on_page = true -%}
   {%- assign jsonld_for_seo_product = all_products[shop.metafields.jsonld.product_on_homepage] -%}
 {%- endif -%}
+{%- liquid
+if jsonld_for_seo_show_product_on_page and jsonld_for_seo_product != blank
+  assign jsonld_for_seo_variant_has_price = false
+
+  for variant in jsonld_for_seo_product.variants
+    if variant.price != 0
+      assign jsonld_for_seo_variant_has_price = true
+      break
+    endif
+  endfor
+
+  if jsonld_for_seo_variant_has_price == false
+    assign jsonld_for_seo_show_product_on_page = false
+  endif
+endif
+-%}
 {%- if jsonld_for_seo_show_product_on_page and jsonld_for_seo_product != blank -%}
 {%- assign jsonld_product_tags = jsonld_for_seo_product.tags -%}
 {%- assign jsonld_heritage = jsonld_for_seo_product.metafields.general.heritage | downcase -%}
@@ -141,7 +157,15 @@
   "name": {{ jsonld_for_seo_product.title | json }},{% if jsonld_for_seo_product.featured_image %}
   "image": "https:{{ jsonld_for_seo_product.featured_image | img_url: 'master' }}",{% endif %}
   "itemCondition": "{{ jsonld_for_seo_protocol }}schema.org/{{ item_condition }}",
-  "offers": [{% for variant in jsonld_for_seo_product.variants %}{
+  {%- assign jsonld_for_seo_variant_tracker = false -%}
+  "offers": [{%- for variant in jsonld_for_seo_product.variants -%}
+    {%- if variant.price == 0 -%}{%- continue -%}{%- endif -%}
+    {%- if jsonld_for_seo_variant_tracker -%}
+      ,
+    {%- else -%}
+      {%- assign jsonld_for_seo_variant_tracker = true -%}
+    {%- endif -%}
+    {
     "@type": "Offer",
     {%- assign jsonld_price_modifier = jsonld_for_seo_product.metafields.jsonld.price_modifier | default: shop.metafields.jsonld.price_modifier | default: 1.0 -%}
     "price": "{{ variant.price | times: jsonld_price_modifier | divided_by: 100.0 | round: 2 }}",
@@ -191,7 +215,7 @@
     {%- if variant.barcode.size == 14 -%},
     "gtin14": {{variant.barcode | json}}
     {%- endif -%}
-  }{% unless forloop.last %},{% endunless %}{% endfor %}]
+  }{% endfor %}]
   {%- unless shop.metafields.jsonld.skip_reviews == "true" -%}
   {%- assign jsonld_review_provider = shop.metafields.jsonld.review_provider -%}
   {%- assign jsonld_ssw_key = jsonld_for_seo_product.id | append: '_rate_data' -%}
@@ -301,6 +325,9 @@
   {% when 'judge-me' %}
     {%- assign jsonld_review_count = jsonld_for_seo_product.metafields.judgeme.badge | split: "data-number-of-reviews='" | last | split: "'" |first | plus: 0 -%}
     {%- assign jsonld_review_value = jsonld_for_seo_product.metafields.judgeme.badge | split: "data-average-rating='" | last | split: "'" |first | plus: 0 -%}
+  {% when 'rivyo' %}
+    {%- assign jsonld_review_value = jsonld_for_seo_product.metafields.product_schema.th_ratingValue %}
+    {%- assign jsonld_review_count = jsonld_for_seo_product.metafields.product_schema.th_ratingCount %}
   {% else %}
     {%- assign jsonld_review_value = "" %}
     {%- assign jsonld_review_count = "" %}
@@ -484,6 +511,12 @@
     "description": "Okendo.io reviews",
     "ratingValue": {{ jsonld_for_seo_product.metafields.okendo.ReviewAverageValue }},
     "ratingCount": {{ jsonld_for_seo_product.metafields.okendo.ReviewCount }}
+  }{% elsif jsonld_for_seo_product.metafields.product_schema.th_ratingCount and jsonld_for_seo_product.metafields.product_schema.th_ratingCount != "0" and jsonld_for_seo_product.metafields.product_schema.th_ratingCount != 0 %},
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "description": "Rivyo",
+    "ratingValue": {{ jsonld_for_seo_product.metafields.product_schema.th_ratingValue }},
+    "ratingCount": {{ jsonld_for_seo_product.metafields.product_schema.th_ratingCount }}
   }{% elsif jsonld_for_seo_product.metafields.judgeme.badge and jsonld_for_seo_product.metafields.judgeme.badge != blank %}
     {%- assign jsonld_review_count = jsonld_for_seo_product.metafields.judgeme.badge | split: "data-number-of-reviews='" | last | split: "'" |first | plus: 0 -%}
     {%- assign jsonld_review_value = jsonld_for_seo_product.metafields.judgeme.badge | split: "data-average-rating='" | last | split: "'" |first | plus: 0 -%}
@@ -509,7 +542,7 @@
 {% else %}
   {% assign jsonld_render_article = false %}
 {% endif %}
-{% if jsonld_render_article %}
+{% if jsonld_render_article and jsonld_for_seo_object != nil %}
 <script type="application/ld+json">
 {
   "@context": "{{ jsonld_for_seo_protocol }}schema.org",
